@@ -18,10 +18,6 @@ add_definitions(-DBOOST_ALL_DYN_LINK)
 else()
   # other platforms are recommended to install dependencies through their
   # native package management systems
-  if (NOT APPLE)
-    # homebrew seems to have everything for now...
-    find_package(Contrib REQUIRED activemq-cpp)
-  endif(NOT APPLE)
 endif(WIN32)
 
 message( STATUS "Prefix path: ${CMAKE_PREFIX_PATH}")
