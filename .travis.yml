@@ -21,5 +21,11 @@ install:
   - tar -xvf poco-1.6.0.tar.gz
   - cd poco-1.6.0 && ./configure --prefix=/usr && make && make install && cd ..
 
+script:
+  - mkdir build
+  - cd build
+  - cmake ../
+  - make
+
 os:
   - linux
