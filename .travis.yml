@@ -15,17 +15,11 @@ install:
   ## build and install active-mq cpp
   - wget http://www.eu.apache.org/dist/activemq/activemq-cpp/3.8.4/activemq-cpp-library-3.8.4-src.tar.gz
   - tar -zxf activemq-cpp-library-3.8.4-src.tar.gz
-  - cd activemq-cpp-library-3.8.4
-  - ./configure 
-  - make
-  - make install
+  - cd activemq-cpp-library-3.8.4 && ./configure --prefix=/usr && make && make install && cd ..
   ## todo: poco
   - wget http://pocoproject.org/releases/poco-1.6.0/poco-1.6.0.tar.gz
   - tar -xvf poco-1.6.0.tar.gz
-  - cd poco-1.6.0
-  - ./configure 
-  - make
-  - make install
+  - cd poco-1.6.0 && ./configure --prefix=/usr && make && make install && cd ..
 
 os:
   - linux
