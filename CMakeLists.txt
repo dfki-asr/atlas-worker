@@ -31,14 +31,14 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 find_package(CXX11)
 
-find_package(Poco COMPONENTS Zip Net Crypto XML)
+find_package(Poco REQUIRED COMPONENTS Zip Net Crypto XML)
 if(Poco_FOUND) 
    include_directories(BEFORE ${Poco_INCLUDE_DIR})
    link_directories(${Poco_LIBRARY_DIR})
    message(STATUS "Found Poco includes at ${Poco_INCLUDE_DIR}")
 endif(Poco_FOUND)
 
-find_package(Boost COMPONENTS system thread filesystem program_options)
+find_package(Boost REQUIRED COMPONENTS system thread filesystem program_options)
 if(Boost_FOUND)
    include_directories(BEFORE ${Boost_INCLUDE_DIR})
    link_directories(${Boost_LIBRARY_DIR})
