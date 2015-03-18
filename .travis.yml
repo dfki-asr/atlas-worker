@@ -4,6 +4,9 @@ compiler:
   - gcc
   - clang
 
+env:
+  - CXXFLAGS="-Wno-pragmas -Wno-overloaded-virtual"
+
 before_install:
   - sudo apt-get update -qq
   ## install worker dependencies
@@ -19,7 +22,7 @@ install:
   ## todo: poco
   - wget http://pocoproject.org/releases/poco-1.6.0/poco-1.6.0.tar.gz
   - tar -xvf poco-1.6.0.tar.gz
-  - cd poco-1.6.0 && ./configure --prefix=/usr --no-tests --no-samples && make -s && sudo make install && cd ..
+  - cd poco-1.6.0 && ./configure --cflags="$CXXFLAGS" --prefix=/usr --no-tests --no-samples && make -s && sudo make install && cd ..
 
 script:
   - mkdir build
