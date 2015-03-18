@@ -16,6 +16,7 @@ namespace bpo = boost::program_options;
 namespace AssimpWorker {
 
 Configuration* Configuration::singletonInstance = NULL;
+const char* Configuration::defaultConfigFilename = "assimpworker.conf";
 
 Configuration& Configuration::getInstance() {
 	if (singletonInstance == NULL) {
