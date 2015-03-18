@@ -80,7 +80,7 @@ if(WIN32)
 					)
 endif(WIN32)
 
-LIST(APPEND CMAKE_CXX_FLAGS ${CXX11_FLAGS})
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_FLAGS}")
 
 # /src
 add_subdirectory(src)
