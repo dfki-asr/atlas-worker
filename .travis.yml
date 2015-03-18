@@ -4,6 +4,8 @@ os: linux
 matrix:
   include:
     - compiler: gcc
+      ## gcc doesn't like poco's #pragma GCC diagnostic
+      env: CXXFLAGS="-Wno-pragmas"
     - compiler: clang
       ## activemq-cpp is a frequent offender for these, which fails the build due to log size
       env: CXXFLAGS="-Wno-overloaded-virtual -Wno-sign-conversion"
