@@ -29,7 +29,5 @@ install:
   - cd poco-1.6.0-all && ./configure --cflags="-Wno-pragmas" --prefix=/usr --no-tests --no-samples --omit=Data/MySQL,Data/ODBC && make -s && sudo make install && cd ..
 
 script:
-  - mkdir build
-  - cd build
-  - cmake ../
+  - mkdir build && cd build && cmake ../
   - make
