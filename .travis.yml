@@ -1,12 +1,11 @@
 language: cpp
 
-compiler:
-  - gcc
-  - clang
-
-env:
-  ## poco produces warnings about '#pragma GCC', amq-cpp makes clang unhappy
-  - CXXFLAGS="-Wno-pragmas -Wno-overloaded-virtual"
+matrix:
+  include:
+    - compiler: gcc
+    - compiler: clang
+      ## activemq-cpp is a frequent offender for these, which fails the build due to log size
+      env: CXXFLAGS="-Wno-overloaded-virtual -Wno-sign-conversion"
 
 before_install:
   - sudo apt-get update -qq
