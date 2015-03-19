@@ -1,6 +1,6 @@
 #!/bin/sh
 set -ex
-wget http://downloads.sourceforge.net/project/assimp/assimp-3.1/assimp-3.1.1_no_test_models.zip
+wget -q http://downloads.sourceforge.net/project/assimp/assimp-3.1/assimp-3.1.1_no_test_models.zip
 unzip assimp-3.1.1_no_test_models.zip
 (
 	## poco will always build with gcc on linux, therefore pass in the gcc cflags
