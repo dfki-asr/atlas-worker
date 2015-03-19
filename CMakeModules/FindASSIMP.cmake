@@ -5,23 +5,16 @@
 #  ASSIMP_INCLUDE_DIR - the Assimp include directories
 #  ASSIMP_LIBRARY - link these to use Assimp
 
-FIND_PATH( ASSIMP_INCLUDE_DIR assimp
-  PATHS
-  /usr/include
-  /usr/local/include
-  /opt/local/include
-)
+include(LibFindMacros)
 
-FIND_LIBRARY( ASSIMP_LIBRARY assimp
-  PATHS
-  /usr/lib64
-  /usr/lib
-  /usr/local/lib
-  /opt/local/lib
-)
+libfind_pkg_check_modules(ASSIMP_PKGCONF assimp)
 
-SET( ASSIMP_FOUND FALSE )
+find_path(ASSIMP_INCLUDE_DIR assimp/scene.h
+          DOC "ASSIMP include file"
+          HINTS ${ASSIMP_PKGCONF_INCLUDE_DIRS})
 
-IF(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY)
-  SET( ASSIMP_FOUND TRUE )
-ENDIF(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY)
+find_library(ASSIMP_LIBRARY NAMES assimp
+             DOC "ASSIMP library file"
+             HINTS ${ASSIMP_PKGCONF_LIBRARY_DIRS} )
+
+libfind_process(ASSIMP)
