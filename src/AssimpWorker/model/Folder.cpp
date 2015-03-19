@@ -32,6 +32,19 @@ namespace Model {
 
 	}
 
+	Folder& Folder::operator=(Folder&& other) {
+		if (type != other.type) {
+			// must not assign different types of folders.
+			throw std::exception();
+		}
+		blobHolder = other.blobHolder;
+		name = std::move(other.name);
+		blobs = std::move(other.blobs);
+		attributes = std::move(other.attributes);
+		childFolders = std::move(other.childFolders);
+		return *this;
+	}
+
 	Folder::~Folder(){
 		return;
 	}
