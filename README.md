@@ -14,17 +14,17 @@ Architecture
 
 Here is a brief overview diagram of ATLAS' architecture: 
 
-		  +--------+    +-------------+     +---------+
-		  |        |    |             |     |         |
-	------> Upload +---->             +----->  Export +----->
-		  |        |    |             |     |         |
-		  +--------+    |             |     +----^----+
-						|   Storage   |          |
-		  +--------+    |             |     +- - + - -+
-		  |        |    |             |     |         |      
-		  | Import <---->             +-----> Filter
-		  |        |    |             |     |         |
-		  +--------+    +-------------+     +- - - - -+
+          +--------+    +-------------+     +---------+
+          |        |    |             |     |         |
+    ------> Upload +---->             +----->  Export +----->
+          |        |    |             |     |         |
+          +--------+    |             |     +----^----+
+                        |   Storage   |          |
+          +--------+    |             |     +- - + - -+
+          |        |    |             |     |         |
+          | Import <---->             +-----> Filter
+          |        |    |             |     |         |
+          +--------+    +-------------+     +- - - - -+
 
 The Upload and Export steps are handled by a Java Enterprise web application. The rationale behind
 this is that web services and serialization are very easy to handle in Java through well-standardized
