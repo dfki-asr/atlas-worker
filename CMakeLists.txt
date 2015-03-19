@@ -45,7 +45,7 @@ if(Boost_FOUND)
    message(STATUS "Found Boost includes at ${Boost_INCLUDE_DIR}")
 endif(Boost_FOUND)
 
-find_package(ASSIMP)
+find_package(ASSIMP REQUIRED)
 if(ASSIMP_FOUND)
 	include_directories(BEFORE ${ASSIMP_INCLUDE_DIR})
 	message(STATUS "Found ASSIMP includes at ${ASSIMP_INCLUDE_DIR}")
