@@ -71,11 +71,11 @@ The worker uses CMake as a build system. Hopefully the hardest part about buildi
 
 ### Dependencies
 
-* Boost >= 1.55
+* Boost >= 1.49 (1.55 if you want to build with clang)
 * POCO  >= 1.4.6
 * ActiveMQ-CPP >= 3.6.0
 * Assimp >= 3.1.1
-* Jansson
+* Jansson >= 2.2.1
 
 If you want to import AutomationML, we recommend building Assimp yourself. We've contributed code to assimp that enables it to properly load trifans and tristrips, which AutomationML COLLADA files seem to make heavy use of.
 
