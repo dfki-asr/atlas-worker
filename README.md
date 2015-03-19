@@ -84,11 +84,12 @@ If you want to import AutomationML, we recommend building Assimp yourself. We've
 If you're lucky and there is a package management system for your operating system, then you should be able to get all of the dependencies from there. We've made good experiences with Homebrew on MacOS and APT on Linux. Here's the packages you need:
 
 * Homebrew: `brew install jansson activemq-cpp assimp boost poco`
-** if you want the trifan code mentioned above, you can `brew install --HEAD assimp`
-** `activemq-cpp` (up to version 3.8.5) writes a wrong `pkg-config` file, which may result in CMake not finding it.
+ * if you want the trifan code mentioned above, you can `brew install --HEAD assimp`
+ * `activemq-cpp` (up to version 3.8.5) writes a wrong `pkg-config` file, which may result in CMake not finding it.
 * APT: `apt-get install libassimp-dev libboost-dev libjansson-dev`
-** ActiveMQ-CPP is not currently in Debian's APT, you will need to build it yourself. Therefore you need the `libapr1-dev` package.
-** Poco from Debian's APT is too old, you will also need to build it yourself. (Or install the package from the `experimental` repo.)
+ * ActiveMQ-CPP is not currently in Debian's APT, you will need to build it yourself. Therefore you need the `libapr1-dev` package.
+ * Poco from Debian's APT is too old, you will also need to build it yourself. (Or install the package from the `experimental` repo.)
+ * For both of the above dependencies, you can use the scripts we use to install them on the Travis CI infrastructure. See the `.travis` directory.
 
 ### On Windows platforms (Win 8, Visual Studio 2013)
 
