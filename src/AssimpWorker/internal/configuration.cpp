@@ -94,9 +94,6 @@ void Configuration::setupOptions() {
 		("stomp-pass", bpo::value<std::string>()->required(),                        "Password")
 		("work-queue",bpo::value<std::string>()->default_value("atlas.work.import"),"Work queue name")
 		("feedback-queue",bpo::value<std::string>()->default_value("atlas.work.feedback"),"Feedback queue name")
-		("jms-broker",
-		bpo::value<std::string>()->default_value("tcp://localhost:61613?wireFormat=stomp&wireFormat.queuePrefix=jms.queue.&connection.watchTopicAdvisories=false"),
-		"JMS Broker URI")
 	;
 	bpo::options_description jcr("Repository options");
 	jcr.add_options()
