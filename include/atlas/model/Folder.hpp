@@ -25,6 +25,10 @@ namespace Model {
 		// we use move construction internally, thus this needs to be re-enabled.
 		// it's also not quite as bad in terms of accidental memory leaks as the copy-constructor.
 		Folder(Folder&&);
+		// move assignment is also supported (e.g. inside containers)
+		Folder& operator=(Folder&& other);
+		// copy assignment is as bad as copy construction.
+		Folder& operator=(const Folder& other) = delete;
 
 		virtual ~Folder();
 

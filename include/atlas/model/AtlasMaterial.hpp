@@ -21,9 +21,15 @@ namespace Model {
 		Color diffuse;
 		Color emissive;
 		Color specular;
-		float opacity = 1.0;
+		float opacity;
 		float shininess;
 		//TODO: Textures
+		Material() :
+		    opacity(1.0),
+		    shininess(0.0)
+		{
+			// deliberately empty
+		}
 	};
 
 }

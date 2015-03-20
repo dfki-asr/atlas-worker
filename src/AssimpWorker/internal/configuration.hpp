@@ -25,7 +25,7 @@ class Configuration
 		void parseConfigFile();
 		bool defaultConfigExists();
 
-		const char* defaultConfigFilename = "assimpworker.conf";
+		static const char* defaultConfigFilename;
 		static Configuration* singletonInstance;
 		boost::program_options::variables_map parsedVariables;
 		boost::program_options::options_description description;
