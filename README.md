@@ -81,7 +81,7 @@ If you want to import AutomationML, we recommend building Assimp yourself. We've
 
 #### OS-Provided dependencies
 
-If you're lucky and there is a package management system for your operating system, then you should be able to get all of the dependencies from there. We've made good experiences with Homebrew on MacOS and APT on Linux. Here's the packages you need:
+If you're lucky and there is a package management system for your operating system, then you should be able to get most, if not all, of the dependencies from there. We've made good experiences with Homebrew on MacOS and APT on Linux. Here's the packages you need:
 
 * Homebrew: `brew install jansson activemq-cpp assimp boost poco`
  * if you want the trifan code mentioned above, you can `brew install --HEAD assimp`
