@@ -85,7 +85,9 @@ If you're lucky and there is a package management system for your operating syst
 
 * Homebrew: `brew install jansson activemq-cpp assimp boost poco`
  * if you want the trifan code mentioned above, you can `brew install --HEAD assimp`
- * `activemq-cpp` (up to version 3.8.5) writes a wrong `pkg-config` file, which may result in CMake not finding it.
+ * `activemq-cpp` writes a wrong `pkg-config` file (reported and fixed upstream in version 3.8.5).
+    * For a fix, edit `/usr/local/lib/pkgconfig/activemq-cpp.pc` to say `Requires.private: apr-1`
+
 * APT: `apt-get install libassimp-dev libboost-dev libjansson-dev`
  * ActiveMQ-CPP is not currently in Debian's APT, you will need to build it yourself. Therefore you need the `libapr1-dev` package.
  * Poco from Debian's APT is too old, you will also need to build it yourself. (Or install the package from the `experimental` repo.)
