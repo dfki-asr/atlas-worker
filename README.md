@@ -118,7 +118,27 @@ Place the binaries in a folder resembling this structure:
 			poco
 				...
 
-Alternatively specify all the paths while generating CMake. Run CMake and generate the Visual Studio solution. Open the solution and run.
+### Performing the build
+
+It is recommended to perform the build in a separate directory, e.g. a `build` folder.
+CMake recommends to keep this folder beside the source tree (as to avoid accidental commits of binaries); but it should also work to have it as a subfolder to this repository, in which case you need to be careful when committing changes.
+
+#### On UNIX systems (Linux, OSX)
+
+    mkdir ../atlas-worker-build
+    cd ../atlas-worker-build
+    cmake ../atlas-worker
+    make
+
+#### On Windows
+
+* Open CMake GUI
+* Select the repository (`atlas-worker`) as source directory.
+* Select an output folder. (Again, we recommend one next to the source repository.)
+* Click configure. Select your compile environement.
+* Optional: Specify dependency paths, if you did not use the `contrib` layout above.
+* Click generate.
+* Open the generated solution and run.
 
 
 Running
