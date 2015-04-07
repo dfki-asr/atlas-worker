@@ -13,6 +13,8 @@ include(FindPackageHandleStandardArgs)
 set(CXX11_FLAG_CANDIDATES
     #Gnu and Intel Linux
     "-std=c++0x"
+    #XCode 4.x
+    "-std=c++0x -stdlib=libc++"
     #Microsoft Visual Studio, and everything that automatically accepts C++11
     " "
     #Intel windows
@@ -21,6 +23,8 @@ set(CXX11_FLAG_CANDIDATES
 
 set(CXX11_TEST_SOURCE
 "
+#include <type_traits>
+
 class Matrix
 {
 public:
