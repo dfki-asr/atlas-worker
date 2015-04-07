@@ -69,7 +69,7 @@ Building
 
 The worker uses CMake as a build system. Hopefully the hardest part about building will therfore be organizing all the dependency libraries that are used to build the import worker.
 
-### Dependencies
+### Required dependencies
 
 * Boost >= 1.49 (1.55 if you want to build with clang)
 * POCO  >= 1.4.6
@@ -79,7 +79,7 @@ The worker uses CMake as a build system. Hopefully the hardest part about buildi
 
 If you want to import AutomationML, we recommend building Assimp yourself. We've contributed code to assimp that enables it to properly load trifans and tristrips, which AutomationML COLLADA files seem to make heavy use of.
 
-### OS-Provided dependencies
+#### OS-Provided dependencies
 
 If you're lucky and there is a package management system for your operating system, then you should be able to get all of the dependencies from there. We've made good experiences with Homebrew on MacOS and APT on Linux. Here's the packages you need:
 
@@ -91,7 +91,7 @@ If you're lucky and there is a package management system for your operating syst
  * Poco from Debian's APT is too old, you will also need to build it yourself. (Or install the package from the `experimental` repo.)
  * For both of the above dependencies, you can use the scripts we use to install them on the Travis CI infrastructure. See the `.travis` directory.
 
-### On Windows platforms (Win 8, Visual Studio 2013)
+#### On Windows platforms (Win 8, Visual Studio 2013)
 
 The following is for MSVC 12 (aka Visual Studio 13) on Windows 8 64bit. On any other Compiler or Windows, you are alone, sorry.
 
