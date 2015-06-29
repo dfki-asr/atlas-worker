@@ -24,6 +24,7 @@ namespace AssimpWorker {
 	const aiScene* AssimpImporter::importSceneFromFile(std::string fileName, Log& log){
 		importer.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); //remove degenerate polys
 		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT); //Drop all primitives that aren't triangles
+		importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 65535); // Split meshes at uint16 WebGL limit
 		const aiScene* scene = importer.ReadFile(fileName, aiProcessPreset_TargetRealtime_Quality);
 		if (!scene) {
 			log.error("Scene not imported: "+fileName);
