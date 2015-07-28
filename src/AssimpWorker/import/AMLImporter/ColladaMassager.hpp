@@ -6,7 +6,6 @@
 */
 #pragma once
 
-#include "ColladaMassager.hpp"
 #include "Poco/URI.h"
 #include <Poco/DOM/AutoPtr.h>
 #include <Poco/DOM/Document.h>

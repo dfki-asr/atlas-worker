@@ -7,7 +7,6 @@
 #define _USE_MATH_DEFINES
 
 #include "AMLImporter.hpp"
-#include "../AiImporter/AiSceneImporter.hpp"
 #include "../../internal/Exception.hpp"
 #include <fstream>
 #include <iostream>
@@ -29,16 +28,13 @@ namespace AssimpWorker {
 		Importer(amlFilePath, log),
 		amlFilePath(amlFilePath),
 		pathToWorkingDirectory(amlFilePath.substr(0, amlFilePath.find_last_of('/') + 1)),
-		massagers(),
-		frameImporter()
+		frameImporter(),
+		importers()
 	{
 		return;
 	}
 
 	AMLImporter::~AMLImporter(){
-		for (auto massagerEntries : massagers){
-			delete(massagerEntries.second);
-		}
 		for (auto importerEntry : importers){
 			delete(importerEntry);
 		}
@@ -161,73 +157,10 @@ namespace AssimpWorker {
 	}
 
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
-		if (colladaFileURI.getFragment() == "") {
-			importCompleteColladaScene(root, colladaFileURI);
-		}
-		else {
-			importSubtreeOfColladaScene(root, colladaFileURI);
-		}
+		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory);
+		importers.push_back(colladaImporter);
+		colladaImporter->recursiveColladaImport(root);
 		convertYUpToZUp(root);
-	}
-
-	void AMLImporter::importCompleteColladaScene(Folder& root, const Poco::URI& colladaFileURI){
-		AssimpWorker::AssimpImporter* importer = new AssimpWorker::AssimpImporter();
-		importers.push_back(importer);
-		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
-		if (!scene) {
-			return;
-		}
-		AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
-		sceneImporter.addElementsTo(root);
-	}
-
-	void AMLImporter::importSubtreeOfColladaScene(Folder& root, const Poco::URI& colladaFileURI){
-		ColladaMassager* massager = getMassagerForURI(colladaFileURI);
-		AssimpWorker::AssimpImporter* importer = new AssimpWorker::AssimpImporter();
-		importers.push_back(importer);
-		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
-		if (!scene) {
-			return;
-		}
-		aiNode* startingPoint = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
-		if (startingPoint == NULL){
-			throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
-		}
-		restoreOriginalNames(startingPoint, massager);
-		AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
-		sceneImporter.importSubtreeOfScene(root, startingPoint);
-	}
-
-	ColladaMassager* AMLImporter::getMassagerForURI(const Poco::URI& colladaFileURI) {
-		std::map<std::string, ColladaMassager*>::iterator iter = massagers.find(colladaFileURI.getPath());
-		if (iter != massagers.end()){
-			return iter->second;
-		}
-		ColladaMassager* massager = new ColladaMassager(colladaFileURI);
-		massagers.insert(std::make_pair(colladaFileURI.getPath(), massager));
-		massager->purgeNames(); // Must be done here to avoid purging names twice for the same file
-		return massager;
-	}
-
-	void AMLImporter::restoreOriginalNames(aiNode* node, ColladaMassager* massager) {
-		node->mName = massager->getNameForId(node->mName.C_Str());
-		for (int i = 0; i < node->mNumChildren; i++){
-			restoreOriginalNames(node->mChildren[i], massager);
-		}
-	}
-
-	aiNode* AMLImporter::findaiNodeWithName(aiNode* node, const std::string& name){
-		if (name == node->mName.C_Str()){
-			return node;
-		}
-		aiNode* childNode = NULL;
-		for (int i = 0; i < node->mNumChildren; i++){
-			childNode = findaiNodeWithName(node->mChildren[i], name);
-			if (childNode != NULL) {
-				break;
-			}
-		}
-		return childNode;
 	}
 
 } // End namespace AssimpWorker
