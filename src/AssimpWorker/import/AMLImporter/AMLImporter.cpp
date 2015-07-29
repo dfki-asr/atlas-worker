@@ -203,7 +203,7 @@ namespace AssimpWorker {
 		if (iter != massagers.end()){
 			return iter->second;
 		}
-		ColladaMassager* massager = new ColladaMassager(colladaFileURI);
+		ColladaMassager* massager = new ColladaMassager(colladaFileURI, log);
 		massagers.insert(std::make_pair(colladaFileURI.getPath(), massager));
 		massager->purgeNames(); // Must be done here to avoid purging names twice for the same file
 		return massager;
