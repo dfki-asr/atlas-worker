@@ -29,6 +29,7 @@ namespace AssimpWorker {
 		std::map<std::string, std::string> idToNameMap;
 		Poco::URI uri;
 		Poco::XML::AutoPtr<Poco::XML::Document> xmlDocument;
+		bool needToPurge;
 
 		void readXML();
 		void purgeAllNodes();

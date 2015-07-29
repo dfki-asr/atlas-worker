@@ -25,7 +25,7 @@ namespace AssimpWorker {
 		uri(uri),
 		xmlDocument()
 	{
-		return;
+		needToPurge = uri.getFragment() != "";
 	}
 
 	ColladaMassager::~ColladaMassager(){
@@ -36,8 +36,10 @@ namespace AssimpWorker {
 		try
 		{
 			readXML();
-			purgeAllNodes();
-			writePurgedXML();
+			if (needToPurge){
+				purgeAllNodes();
+				writePurgedXML();
+			}
 		}
 		catch (int e) {
 			std::cout << "Exception while trying to purge names from Collada file: Error #" << e << std::endl;
@@ -84,6 +86,9 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::restoreOriginalNames(aiNode* node) {
+		if (!needToPurge){
+			return;
+		}
 		node->mName = getNameForId(node->mName.C_Str());
 		for (int i = 0; i < node->mNumChildren; i++){
 			restoreOriginalNames(node->mChildren[i]);
