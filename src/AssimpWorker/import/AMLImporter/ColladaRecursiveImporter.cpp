@@ -32,9 +32,7 @@ namespace AssimpWorker {
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
 		std::cout << "Importing: " << colladaFileURI.toString() << std::endl;
 		bool needToPurge = colladaFileURI.getFragment() != "";
-		if (needToPurge) {
-			massager.purgeNames();
-		}
+		massager.massage();
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {

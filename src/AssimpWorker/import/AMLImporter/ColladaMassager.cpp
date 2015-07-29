@@ -32,7 +32,7 @@ namespace AssimpWorker {
 		return;
 	}
 
-	void ColladaMassager::purgeNames() {
+	void ColladaMassager::massage() {
 		try
 		{
 			readXML();

@@ -22,7 +22,7 @@ namespace AssimpWorker {
 
 		~ColladaMassager();
 
-		void purgeNames();
+		void massage();
 		void ColladaMassager::restoreOriginalNames(aiNode* node);
 
 	private:
