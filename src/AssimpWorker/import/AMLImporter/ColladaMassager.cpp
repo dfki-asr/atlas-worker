@@ -6,7 +6,6 @@
 */
 #include <iostream>
 #include <assimp/postprocess.h>
-#include <assimp/scene.h>
 #include <fstream>
 #include <Poco/DOM/DOMParser.h>
 #include <Poco/DOM/NodeList.h>
@@ -82,5 +81,12 @@ namespace AssimpWorker {
 
 	std::string ColladaMassager::getNameForId(const std::string& id) {
 		return idToNameMap.find(id)->second;
+	}
+
+	void ColladaMassager::restoreOriginalNames(aiNode* node) {
+		node->mName = getNameForId(node->mName.C_Str());
+		for (int i = 0; i < node->mNumChildren; i++){
+			restoreOriginalNames(node->mChildren[i]);
+		}
 	}
 }

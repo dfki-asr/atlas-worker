@@ -10,6 +10,7 @@
 #include <Poco/DOM/AutoPtr.h>
 #include <Poco/DOM/Document.h>
 #include <map>
+#include <assimp/scene.h>
 
 
 namespace AssimpWorker {
@@ -22,7 +23,7 @@ namespace AssimpWorker {
 		~ColladaMassager();
 
 		void purgeNames();
-		std::string getNameForId(const std::string& id);
+		void ColladaMassager::restoreOriginalNames(aiNode* node);
 
 	private:
 		std::map<std::string, std::string> idToNameMap;
@@ -33,6 +34,7 @@ namespace AssimpWorker {
 		void purgeAllNodes();
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
+		std::string getNameForId(const std::string& id);
 	};
 
 } // End namespace AssimpWorker

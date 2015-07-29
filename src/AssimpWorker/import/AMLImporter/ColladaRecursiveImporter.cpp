@@ -45,19 +45,12 @@ namespace AssimpWorker {
 			if (startingPoint == NULL){
 				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
 			}
-			restoreOriginalNames(startingPoint);
+			massager.restoreOriginalNames(startingPoint);
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.importSubtreeOfScene(root, startingPoint);
 		} else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.addElementsTo(root);
-		}
-	}
-
-	void ColladaRecursiveImporter::restoreOriginalNames(aiNode* node) {
-		node->mName = massager.getNameForId(node->mName.C_Str());
-		for (int i = 0; i < node->mNumChildren; i++){
-			restoreOriginalNames(node->mChildren[i]);
 		}
 	}
 
