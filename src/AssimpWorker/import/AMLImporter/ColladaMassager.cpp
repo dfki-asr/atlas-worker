@@ -42,7 +42,7 @@ namespace AssimpWorker {
 			writePurgedXML();
 		}
 		catch (int e) {
-			std::cout << "Exception while trying to purge names from Collada file: Error #" << e << std::endl;
+			log.error("Exception while trying to purge names from Collada file: Error #" + e);
 		}
 	}
 

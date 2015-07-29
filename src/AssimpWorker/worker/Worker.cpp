@@ -60,12 +60,15 @@ namespace AssimpWorker {
 			}
 		}
 		catch (const Poco::Net::ConnectionRefusedException& ex) {
+			log.error("Error connecting to the ATLAS server: " + ex.displayText());
 			std::cerr << "Error connecting to the ATLAS server: " << ex.displayText() << std::endl << std::endl;
 		}
 		catch (const std::exception& e) {
+			log.error("Error during import operation: ");
 			std::cerr << "Error during import operation: " << e.what() << std::endl << std::endl;
 		}
 		catch (...) {
+			log.error("Unknown error during import operation. ");
 			std::cerr << "Unknown error during import operation." << std::endl << std::endl;
 		}
 	}
