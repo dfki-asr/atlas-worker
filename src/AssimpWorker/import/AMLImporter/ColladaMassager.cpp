@@ -21,10 +21,11 @@
 
 namespace AssimpWorker {
 
-	ColladaMassager::ColladaMassager(const Poco::URI& uri) :
+	ColladaMassager::ColladaMassager(const Poco::URI& uri, Log& externalLog) :
 		idToNameMap(),
 		uri(uri),
-		xmlDocument()
+		xmlDocument(),
+		log(externalLog)
 	{
 		return;
 	}

@@ -11,14 +11,14 @@
 #include <Poco/DOM/AutoPtr.h>
 #include <Poco/DOM/Document.h>
 #include <map>
-
+#include "../Log.hpp"
 
 namespace AssimpWorker {
 
 	class ColladaMassager
 	{
 	public:
-		ColladaMassager(const Poco::URI& colladaPath);
+		ColladaMassager(const Poco::URI& colladaPath, Log& externalLog);
 
 		~ColladaMassager();
 
@@ -29,6 +29,7 @@ namespace AssimpWorker {
 		std::map<std::string, std::string> idToNameMap;
 		Poco::URI uri;
 		Poco::XML::AutoPtr<Poco::XML::Document> xmlDocument;
+		Log log;
 
 		void readXML();
 		void purgeAllNodes();
