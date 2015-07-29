@@ -37,9 +37,12 @@ namespace AssimpWorker {
 		if (!scene) {
 			return;
 		}
-		aiNode* startingPoint = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
-		if (startingPoint == NULL){
-			throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
+		aiNode* startingPoint = scene->mRootNode;
+		if (colladaFileURI.getFragment() != "") {
+			aiNode* startingPoint = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
+			if (startingPoint == NULL){
+				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
+			}
 		}
 		restoreOriginalNames(startingPoint);
 		AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
