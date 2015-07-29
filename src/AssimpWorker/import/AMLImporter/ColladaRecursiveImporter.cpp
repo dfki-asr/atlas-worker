@@ -5,6 +5,7 @@
 * You may not use this file except in compliance with the License.
 */
 
+#include <iostream>
 #include "ColladaRecursiveImporter.hpp"
 #include "../../internal/Exception.hpp"
 #include "../AiImporter/AiSceneImporter.hpp"
@@ -18,7 +19,8 @@ namespace AssimpWorker {
 		Importer(colladaFileURI.toString(), log),
 		pathToWorkingDirectory(pathToWorkingDirectory),
 		massager(colladaFileURI),
-		colladaFileURI(colladaFileURI)
+		colladaFileURI(colladaFileURI),
+		importer(NULL)
 	{
 		return;
 	}
@@ -28,22 +30,28 @@ namespace AssimpWorker {
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
-		massager.purgeNames();
-		importer = new AssimpWorker::AssimpImporter();
+		std::cout << "Importing: " << colladaFileURI.toString() << std::endl;
+		bool needToPurge = colladaFileURI.getFragment() != "";
+		if (needToPurge) {
+			massager.purgeNames();
+		}
+		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
 			return;
 		}
-		aiNode* startingPoint = scene->mRootNode;
-		if (colladaFileURI.getFragment() != "") {
+		if (needToPurge) {
 			aiNode* startingPoint = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
 			if (startingPoint == NULL){
 				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
 			}
+			restoreOriginalNames(startingPoint);
+			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
+			sceneImporter.importSubtreeOfScene(root, startingPoint);
+		} else {
+			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
+			sceneImporter.addElementsTo(root);
 		}
-		restoreOriginalNames(startingPoint);
-		AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
-		sceneImporter.importSubtreeOfScene(root, startingPoint);
 	}
 
 	void ColladaRecursiveImporter::restoreOriginalNames(aiNode* node) {
