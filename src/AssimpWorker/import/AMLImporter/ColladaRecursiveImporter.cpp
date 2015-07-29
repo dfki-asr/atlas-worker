@@ -24,6 +24,7 @@ namespace AssimpWorker {
 	}
 
 	ColladaRecursiveImporter::~ColladaRecursiveImporter(){
+		delete importer;
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
@@ -31,7 +32,7 @@ namespace AssimpWorker {
 
 	void ColladaRecursiveImporter::recursiveColladaImport(Folder& root){
 		massager.purgeNames();
-		AssimpWorker::AssimpImporter* importer = new AssimpWorker::AssimpImporter();
+		importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
 			return;
