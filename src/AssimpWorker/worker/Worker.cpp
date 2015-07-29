@@ -159,7 +159,7 @@ namespace AssimpWorker {
 		if (daePath != "") {
 			return importColladaAndStore(daePath);
 		}
-		log.error("Could not find a supported file type to convert. Make sure the format you are trying to import is supported by ATLAS.");
+		log.error("Could not find a supported file type to convert. Make sure the format you are trying to import is supported by ATLAS. Also, remember: Folders are not supported by ATLAS, make sure the file to be imported is within the toplevel of the zip-file.");
 		return "";
 	}
 
