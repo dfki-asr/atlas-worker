@@ -23,7 +23,7 @@ namespace AssimpWorker {
 		~ColladaMassager();
 
 		void massage();
-		void ColladaMassager::restoreOriginalNames(aiNode* node);
+		void restoreOriginalNames(aiNode* node);
 
 	private:
 		std::map<std::string, std::string> idToNameMap;
