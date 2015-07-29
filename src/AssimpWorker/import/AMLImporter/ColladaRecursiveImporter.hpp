@@ -20,7 +20,6 @@ namespace AssimpWorker {
 
 		~ColladaRecursiveImporter();
 
-		void recursiveColladaImport(ATLAS::Model::Folder& root);
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
 		
 	private:

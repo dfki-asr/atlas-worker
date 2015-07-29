@@ -159,7 +159,7 @@ namespace AssimpWorker {
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
 		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory);
 		importers.push_back(colladaImporter);
-		colladaImporter->recursiveColladaImport(root);
+		colladaImporter->addElementsTo(root);
 		convertYUpToZUp(root);
 	}
 
