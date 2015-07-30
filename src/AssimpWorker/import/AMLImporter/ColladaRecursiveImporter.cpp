@@ -59,8 +59,7 @@ namespace AssimpWorker {
 			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory);
 			childImporter.push_back(ci);
-			//TODO the shit with the childfolders
-			ci->addElementsTo(root);//, findFolderWithName(root, exRef.first));
+			ci->addElementsTo( const_cast<Folder&>(findFolderWithName(root, exRef.first)) );
 		}
 	}
 
@@ -70,6 +69,21 @@ namespace AssimpWorker {
 		pathOfParentfile.erase(lastSlashIndex+1);
 		pathOfParentfile.append(relativeURIasString);
 		return pathOfParentfile;
+	}
+
+	const Folder& ColladaRecursiveImporter::findFolderWithName(const Folder& folder, std::string name){
+		if (name == folder.getName()){
+			return folder;
+		}
+		const std::vector<Folder>& children = folder.getChildren();
+		const Folder* found = NULL;
+		for (const Folder& child : children){
+			found = &(findFolderWithName(child, name));
+			if (found != NULL){
+				break;
+			}
+		}
+		return *found;
 	}
 
 	aiNode* ColladaRecursiveImporter::findaiNodeWithName(aiNode* node, const std::string& name){

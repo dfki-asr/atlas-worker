@@ -10,6 +10,7 @@
 #include "../AssimpImporter.hpp"
 #include "../Importer.hpp"
 #include <assimp/scene.h>
+#include <atlas/model/Folder.hpp>
 
 namespace AssimpWorker {
 
@@ -30,6 +31,7 @@ namespace AssimpWorker {
 		const Poco::URI& colladaFileURI;
 
 		std::string fixRelativeReference(std::string relativeURI);
+		const ATLAS::Model::Folder& findFolderWithName(const ATLAS::Model::Folder& root, std::string name);
 		aiNode* findaiNodeWithName(aiNode* node, const std::string& name);
 		void restoreOriginalNames(aiNode* node);
 	};
