@@ -15,6 +15,7 @@
 #include <Poco/SAX/InputSource.h>
 #pragma warning(push, 3)
 	#include <Poco/FileStream.h>
+	#include <Poco/File.h>
 #pragma warning(pop)
 #include "ColladaMassager.hpp"
 
@@ -111,9 +112,16 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::writePurgedXML(){
+		//we remove something from the content and write into the same file,
+		//leading to some leftover garbage at the end of the file
+		//to remove the garbage: remove and recreate the file
+		Poco::File file(uri.getPath());
+		file.remove();
+		file.createFile();
 		Poco::FileStream ofs(uri.getPath(), std::ios::in);
 		Poco::XML::DOMWriter writer;
 		writer.writeNode(ofs, xmlDocument);
+		ofs.flush();
 		ofs.close();
 	}
 
