@@ -23,7 +23,6 @@ namespace AssimpWorker {
 		childImporter(),
 		importer(NULL)
 	{
-		std::cout << "Created ColladaRecursiveImporter for: " << colladaFileURI.toString() << std::endl;
 		return;
 	}
 
