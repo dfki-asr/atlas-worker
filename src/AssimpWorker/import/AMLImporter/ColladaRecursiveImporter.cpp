@@ -15,13 +15,13 @@ namespace AssimpWorker {
 	using ATLAS::Model::DataDeletingBlob;
 	using ATLAS::Model::Folder;
 
-	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory) :
+	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry) :
 		Importer(colladaFileURI.toString(), log),
 		pathToWorkingDirectory(pathToWorkingDirectory),
-		massager(colladaFileURI),
 		colladaFileURI(colladaFileURI),
 		childImporter(),
-		importer(NULL)
+		importer(NULL),
+		massagerRegistry(registry)
 	{
 		return;
 	}
@@ -36,7 +36,7 @@ namespace AssimpWorker {
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
 		std::cout << "ColladaRecursiveImporter - importing: " << colladaFileURI.toString() << std::endl;
 		bool needToPurge = colladaFileURI.getFragment() != "";
-		massager.massage();
+		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
@@ -47,17 +47,17 @@ namespace AssimpWorker {
 			if (startingPoint == NULL){
 				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
 			}
-			massager.restoreOriginalNames(startingPoint);
+			massager->restoreOriginalNames(startingPoint);
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.importSubtreeOfScene(root, startingPoint);
 		} else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.addElementsTo(root);
 		}
-		std::map<std::string, std::string> externalRefMap = massager.getExternalReferences();
+		std::map<std::string, std::string> externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
-			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory);
+			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry);
 			childImporter.push_back(ci);
 			ci->addElementsTo( const_cast<Folder&>(findFolderWithName(root, exRef.first)) );
 		}

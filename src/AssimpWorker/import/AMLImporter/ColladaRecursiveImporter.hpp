@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ColladaMassager.hpp"
+#include "ColladaMassagerRegistry.hpp"
 #include "../AssimpImporter.hpp"
 #include "../Importer.hpp"
 #include <assimp/scene.h>
@@ -17,18 +18,18 @@ namespace AssimpWorker {
 	class ColladaRecursiveImporter :public Importer
 	{
 	public:
-		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory);
+		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry);
 
 		~ColladaRecursiveImporter();
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
 		
 	private:
-		ColladaMassager massager;
 		AssimpImporter* importer;
 		std::vector<ColladaRecursiveImporter*> childImporter;
 		Poco::URI pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
+		ColladaMassagerRegistry& massagerRegistry;
 
 		std::string fixRelativeReference(std::string relativeURI);
 		const ATLAS::Model::Folder& findFolderWithName(const ATLAS::Model::Folder& root, std::string name);

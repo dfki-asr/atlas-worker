@@ -10,6 +10,7 @@ SET(IMPORT_AML_HPP_FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/AMLFrameImporter.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ColladaMassager.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ColladaRecursiveImporter.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ColladaMassagerRegistry.hpp
 )
 
 SET(IMPORT_AML_SRC_FILES
@@ -17,6 +18,7 @@ SET(IMPORT_AML_SRC_FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/AMLFrameImporter.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ColladaMassager.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ColladaRecursiveImporter.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ColladaMassagerRegistry.cpp
 )
 
 set(import_AML_HPP_FILES ${IMPORT_AML_HPP_FILES} PARENT_SCOPE)

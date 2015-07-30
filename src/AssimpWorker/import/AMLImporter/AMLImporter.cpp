@@ -8,6 +8,7 @@
 
 #include "AMLImporter.hpp"
 #include "../../internal/Exception.hpp"
+#include "ColladaMassagerRegistry.hpp"
 #include <fstream>
 #include <iostream>
 #include <math.h>
@@ -157,7 +158,8 @@ namespace AssimpWorker {
 	}
 
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
-		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory);
+		ColladaMassagerRegistry massagerRegistry;
+		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
 		convertYUpToZUp(root);
