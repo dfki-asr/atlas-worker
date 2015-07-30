@@ -1,4 +1,5 @@
 #include "BoostLog.hpp"
+
 namespace AssimpWorker {
 	
 	BoostLog::BoostLog() {
@@ -22,9 +23,7 @@ namespace AssimpWorker {
 		sink->locked_backend()->add_stream(
 			boost::shared_ptr<std::ostream>(&std::clog, boost::empty_deleter())
 			);
-		//file log stream
-		sink->locked_backend()->add_stream(
-			boost::make_shared< std::ofstream >("sample.log"));
+
 		// Register the sink in the logging core
 		logging::core::get()->add_sink(sink);
 
