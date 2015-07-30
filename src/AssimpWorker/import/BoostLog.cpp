@@ -1,19 +1,4 @@
-#include <fstream>
 #include "BoostLog.hpp"
-#include <boost/utility/empty_deleter.hpp>
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/sinks/text_file_backend.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sinks/text_ostream_backend.hpp>
-
-
-namespace keywords = boost::log::keywords;
-namespace logging = boost::log;
-namespace sinks = boost::log::sinks;
-
 namespace AssimpWorker {
 	
 	BoostLog::BoostLog() {
