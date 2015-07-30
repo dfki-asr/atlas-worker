@@ -30,7 +30,8 @@ namespace AssimpWorker {
 		amlFilePath(amlFilePath),
 		pathToWorkingDirectory(amlFilePath.substr(0, amlFilePath.find_last_of('/') + 1)),
 		frameImporter(),
-		importers()
+		importers(),
+		massagerRegistry()
 	{
 		return;
 	}
@@ -158,7 +159,6 @@ namespace AssimpWorker {
 	}
 
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
-		ColladaMassagerRegistry massagerRegistry;
 		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);

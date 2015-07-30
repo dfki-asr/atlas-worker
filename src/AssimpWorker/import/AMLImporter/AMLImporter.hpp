@@ -31,6 +31,7 @@ namespace AssimpWorker {
 		Poco::URI pathToWorkingDirectory;
 		std::vector<AssimpWorker::ColladaRecursiveImporter*> importers;
 		AMLFrameImporter frameImporter;
+		ColladaMassagerRegistry massagerRegistry;
 
 		Poco::XML::AutoPtr<Poco::XML::Document> parseAMLFile();
 		std::string extractFilneNameFromURI(Poco::URI& refURI);
