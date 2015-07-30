@@ -44,8 +44,8 @@ namespace AssimpWorker {
 				writePurgedXML();
 			}
 		}
-		catch (int e) {
-			std::cout << "Exception while trying to purge names from Collada file: Error #" << e << std::endl;
+		catch (const std::exception& e) {
+			std::cout << "Exception while trying to purge names from Collada file: Error #" << e.what() << std::endl;
 		}
 	}
 
