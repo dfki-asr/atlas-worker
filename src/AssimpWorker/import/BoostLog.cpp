@@ -12,7 +12,7 @@ namespace AssimpWorker {
 		//setup file log
 		logging::add_file_log(
 			keywords::file_name = "test.log",
-			keywords::format = "[%Timestamp]"
+			keywords::format = "[%TimeStamp%]: %Message% in %Scope%"
 			);
 		// Construct the sink
 		typedef sinks::synchronous_sink< sinks::text_ostream_backend > text_sink;
