@@ -22,8 +22,10 @@ namespace AssimpWorker {
 
 	ColladaMassager::ColladaMassager(const Poco::URI& uri) :
 		idToNameMap(),
+		parentIDToExternalURL(),
 		uri(uri),
-		xmlDocument()
+		xmlDocument(),
+		idCounter(0)
 	{
 		needToPurge = uri.getFragment() != "";
 	}
@@ -36,6 +38,7 @@ namespace AssimpWorker {
 		try
 		{
 			readXML();
+			handleExternalReferences();
 			if (needToPurge){
 				purgeAllNodes();
 				writePurgedXML();
@@ -53,6 +56,40 @@ namespace AssimpWorker {
 		parser.setFeature(Poco::XML::XMLReader::FEATURE_NAMESPACES, false);
 		xmlDocument = parser.parse(&amlFileSource);
 		amlStream.close();
+	}
+
+	void ColladaMassager::handleExternalReferences(){
+		Poco::XML::NodeList* nodes = xmlDocument->getElementsByTagName("instance_node");
+		for (int i = 0; i < nodes->length(); ++i) {
+			Poco::XML::Node* node = nodes->item(i);
+			Poco::XML::Node* urlNode = node->attributes()->getNamedItem("url");
+			if (urlNode == NULL){
+				continue;
+			}
+			std::string url = urlNode->getNodeValue();
+			if (url.at(0) == '#'){
+				continue;
+			}
+			Poco::XML::Node* parent = node->parentNode();
+			Poco::XML::Node* parentIdNode = parent->attributes()->getNamedItem("id");
+			std::string id;
+			if (parentIdNode != NULL){
+				id = parentIdNode->getNodeValue();
+			} else {
+				id = "generated_" + idCounter;
+				idCounter++;
+				Poco::XML::Node* idNode = xmlDocument->createElement("id");
+				idNode->setNodeValue(id);
+				parent->attributes()->setNamedItem(idNode);
+			}
+			std::cout << "Removed node with id: " << id << "and URL: " << url << std::endl;
+			parentIDToExternalURL.insert(std::make_pair(id, url));
+			parent->removeChild(node);
+		}
+	}
+
+	std::map<std::string, std::string>& ColladaMassager::getExternalReferences(){
+		return parentIDToExternalURL;
 	}
 
 	void ColladaMassager::purgeAllNodes(){

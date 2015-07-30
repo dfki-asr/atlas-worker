@@ -25,13 +25,17 @@ namespace AssimpWorker {
 		void massage();
 		void restoreOriginalNames(aiNode* node);
 
+		std::map<std::string, std::string>& getExternalReferences();
 	private:
 		std::map<std::string, std::string> idToNameMap;
 		Poco::URI uri;
 		Poco::XML::AutoPtr<Poco::XML::Document> xmlDocument;
 		bool needToPurge;
+		std::map<std::string, std::string> parentIDToExternalURL;
+		int idCounter;
 
 		void readXML();
+		void handleExternalReferences();
 		void purgeAllNodes();
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
