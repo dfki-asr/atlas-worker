@@ -10,6 +10,7 @@
 #include <assimp/DefaultLogger.hpp>
 #include <assimp/Importer.hpp>
 #include "Log.hpp"
+#include "BoostLog.hpp"
 
 namespace AssimpWorker {
 

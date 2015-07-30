@@ -22,6 +22,8 @@ namespace AssimpWorker {
 	}
 
 	const aiScene* AssimpImporter::importSceneFromFile(std::string fileName, Log& log){
+		src::logger_mt& lg = global_logger::get();
+		BOOST_LOG(lg) << "This is a global testlog";
 		importer.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); //remove degenerate polys
 		importer.SetPropertyBool(AI_CONFIG_IMPORT_NO_SKELETON_MESHES, true); //do not import skeletons
 		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT); //Drop all primitives that aren't triangles
