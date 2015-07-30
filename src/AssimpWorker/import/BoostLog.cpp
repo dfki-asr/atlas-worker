@@ -1,4 +1,5 @@
 #include "BoostLog.hpp"
+#include <boost/utility/empty_deleter.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>
@@ -29,6 +30,10 @@ namespace AssimpWorker {
 		typedef sinks::synchronous_sink< sinks::text_ostream_backend > text_sink;
 		boost::shared_ptr< text_sink > sink = boost::make_shared< text_sink >();
 
+		// console log stream
+		sink->locked_backend()->add_stream(
+			boost::shared_ptr<std::ostream>(&std::clog, boost::empty_deleter())
+			);
 		// Register the sink in the logging core
 		logging::core::get()->add_sink(sink);
 	}
