@@ -23,6 +23,7 @@ namespace AssimpWorker {
 		childImporter(),
 		importer(NULL)
 	{
+		std::cout << "Created ColladaRecursiveImporter for: " << colladaFileURI.toString() << std::endl;
 		return;
 	}
 
@@ -34,7 +35,7 @@ namespace AssimpWorker {
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
-		std::cout << "Importing: " << colladaFileURI.toString() << std::endl;
+		std::cout << "ColladaRecursiveImporter:addElementsoTo - importing: " << colladaFileURI.toString() << std::endl;
 		bool needToPurge = colladaFileURI.getFragment() != "";
 		massager.massage();
 		this->importer = new AssimpWorker::AssimpImporter();
@@ -53,6 +54,14 @@ namespace AssimpWorker {
 		} else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.addElementsTo(root);
+		}
+		std::map<std::string, std::string> externalRefMap = massager.getExternalReferences();
+		for (auto exRef : externalRefMap){
+			Poco::URI uri(exRef.second);
+			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory);
+			childImporter.push_back(ci);
+			//TODO the shit with the childfolders
+			ci->addElementsTo(root);//, findFolderWithName(root, exRef.first));
 		}
 	}
 
