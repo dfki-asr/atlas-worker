@@ -10,6 +10,7 @@
 #include "WorkUnit.hpp"
 #include "../worker/zipFileDecompressor.hpp"
 #include "../import/Log.hpp"
+#include "../import/BoostLog.hpp"
 
 namespace AssimpWorker {
 	class Worker {
@@ -24,6 +25,7 @@ namespace AssimpWorker {
 	private:
 		JCRStorageService storageService;
 		Log log;
+		BoostLog boostLog;
 		WorkUnit* currentWorkUnit;
 
 		void importZipFile();
