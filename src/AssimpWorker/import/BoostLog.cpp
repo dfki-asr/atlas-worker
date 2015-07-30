@@ -27,5 +27,17 @@ namespace AssimpWorker {
 			boost::make_shared< std::ofstream >("sample.log"));
 		// Register the sink in the logging core
 		logging::core::get()->add_sink(sink);
+
 	}
+
+	void BoostLog::logSomething(std::string logMessage) {
+		src::logger lg;
+		BOOST_LOG(lg) << logMessage;
+	}
+
+	boost::shared_ptr<BoostLog> BoostLog::getInstance(void) {
+		return loggerInstance;
+	}
+
+	boost::shared_ptr<BoostLog> BoostLog::loggerInstance(new BoostLog());
 }

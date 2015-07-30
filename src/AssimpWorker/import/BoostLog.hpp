@@ -24,7 +24,10 @@ namespace AssimpWorker {
 	class BoostLog {
 	public:
 		BoostLog();
+		void logSomething(std::string logmessage);
+		boost::shared_ptr<BoostLog> getInstance(void);
 	private:
 		void init();
+		static boost::shared_ptr<BoostLog> loggerInstance;
 	};
 }
