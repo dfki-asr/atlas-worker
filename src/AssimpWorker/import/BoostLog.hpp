@@ -1,3 +1,11 @@
+/*
+* This file is part of ATLAS. It is subject to the license terms in
+* the LICENSE file found in the top-level directory of this distribution.
+* (Also avialable at http://www.apache.org/licenses/LICENSE-2.0.txt)
+* You may not use this file except in compliance with the License.
+*/
+#pragma once
+
 #include <boost/shared_ptr.hpp>
 #include <fstream>
 #include <boost/utility/empty_deleter.hpp>
@@ -17,9 +25,9 @@ namespace src = boost::log::sources;
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;
 
-#pragma once
 //setup global logger
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(global_logger, src::logger_mt);
+
 namespace AssimpWorker {
 	
 	class BoostLog {
