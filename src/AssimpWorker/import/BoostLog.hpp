@@ -18,7 +18,8 @@ namespace logging = boost::log;
 namespace sinks = boost::log::sinks;
 
 #pragma once
-
+//setup global logger
+BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(global_logger, src::logger_mt);
 namespace AssimpWorker {
 	
 	class BoostLog {
