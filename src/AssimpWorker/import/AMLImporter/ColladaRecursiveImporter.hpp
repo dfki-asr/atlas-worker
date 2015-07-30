@@ -29,6 +29,7 @@ namespace AssimpWorker {
 		Poco::URI pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 
+		std::string fixRelativeReference(std::string relativeURI);
 		aiNode* findaiNodeWithName(aiNode* node, const std::string& name);
 		void restoreOriginalNames(aiNode* node);
 	};

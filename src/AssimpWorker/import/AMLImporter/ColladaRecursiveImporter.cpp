@@ -57,12 +57,20 @@ namespace AssimpWorker {
 		}
 		std::map<std::string, std::string> externalRefMap = massager.getExternalReferences();
 		for (auto exRef : externalRefMap){
-			Poco::URI uri(exRef.second);
+			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory);
 			childImporter.push_back(ci);
 			//TODO the shit with the childfolders
 			ci->addElementsTo(root);//, findFolderWithName(root, exRef.first));
 		}
+	}
+
+	std::string ColladaRecursiveImporter::fixRelativeReference(std::string relativeURIasString){
+		std::string pathOfParentfile = colladaFileURI.getPath();
+		auto lastSlashIndex = pathOfParentfile.find_last_of('/');
+		pathOfParentfile.erase(lastSlashIndex+1);
+		pathOfParentfile.append(relativeURIasString);
+		return pathOfParentfile;
 	}
 
 	aiNode* ColladaRecursiveImporter::findaiNodeWithName(aiNode* node, const std::string& name){
