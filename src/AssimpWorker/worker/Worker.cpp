@@ -41,10 +41,12 @@ namespace AssimpWorker {
 			sendFeedback("processing");
 
 			if (currentWorkUnit->fileType == "zip") {
+				BOOST_LOG(currentWorkUnit->log) << "Decompressing zip file";
 				std::cout << "File is a zip, decompressing..." << std::endl;
 				importZipFile();
 			}
 			else if (currentWorkUnit->fileType == "dae") {
+				BOOST_LOG(currentWorkUnit->log) << "Importing collada file";
 				std::cout << "File is a Collada file, importing..." << std::endl;
 				importSingleColladaFile();
 			}
