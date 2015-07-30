@@ -20,6 +20,7 @@ namespace AssimpWorker {
 		pathToWorkingDirectory(pathToWorkingDirectory),
 		massager(colladaFileURI),
 		colladaFileURI(colladaFileURI),
+		childImporter(),
 		importer(NULL)
 	{
 		return;
@@ -27,6 +28,9 @@ namespace AssimpWorker {
 
 	ColladaRecursiveImporter::~ColladaRecursiveImporter(){
 		delete importer;
+		for (auto ci : childImporter){
+			delete ci;
+		}
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){

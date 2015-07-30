@@ -25,6 +25,7 @@ namespace AssimpWorker {
 	private:
 		ColladaMassager massager;
 		AssimpImporter* importer;
+		std::vector<ColladaRecursiveImporter*> childImporter;
 		Poco::URI pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 
