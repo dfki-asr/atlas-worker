@@ -34,7 +34,7 @@ namespace AssimpWorker {
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
-		std::cout << "ColladaRecursiveImporter:addElementsoTo - importing: " << colladaFileURI.toString() << std::endl;
+		std::cout << "ColladaRecursiveImporter - importing: " << colladaFileURI.toString() << std::endl;
 		bool needToPurge = colladaFileURI.getFragment() != "";
 		massager.massage();
 		this->importer = new AssimpWorker::AssimpImporter();
