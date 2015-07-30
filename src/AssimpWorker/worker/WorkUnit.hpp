@@ -7,7 +7,7 @@
 #pragma once
 #include <iostream>
 #include <ctime>
-
+#include "../import/BoostLog.hpp"
 namespace AssimpWorker {
 	class WorkUnit {
 	public:
@@ -22,6 +22,7 @@ namespace AssimpWorker {
 		std::string fileType;
 		std::string resultPath;
 		std::string detail;
+		src::logger log;
 		time_t startTime;
 		time_t endTime;
 	};
