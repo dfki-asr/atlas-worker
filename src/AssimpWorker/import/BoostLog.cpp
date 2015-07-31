@@ -10,6 +10,9 @@ namespace AssimpWorker {
 
 		boost::shared_ptr<logging::core> core = logging::core::get();
 
+		logging::add_common_attributes();
+		core->add_global_attribute("Scope", boost::log::attributes::named_scope());
+
 		//setup file log
 		logging::add_file_log(
 			keywords::file_name = "test.log",

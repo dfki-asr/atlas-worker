@@ -19,6 +19,10 @@
 #include <boost/log/sinks/text_ostream_backend.hpp>
 #include <boost/log/attributes/named_scope.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/attributes/attribute.hpp>
+#include <boost/log/attributes/named_scope.hpp>
+
 
 namespace keywords = boost::log::keywords;
 namespace src = boost::log::sources;
