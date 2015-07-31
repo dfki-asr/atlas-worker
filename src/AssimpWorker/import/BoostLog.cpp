@@ -1,4 +1,6 @@
 #include "BoostLog.hpp"
+#include <boost/log/support/date_time.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 namespace AssimpWorker {
 	
@@ -28,6 +30,11 @@ namespace AssimpWorker {
 			);
 
 		// Register the sink in the logging core
+		sink->set_formatter(
+			expr::stream
+			<< "[" << expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%H:%M:%S") << "]: "
+			<< expr::smessage
+			);
 		logging::core::get()->add_sink(sink);
 
 	}

@@ -22,13 +22,16 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/attributes/attribute.hpp>
 #include <boost/log/attributes/named_scope.hpp>
+#include <boost/log/expressions/attr_fwd.hpp>
+#include <boost/log/expressions/attr.hpp>
 
 
 namespace keywords = boost::log::keywords;
 namespace src = boost::log::sources;
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;
-
+namespace expr = boost::log::expressions;
+namespace attr = boost::log::attributes;
 //setup global logger
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(global_logger, src::logger_mt);
 
