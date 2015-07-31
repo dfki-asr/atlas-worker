@@ -138,4 +138,17 @@ namespace AssimpWorker {
 			restoreOriginalNames(node->mChildren[i]);
 		}
 	}
+
+	void ColladaMassager::restoreOriginalNames(ATLAS::Model::Folder& folder) {
+		if (!needToPurge){
+			return;
+		}
+		const std::string colladaID = folder.getName();
+		const std::string colladaName = getNameForId(colladaID);
+		folder.addAttribute("colladaID", colladaID);
+		folder.setName(colladaName);
+		for (const ATLAS::Model::Folder& child : folder.getChildren()){
+			restoreOriginalNames( const_cast<ATLAS::Model::Folder&>(child) );
+		}
+	}
 }

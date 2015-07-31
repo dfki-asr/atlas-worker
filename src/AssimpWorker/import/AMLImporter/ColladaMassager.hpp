@@ -11,6 +11,7 @@
 #include <Poco/DOM/Document.h>
 #include <map>
 #include <assimp/scene.h>
+#include <atlas/model/Folder.hpp>
 
 
 namespace AssimpWorker {
@@ -24,6 +25,7 @@ namespace AssimpWorker {
 
 		void massage();
 		void restoreOriginalNames(aiNode* node);
+		void restoreOriginalNames(ATLAS::Model::Folder& folder);
 
 		std::map<std::string, std::string>& getExternalReferences();
 	private:

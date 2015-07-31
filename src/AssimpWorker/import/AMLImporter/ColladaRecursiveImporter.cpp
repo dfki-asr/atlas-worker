@@ -34,7 +34,7 @@ namespace AssimpWorker {
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
-		std::cout << "ColladaRecursiveImporter - importing: " << colladaFileURI.toString() << std::endl;
+		std::cout << std::endl << "ColladaRecursiveImporter - importing: " << colladaFileURI.toString() << std::endl;
 		bool needToPurge = colladaFileURI.getFragment() != "";
 		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
 		this->importer = new AssimpWorker::AssimpImporter();
@@ -47,20 +47,26 @@ namespace AssimpWorker {
 			if (startingPoint == NULL){
 				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
 			}
-			massager->restoreOriginalNames(startingPoint);
+			//massager->restoreOriginalNames(startingPoint);
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.importSubtreeOfScene(root, startingPoint);
 		} else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.addElementsTo(root);
 		}
+		if (needToPurge){
+			const Folder& startingPoint = findFolderWithName(root, colladaFileURI.getFragment());
+			massager->restoreOriginalNames(const_cast<Folder&>(startingPoint));
+		}
 		std::map<std::string, std::string> externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry);
 			childImporter.push_back(ci);
-			ci->addElementsTo( const_cast<Folder&>(findFolderWithName(root, exRef.first)) );
+			ci->addElementsTo( const_cast<Folder&>(findFolderWithColladaID(root, exRef.first)) );
+			//ci->addElementsTo(root);
 		}
+		//removeColladaIDs(root);
 	}
 
 	std::string ColladaRecursiveImporter::fixRelativeReference(std::string relativeURIasString){
@@ -71,7 +77,7 @@ namespace AssimpWorker {
 		return pathOfParentfile;
 	}
 
-	const Folder& ColladaRecursiveImporter::findFolderWithName(const Folder& folder, std::string name){
+	const Folder& ColladaRecursiveImporter::findFolderWithName(const ATLAS::Model::Folder& folder, std::string name){
 		if (name == folder.getName()){
 			return folder;
 		}
@@ -79,6 +85,21 @@ namespace AssimpWorker {
 		const Folder* found = NULL;
 		for (const Folder& child : children){
 			found = &(findFolderWithName(child, name));
+			if (found != NULL){
+				break;
+			}
+		}
+		return *found;
+	}
+
+	const Folder& ColladaRecursiveImporter::findFolderWithColladaID(const Folder& folder, std::string id){
+		if (id == (const_cast<Folder&>(folder)).getAttribute("colladaID")){
+			return folder;
+		}
+		const std::vector<Folder>& children = folder.getChildren();
+		const Folder* found = NULL;
+		for (const Folder& child : children){
+			found = &(findFolderWithColladaID(child, id));
 			if (found != NULL){
 				break;
 			}
