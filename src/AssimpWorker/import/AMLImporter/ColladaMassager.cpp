@@ -26,7 +26,8 @@ namespace AssimpWorker {
 		parentIDToExternalURL(),
 		uri(uri),
 		xmlDocument(),
-		idCounter(0)
+		idCounter(0),
+		alreadyMassagedMyFile(false)
 	{
 		needToPurge = uri.getFragment() != "";
 	}
@@ -36,6 +37,9 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::massage() {
+		if (alreadyMassagedMyFile){
+			return;
+		}
 		try
 		{
 			readXML();
@@ -46,6 +50,7 @@ namespace AssimpWorker {
 			if (needToPurge || !parentIDToExternalURL.empty()){
 				writePurgedXML();
 			}
+			alreadyMassagedMyFile = true;
 		}
 		catch (const std::exception& e) {
 			std::cout << "Exception while trying to purge names from Collada file: Error #" << e.what() << std::endl;

@@ -34,6 +34,7 @@ namespace AssimpWorker {
 		bool needToPurge;
 		std::map<std::string, std::string> parentIDToExternalURL;
 		int idCounter;
+		bool alreadyMassagedMyFile;
 
 		void readXML();
 		void handleExternalReferences();

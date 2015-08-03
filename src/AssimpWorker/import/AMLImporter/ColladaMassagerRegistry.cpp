@@ -30,7 +30,6 @@ namespace AssimpWorker {
 		}
 		ColladaMassager* massager = new ColladaMassager(colladaFileURI);
 		massagers.insert(std::make_pair(colladaFileURI.getPath(), massager));
-		massager->massage(); // Must be done here to avoid purging names twice for the same file
 		return massager;
 	}
 } // End namespace AssimpWorker
