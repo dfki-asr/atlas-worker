@@ -18,6 +18,7 @@
 	#include <Poco/File.h>
 #pragma warning(pop)
 #include "ColladaMassager.hpp"
+#include "../../internal/Exception.hpp"
 
 namespace AssimpWorker {
 
@@ -129,7 +130,11 @@ namespace AssimpWorker {
 	}
 
 	std::string ColladaMassager::getNameForId(const std::string& id) {
-		return idToNameMap.find(id)->second;
+		auto it = idToNameMap.find(id);
+		if (it == idToNameMap.end()){
+			throw Exception("Did not find id in map: " + id);
+		}
+		return it->second;
 	}
 
 	void ColladaMassager::restoreOriginalNames(aiNode* node) {
@@ -141,7 +146,12 @@ namespace AssimpWorker {
 
 	void ColladaMassager::restoreOriginalNames(ATLAS::Model::Folder& folder) {
 		const std::string colladaID = folder.getName();
-		const std::string colladaName = getNameForId(colladaID);
+		std::string colladaName;
+		try{
+			colladaName = getNameForId(colladaID);
+		}catch (Exception ex){
+			colladaName = colladaID;
+		}
 		folder.addAttribute("colladaID", colladaID);
 		folder.setName(colladaName);
 		for (ATLAS::Model::Folder& child : folder.getChildren()){
