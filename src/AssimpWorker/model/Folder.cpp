@@ -71,6 +71,10 @@ namespace Model {
 		return childFolders;
 	}
 
+	void Folder::removeAttribute(std::string key){
+		attributes.erase(key);
+	}
+
 	std::vector<Folder>& Folder::getChildren(){
 		return childFolders;
 	}
