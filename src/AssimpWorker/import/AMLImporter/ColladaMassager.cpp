@@ -84,7 +84,7 @@ namespace AssimpWorker {
 				parent->attributes()->setNamedItem(idNode);
 			}
 			parentIDToExternalURL.insert(std::make_pair(id, url));
-			parent->removeChild(node);
+			node->attributes()->removeNamedItem("url");
 		}
 	}
 
