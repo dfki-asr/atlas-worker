@@ -71,6 +71,10 @@ namespace Model {
 		return childFolders;
 	}
 
+	std::vector<Folder>& Folder::getChildren(){
+		return childFolders;
+	}
+
 	Blob* Folder::getBlobByType(const std::string& type){
 		for (auto type_and_hash : blobs){
 			if (type_and_hash.first == type) {
