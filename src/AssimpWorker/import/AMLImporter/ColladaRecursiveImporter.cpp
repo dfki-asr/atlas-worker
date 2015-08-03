@@ -37,9 +37,7 @@ namespace AssimpWorker {
 		std::cout << std::endl << "ColladaRecursiveImporter - importing: " << colladaFileURI.toString() << std::endl;
 		bool needToPurge = colladaFileURI.getFragment() != "";
 		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
-		if (needToPurge){
-			massager->massage();
-		}
+		massager->massage();
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
@@ -50,7 +48,6 @@ namespace AssimpWorker {
 			if (startingPoint == NULL){
 				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
 			}
-			//massager->restoreOriginalNames(startingPoint);
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.importSubtreeOfScene(root, startingPoint);
 		} else {
@@ -60,6 +57,8 @@ namespace AssimpWorker {
 		if (needToPurge){
 			Folder& startingPoint = findFolderWithName(root, colladaFileURI.getFragment());
 			massager->restoreOriginalNames(startingPoint);
+		} else {
+			massager->restoreOriginalNames(root);
 		}
 		std::map<std::string, std::string> externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){

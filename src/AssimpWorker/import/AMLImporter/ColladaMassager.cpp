@@ -44,12 +44,8 @@ namespace AssimpWorker {
 		{
 			readXML();
 			handleExternalReferences();
-			if (needToPurge){
-				purgeAllNodes();
-			}
-			if (needToPurge || !parentIDToExternalURL.empty()){
-				writePurgedXML();
-			}
+			purgeAllNodes();
+			writePurgedXML();
 			alreadyMassagedMyFile = true;
 		}
 		catch (const std::exception& e) {
@@ -137,9 +133,6 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::restoreOriginalNames(aiNode* node) {
-		if (!needToPurge){
-			return;
-		}
 		node->mName = getNameForId(node->mName.C_Str());
 		for (int i = 0; i < node->mNumChildren; i++){
 			restoreOriginalNames(node->mChildren[i]);
@@ -147,9 +140,6 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::restoreOriginalNames(ATLAS::Model::Folder& folder) {
-		if (!needToPurge){
-			return;
-		}
 		const std::string colladaID = folder.getName();
 		const std::string colladaName = getNameForId(colladaID);
 		folder.addAttribute("colladaID", colladaID);
