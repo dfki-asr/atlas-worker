@@ -147,8 +147,8 @@ namespace AssimpWorker {
 		const std::string colladaName = getNameForId(colladaID);
 		folder.addAttribute("colladaID", colladaID);
 		folder.setName(colladaName);
-		for (const ATLAS::Model::Folder& child : folder.getChildren()){
-			restoreOriginalNames( const_cast<ATLAS::Model::Folder&>(child) );
+		for (ATLAS::Model::Folder& child : folder.getChildren()){
+			restoreOriginalNames(child);
 		}
 	}
 }

@@ -13,7 +13,6 @@
 #include <assimp/scene.h>
 #include <atlas/model/Folder.hpp>
 
-
 namespace AssimpWorker {
 
 	class ColladaMassager

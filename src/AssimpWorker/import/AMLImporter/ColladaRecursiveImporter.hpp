@@ -32,9 +32,9 @@ namespace AssimpWorker {
 		ColladaMassagerRegistry& massagerRegistry;
 
 		std::string fixRelativeReference(std::string relativeURI);
-		const ATLAS::Model::Folder& findFolderWithName(const ATLAS::Model::Folder& root, std::string name);
+		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, std::string name);
 		aiNode* findaiNodeWithName(aiNode* node, const std::string& name);
-		const ATLAS::Model::Folder& findFolderWithColladaID(const ATLAS::Model::Folder& folder, std::string id);
+		ATLAS::Model::Folder& findFolderWithColladaID(ATLAS::Model::Folder& folder, std::string id);
 		void restoreOriginalNames(aiNode* node);
 	};
 

@@ -55,16 +55,15 @@ namespace AssimpWorker {
 			sceneImporter.addElementsTo(root);
 		}
 		if (needToPurge){
-			const Folder& startingPoint = findFolderWithName(root, colladaFileURI.getFragment());
-			massager->restoreOriginalNames(const_cast<Folder&>(startingPoint));
+			Folder& startingPoint = findFolderWithName(root, colladaFileURI.getFragment());
+			massager->restoreOriginalNames(startingPoint);
 		}
 		std::map<std::string, std::string> externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry);
 			childImporter.push_back(ci);
-			ci->addElementsTo( const_cast<Folder&>(findFolderWithColladaID(root, exRef.first)) );
-			//ci->addElementsTo(root);
+			ci->addElementsTo( findFolderWithColladaID(root, exRef.first) );
 		}
 		//removeColladaIDs(root);
 	}
@@ -77,13 +76,13 @@ namespace AssimpWorker {
 		return pathOfParentfile;
 	}
 
-	const Folder& ColladaRecursiveImporter::findFolderWithName(const ATLAS::Model::Folder& folder, std::string name){
+	Folder& ColladaRecursiveImporter::findFolderWithName(Folder& folder, std::string name){
 		if (name == folder.getName()){
 			return folder;
 		}
-		const std::vector<Folder>& children = folder.getChildren();
-		const Folder* found = NULL;
-		for (const Folder& child : children){
+		std::vector<Folder>& children = folder.getChildren();
+		Folder* found = NULL;
+		for (Folder& child : children){
 			found = &(findFolderWithName(child, name));
 			if (found != NULL){
 				break;
@@ -92,13 +91,13 @@ namespace AssimpWorker {
 		return *found;
 	}
 
-	const Folder& ColladaRecursiveImporter::findFolderWithColladaID(const Folder& folder, std::string id){
-		if (id == (const_cast<Folder&>(folder)).getAttribute("colladaID")){
+	Folder& ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, std::string id){
+		if (id == (folder).getAttribute("colladaID")){
 			return folder;
 		}
-		const std::vector<Folder>& children = folder.getChildren();
-		const Folder* found = NULL;
-		for (const Folder& child : children){
+		std::vector<Folder>& children = folder.getChildren();
+		Folder* found = NULL;
+		for (Folder& child : children){
 			found = &(findFolderWithColladaID(child, id));
 			if (found != NULL){
 				break;
