@@ -31,6 +31,7 @@ namespace AssimpWorker {
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
 
+		void removeColladaIDs(ATLAS::Model::Folder& folder);
 		std::string fixRelativeReference(std::string relativeURI);
 		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, std::string name);
 		aiNode* findaiNodeWithName(aiNode* node, const std::string& name);

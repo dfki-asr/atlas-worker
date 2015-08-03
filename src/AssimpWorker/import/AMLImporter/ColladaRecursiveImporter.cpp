@@ -65,7 +65,14 @@ namespace AssimpWorker {
 			childImporter.push_back(ci);
 			ci->addElementsTo( findFolderWithColladaID(root, exRef.first) );
 		}
-		//removeColladaIDs(root);
+		removeColladaIDs(root);
+	}
+
+	void ColladaRecursiveImporter::removeColladaIDs(Folder& folder){
+		folder.removeAttribute("colladaID");
+		for (Folder& child : folder.getChildren()){
+			removeColladaIDs(child);
+		}
 	}
 
 	std::string ColladaRecursiveImporter::fixRelativeReference(std::string relativeURIasString){
