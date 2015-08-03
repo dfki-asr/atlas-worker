@@ -42,6 +42,8 @@ namespace AssimpWorker {
 			handleExternalReferences();
 			if (needToPurge){
 				purgeAllNodes();
+			}
+			if (needToPurge || !parentIDToExternalURL.empty()){
 				writePurgedXML();
 			}
 		}
