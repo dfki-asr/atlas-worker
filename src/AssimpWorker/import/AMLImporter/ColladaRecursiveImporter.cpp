@@ -65,7 +65,8 @@ namespace AssimpWorker {
 			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry);
 			childImporter.push_back(ci);
-			ci->addElementsTo( findFolderWithColladaID(root, exRef.first) );
+			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
+			ci->addElementsTo( entryPoint );
 		}
 		removeColladaIDs(root);
 	}
