@@ -109,9 +109,6 @@ namespace AssimpWorker {
 			Poco::XML::Node* meterNode = unitNodes->item(i)->attributes()->getNamedItem("meter");
 			Poco::XML::Node* nameNode = unitNodes->item(i)->attributes()->getNamedItem("name");
 
-			if (meterNode->getNodeValue() != "1" || nameNode->getNodeValue() != "m") {
-				convertTransformsToMeter(meterNode);
-			}
 			meterNode->setNodeValue("1");
 			nameNode->setNodeValue("m");
 		}
