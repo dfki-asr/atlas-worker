@@ -47,6 +47,14 @@ namespace AssimpWorker {
 		Poco::XML::NodeList* externalInterfaces = document->getElementsByTagName("ExternalInterface");
 		findAndImportColladaReferences(externalInterfaces, root);
 		ensureTransform(root);
+		removeColladaIDs(root);
+	}
+
+	void AMLImporter::removeColladaIDs(Folder& folder){
+		folder.removeAttribute("colladaID");
+		for (Folder& child : folder.getChildren()){
+			removeColladaIDs(child);
+		}
 	}
 
 	std::string AMLImporter::extractFilneNameFromURI(Poco::URI& refURI){

@@ -59,21 +59,13 @@ namespace AssimpWorker {
 		} else {
 			massager->restoreOriginalNames(root);
 		}
-		std::map<std::string, std::string> externalRefMap = massager->getExternalReferences();
+		auto externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry);
 			childImporter.push_back(ci);
 			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
 			ci->addElementsTo( entryPoint );
-		}
-		removeColladaIDs(root);
-	}
-
-	void ColladaRecursiveImporter::removeColladaIDs(Folder& folder){
-		folder.removeAttribute("colladaID");
-		for (Folder& child : folder.getChildren()){
-			removeColladaIDs(child);
 		}
 	}
 

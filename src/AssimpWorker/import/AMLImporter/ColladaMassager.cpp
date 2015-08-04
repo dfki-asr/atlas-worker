@@ -87,12 +87,12 @@ namespace AssimpWorker {
 				idNode->setNodeValue(id);
 				parent->attributes()->setNamedItem(idNode);
 			}
-			parentIDToExternalURL.insert(std::make_pair(id, url));
+			parentIDToExternalURL.push_back(std::make_pair(id, url));
 			node->attributes()->removeNamedItem("url");
 		}
 	}
 
-	std::map<std::string, std::string>& ColladaMassager::getExternalReferences(){
+	std::vector<std::pair<std::string, std::string>>& ColladaMassager::getExternalReferences(){
 		return parentIDToExternalURL;
 	}
 

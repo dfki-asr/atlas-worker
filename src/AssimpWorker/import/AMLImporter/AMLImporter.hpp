@@ -41,6 +41,8 @@ namespace AssimpWorker {
 		bool uriReferencesColladaFile(Poco::URI refURI);
 		void fixColladaURIPath(Poco::URI& uri);
 
+		void removeColladaIDs(ATLAS::Model::Folder& folder);
+
 		void addGeometryToFolder(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI, ColladaMassager& purger);
 		void addFrameTransformToFolder(ATLAS::Model::Folder& folder, aiMatrix4x4* transform);
 		void importColladaReference(Poco::URI& refURI, Poco::XML::Node* node, ATLAS::Model::Folder& root);

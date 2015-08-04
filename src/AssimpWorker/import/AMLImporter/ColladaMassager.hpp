@@ -26,13 +26,13 @@ namespace AssimpWorker {
 		void restoreOriginalNames(aiNode* node);
 		void restoreOriginalNames(ATLAS::Model::Folder& folder);
 
-		std::map<std::string, std::string>& getExternalReferences();
+		std::vector<std::pair<std::string, std::string>>& getExternalReferences();
 	private:
 		std::map<std::string, std::string> idToNameMap;
 		Poco::URI uri;
 		Poco::XML::AutoPtr<Poco::XML::Document> xmlDocument;
 		bool needToPurge;
-		std::map<std::string, std::string> parentIDToExternalURL;
+		std::vector<std::pair<std::string, std::string>> parentIDToExternalURL;
 		int idCounter;
 		bool alreadyMassagedMyFile;
 
