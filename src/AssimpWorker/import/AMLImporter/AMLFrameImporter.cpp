@@ -105,7 +105,7 @@ namespace AssimpWorker{
 			localTransform.a4 = (float)tx;
 			localTransform.b4 = (float)ty;
 			localTransform.c4 = (float)tz;
-			return  localTransform;
+			return localTransform;
 		}
 		catch (const Exception& e) {
 			throw AMLException("Syntax error while parsing a Frame attribute. This transformation will be ignored.");
