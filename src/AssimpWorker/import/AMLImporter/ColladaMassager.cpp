@@ -44,6 +44,7 @@ namespace AssimpWorker {
 		try
 		{
 			readXML();
+			forceUnitMeter();
 			handleExternalReferences();
 			purgeAllNodes();
 			writePurgedXML();
