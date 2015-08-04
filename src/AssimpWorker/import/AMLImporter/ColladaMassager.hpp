@@ -38,6 +38,7 @@ namespace AssimpWorker {
 
 		void readXML();
 		void handleExternalReferences();
+		void forceUnitMeter();
 		void purgeAllNodes();
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();

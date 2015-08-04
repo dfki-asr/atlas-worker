@@ -103,6 +103,19 @@ namespace AssimpWorker {
 		}
 	}
 
+	void ColladaMassager::forceUnitMeter() {
+		Poco::XML::NodeList* unitNodes = xmlDocument->getElementsByTagName("unit");
+		for (int i = 0; i < unitNodes->length(); i++) {
+			Poco::XML::Node* meterNode = unitNodes->item(i)->attributes()->getNamedItem("meter");
+			Poco::XML::Node* nameNode = unitNodes->item(i)->attributes()->getNamedItem("name");
+
+			if (meterNode->getNodeValue() != "1" || nameNode->getNodeValue() != "m") {
+				convertTransformsToMeter(meterNode);
+			}
+			meterNode->setNodeValue("1");
+			nameNode->setNodeValue("m");
+		}
+	}
 	void ColladaMassager::purgeNode(Poco::XML::Node* node){
 		Poco::XML::Node* nameNode = node->attributes()->getNamedItem("name");
 		Poco::XML::Node* idNode = node->attributes()->getNamedItem("id");
