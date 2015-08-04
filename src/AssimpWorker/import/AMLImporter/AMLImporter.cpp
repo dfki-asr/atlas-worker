@@ -46,8 +46,7 @@ namespace AssimpWorker {
 		Poco::XML::AutoPtr<Poco::XML::Document> document = parseAMLFile();
 		Poco::XML::NodeList* externalInterfaces = document->getElementsByTagName("ExternalInterface");
 		findAndImportColladaReferences(externalInterfaces, root);
-		convertZUpToYUp(root);
-		std::cout << "AML / trans " << root.getBlobByType("transform")->getHash() << std::endl;
+		ensureTransform(root);
 	}
 
 	std::string AMLImporter::extractFilneNameFromURI(Poco::URI& refURI){
@@ -134,27 +133,8 @@ namespace AssimpWorker {
 		folder.addBlob("transform", blob);
 	}
 
-	void AMLImporter::convertZUpToYUp(Folder& folder) {
+	void AMLImporter::ensureTransform(Folder& folder) {
 		aiMatrix4x4 transform = getTransformFor(folder);
-		const aiMatrix4x4 zUpToYUp(
-				1,  0,  0,  0,
-				0,  0,  1,  0,
-				0, -1,  0,  0,
-				0,  0,  0,  1
-		);
-		transform *= zUpToYUp;
-		setTransformFor(folder, transform);
-	}
-
-	void AMLImporter::convertYUpToZUp(Folder& folder) {
-		aiMatrix4x4 transform = getTransformFor(folder);
-		const aiMatrix4x4 yUpToZUp(
-				1,  0,  0,  0,
-				0,  0, -1,  0,
-				0,  1,  0,  0,
-				0,  0,  0,  1
-		);
-		transform *= yUpToZUp;
 		setTransformFor(folder, transform);
 	}
 
@@ -162,7 +142,6 @@ namespace AssimpWorker {
 		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
-		convertYUpToZUp(root);
 	}
 
 } // End namespace AssimpWorker

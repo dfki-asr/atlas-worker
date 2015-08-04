@@ -47,10 +47,9 @@ namespace AssimpWorker {
 
 		void importGeometryReference(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI);
 
+		void ensureTransform(ATLAS::Model::Folder& folder);
 		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
 		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
-		void convertZUpToYUp(ATLAS::Model::Folder& folder);
-		void convertYUpToZUp(ATLAS::Model::Folder& folder);
 	};
 
 } // End namespace AssimpWorker
