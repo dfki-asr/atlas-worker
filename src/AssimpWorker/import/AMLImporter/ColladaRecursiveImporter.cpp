@@ -37,6 +37,12 @@ namespace AssimpWorker {
 		bool needToPurge = colladaFileURI.getFragment() != "";
 		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
 		massager->massage();
+		localScale = massager->getCurrentUnit();
+
+		if (parentScale != -1 && localScale != parentScale) {
+			
+			throw Exception("Inconsistent scales used in input files");
+		}
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
