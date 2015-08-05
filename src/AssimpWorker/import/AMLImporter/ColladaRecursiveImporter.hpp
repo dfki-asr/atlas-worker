@@ -25,7 +25,6 @@ namespace AssimpWorker {
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
 		float getLocalScale();
-		void fixScales(ATLAS::Model::Folder& root);
 		
 	private:
 		AssimpImporter* importer;
