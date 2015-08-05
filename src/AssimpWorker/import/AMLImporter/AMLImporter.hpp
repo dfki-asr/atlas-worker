@@ -50,6 +50,7 @@ namespace AssimpWorker {
 		void ensureTransform(ATLAS::Model::Folder& folder);
 		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
 		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
+		bool fixedScales;
 	};
 
 } // End namespace AssimpWorker
