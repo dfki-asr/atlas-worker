@@ -36,30 +36,13 @@ namespace AssimpWorker {
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
-		std::cout << "entering addElementsTo --------------" << std::endl;
-		ATLAS::Model::Blob* currentFolderTransform = root.getBlobByType("transform");
-		aiMatrix4x4* scaledMatrix = new aiMatrix4x4();
-		if (currentFolderTransform) {
-			scaledMatrix = (aiMatrix4x4*)currentFolderTransform->getData();
-		}
-		/*
-		std::cout << "folder transform in addElementsTo: " << std::endl << "----------------" << std::endl;
-		std::cout << scaledMatrix->a1 << " | " << scaledMatrix->a2 << " | " << scaledMatrix->a3 << " | " << scaledMatrix->a4 << std::endl;
-		std::cout << scaledMatrix->b1 << " | " << scaledMatrix->b2 << " | " << scaledMatrix->b3 << " | " << scaledMatrix->b4 << std::endl;
-		std::cout << scaledMatrix->c1 << " | " << scaledMatrix->c2 << " | " << scaledMatrix->c3 << " | " << scaledMatrix->c4 << std::endl;
-		std::cout << scaledMatrix->d1 << " | " << scaledMatrix->d2 << " | " << scaledMatrix->d3 << " | " << scaledMatrix->d4 << std::endl;
-		*/
 		bool needToPurge = colladaFileURI.getFragment() != "";
 		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
-
 		massager->massage();
 		localScale = massager->getCurrentUnit();
-
-		if (parentScale != -1 && localScale != parentScale) {
-			
+		if (parentScale != -1 && localScale != parentScale) {			
 			throw Exception("Inconsistent scales used in input files");
 		}
-
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
@@ -92,7 +75,6 @@ namespace AssimpWorker {
 			ci->addElementsTo( entryPoint);
 		}
 		removeColladaIDs(root);
-		std::cout << "leaving addElementsTo --------------" << std::endl;
 	}
 
 	void ColladaRecursiveImporter::fixScales(ATLAS::Model::Folder& root) {
