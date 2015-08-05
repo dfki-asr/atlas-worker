@@ -74,6 +74,35 @@ namespace AssimpWorker {
 			ci->addElementsTo( entryPoint );
 		}
 		removeColladaIDs(root);
+
+	void ColladaRecursiveImporter::fixScales(ATLAS::Model::Folder& root) {
+		ATLAS::Model::Blob* currentFolderTransform = root.getBlobByType("transform");
+		aiMatrix4x4 scaledMatrix;
+		if (currentFolderTransform) {
+			scaledMatrix = *(aiMatrix4x4*)currentFolderTransform->getData();
+		}
+		
+		std::cout << "Before scaling: " << std::endl << "----------------" << std::endl;
+		std::cout << scaledMatrix.a1 << " | " << scaledMatrix.a2 << " | " << scaledMatrix.a3 << " | " << scaledMatrix.a4 << std::endl;
+		std::cout << scaledMatrix.b1 << " | " << scaledMatrix.b2 << " | " << scaledMatrix.b3 << " | " << scaledMatrix.b4 << std::endl;
+		std::cout << scaledMatrix.c1 << " | " << scaledMatrix.c2 << " | " << scaledMatrix.c3 << " | " << scaledMatrix.c4 << std::endl;
+		std::cout << scaledMatrix.d1 << " | " << scaledMatrix.d2 << " | " << scaledMatrix.d3 << " | " << scaledMatrix.d4 << std::endl;
+		std::cout << "Local scale in fixScales: " << localScale << std::endl;
+		aiMatrix4x4 scaling;
+		aiVector3t<float> scalingVector(localScale);
+		std::cout << scalingVector.x << " | " << scalingVector.y << " | " << scalingVector.z << std::endl;
+		aiMatrix4x4::Scaling(aiVector3t<float>(localScale), scaling);
+		
+		scaledMatrix *= scaling;
+		std::cout << "After scaling: " << std::endl << "----------------" << std::endl;
+		std::cout << scaledMatrix.a1 << " | " << scaledMatrix.a2 << " | " << scaledMatrix.a3 << " | " << scaledMatrix.a4 << std::endl;
+		std::cout << scaledMatrix.b1 << " | " << scaledMatrix.b2 << " | " << scaledMatrix.b3 << " | " << scaledMatrix.b4 << std::endl;
+		std::cout << scaledMatrix.c1 << " | " << scaledMatrix.c2 << " | " << scaledMatrix.c3 << " | " << scaledMatrix.c4 << std::endl;
+		std::cout << scaledMatrix.d1 << " | " << scaledMatrix.d2 << " | " << scaledMatrix.d3 << " | " << scaledMatrix.d4 << std::endl;
+		//DataDeletingBlob<aiMatrix4x4>* localTransformBlob = new DataDeletingBlob<aiMatrix4x4>(scaledMatrix);
+		currentFolderTransform->setData(&scaledMatrix, sizeof(scaledMatrix));
+		//root.addBlob("transform", *localTransformBlob); */
+		
 	}
 
 	void ColladaRecursiveImporter::removeColladaIDs(Folder& folder){
