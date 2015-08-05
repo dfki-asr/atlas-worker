@@ -11,9 +11,7 @@
 namespace AssimpWorker {
 
 	ColladaMassagerRegistry::ColladaMassagerRegistry() :
-		massagers(),
-		rootScale(1.0),
-		rootScaleSet(false)
+		massagers()
 	{
 		return;
 	}
@@ -22,19 +20,6 @@ namespace AssimpWorker {
 		for (auto m : massagers){
 			delete m.second;
 		}
-	}
-
-	void ColladaMassagerRegistry::setRootScale(float newScale) {
-		rootScale = newScale;
-		rootScaleSet = true;
-	}
-
-	float ColladaMassagerRegistry::getRootScale() {
-		return rootScale;
-	}
-
-	bool ColladaMassagerRegistry::isRootScaleSet() {
-		return rootScaleSet;
 	}
 
 	ColladaMassager*  ColladaMassagerRegistry::getMassager(const Poco::URI& colladaFileURI){

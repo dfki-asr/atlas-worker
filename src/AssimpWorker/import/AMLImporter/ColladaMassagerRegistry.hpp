@@ -20,14 +20,9 @@ namespace AssimpWorker {
 		~ColladaMassagerRegistry();
 
 		ColladaMassager*  getMassager(const Poco::URI& colladaFileURI);
-		void setRootScale(float newScale);
-		float getRootScale();
-		bool isRootScaleSet();
 
 	private:
 		std::map<std::string, ColladaMassager*> massagers;
-		float rootScale;
-		bool rootScaleSet;
 	};
 
 } // End namespace AssimpWorker
