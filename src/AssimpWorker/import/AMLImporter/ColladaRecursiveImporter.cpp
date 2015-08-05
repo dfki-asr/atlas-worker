@@ -77,6 +77,8 @@ namespace AssimpWorker {
 		removeColladaIDs(root);
 	}
 
+	float ColladaRecursiveImporter::getLocalScale() {
+		return localScale;
 	void ColladaRecursiveImporter::fixScales(ATLAS::Model::Folder& root) {
 		ATLAS::Model::Blob* currentFolderTransform = root.getBlobByType("transform");
 		aiMatrix4x4 scaledMatrix;
