@@ -50,6 +50,7 @@ namespace AssimpWorker {
 
 		void ensureTransform(ATLAS::Model::Folder& folder);
 		
+		void fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer);
 		void printDebug(ATLAS::Model::Folder& folder);
 		bool fixedScales;
 	};

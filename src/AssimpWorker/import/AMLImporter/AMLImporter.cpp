@@ -145,6 +145,7 @@ namespace AssimpWorker {
 		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry, -1.0);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
+		fixScales(root, colladaImporter);
 		if (!fixedScales) {
 			fixedScales = true;
 			colladaImporter->fixScales(root);
@@ -152,6 +153,18 @@ namespace AssimpWorker {
 		std::cout << "leaving AMLImporter --------------" << std::endl;
 	}
 
+	void AMLImporter::fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer) {
+		float localScale = importer->getLocalScale();
+		ATLAS::Model::Blob* currentFolderTransform = root.getBlobByType("transform");
+		aiMatrix4x4 scaledMatrix;
+		if (currentFolderTransform) {
+			scaledMatrix = *(aiMatrix4x4*)currentFolderTransform->getData();
+		}
+		aiMatrix4x4 scaling;
+		aiVector3t<float> scalingVector(localScale);
+		aiMatrix4x4::Scaling(aiVector3t<float>(localScale), scaling);
+		scaledMatrix *= scaling;
+		setTransformFor(root, scaledMatrix);
 	void AMLImporter::printDebug(Folder& root) {
 		aiMatrix4x4 scaledMatrix = getTransformFor(root);
 		std::cout << "folder transform for " << root.getName() << " in importGeometryReference: " << std::endl << "----------------" << std::endl;
