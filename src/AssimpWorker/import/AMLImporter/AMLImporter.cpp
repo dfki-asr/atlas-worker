@@ -31,8 +31,7 @@ namespace AssimpWorker {
 		pathToWorkingDirectory(amlFilePath.substr(0, amlFilePath.find_last_of('/') + 1)),
 		frameImporter(),
 		importers(),
-		massagerRegistry(),
-		fixedScales(false)
+		massagerRegistry()
 	{
 		return;
 	}
@@ -146,10 +145,6 @@ namespace AssimpWorker {
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
 		fixScales(root, colladaImporter);
-		if (!fixedScales) {
-			fixedScales = true;
-			colladaImporter->fixScales(root);
-		}
 		std::cout << "leaving AMLImporter --------------" << std::endl;
 	}
 
