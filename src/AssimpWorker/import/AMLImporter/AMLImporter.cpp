@@ -141,6 +141,7 @@ namespace AssimpWorker {
 
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
 		std::cout << "entering AMLImporter --------------" << std::endl;
+		printDebug(root);
 		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry, -1.0);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
@@ -151,4 +152,13 @@ namespace AssimpWorker {
 		std::cout << "leaving AMLImporter --------------" << std::endl;
 	}
 
+	void AMLImporter::printDebug(Folder& root) {
+		aiMatrix4x4 scaledMatrix = getTransformFor(root);
+		std::cout << "folder transform for " << root.getName() << " in importGeometryReference: " << std::endl << "----------------" << std::endl;
+		std::cout << scaledMatrix.a1 << " | " << scaledMatrix.a2 << " | " << scaledMatrix.a3 << " | " << scaledMatrix.a4 << std::endl;
+		std::cout << scaledMatrix.b1 << " | " << scaledMatrix.b2 << " | " << scaledMatrix.b3 << " | " << scaledMatrix.b4 << std::endl;
+		std::cout << scaledMatrix.c1 << " | " << scaledMatrix.c2 << " | " << scaledMatrix.c3 << " | " << scaledMatrix.c4 << std::endl;
+		std::cout << scaledMatrix.d1 << " | " << scaledMatrix.d2 << " | " << scaledMatrix.d3 << " | " << scaledMatrix.d4 << std::endl;
+
+	}
 } // End namespace AssimpWorker
