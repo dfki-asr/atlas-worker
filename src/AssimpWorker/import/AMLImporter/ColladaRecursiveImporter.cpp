@@ -68,7 +68,7 @@ namespace AssimpWorker {
 		std::map<std::string, std::string> externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
-			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry);
+			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, localScale);
 			childImporter.push_back(ci);
 			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
 			ci->addElementsTo( entryPoint );
