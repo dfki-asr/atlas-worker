@@ -93,6 +93,10 @@ namespace AssimpWorker {
 		}
 	}
 
+	float ColladaMassager::getCurrentUnit() {
+		return localScaleBeforeMassage;
+	}
+
 	std::map<std::string, std::string>& ColladaMassager::getExternalReferences(){
 		return parentIDToExternalURL;
 	}
@@ -109,11 +113,12 @@ namespace AssimpWorker {
 		for (int i = 0; i < unitNodes->length(); i++) {
 			Poco::XML::Node* meterNode = unitNodes->item(i)->attributes()->getNamedItem("meter");
 			Poco::XML::Node* nameNode = unitNodes->item(i)->attributes()->getNamedItem("name");
-
+			localScaleBeforeMassage = atof((meterNode->getNodeValue()).c_str());
 			meterNode->setNodeValue("1");
 			nameNode->setNodeValue("m");
 		}
 	}
+
 	void ColladaMassager::purgeNode(Poco::XML::Node* node){
 		Poco::XML::Node* nameNode = node->attributes()->getNamedItem("name");
 		Poco::XML::Node* idNode = node->attributes()->getNamedItem("id");

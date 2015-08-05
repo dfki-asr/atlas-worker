@@ -22,10 +22,12 @@ namespace AssimpWorker {
 
 		~ColladaMassager();
 
+		void readXML();
 		void massage();
 		void restoreOriginalNames(aiNode* node);
 		void restoreOriginalNames(ATLAS::Model::Folder& folder);
-
+		float getCurrentUnit();
+		void forceUnitMeter();
 		std::map<std::string, std::string>& getExternalReferences();
 	private:
 		std::map<std::string, std::string> idToNameMap;
@@ -34,15 +36,13 @@ namespace AssimpWorker {
 		bool needToPurge;
 		std::map<std::string, std::string> parentIDToExternalURL;
 		int idCounter;
-		bool alreadyMassagedMyFile;
-
-		void readXML();
+		bool alreadyMassagedMyFile;	
 		void handleExternalReferences();
-		void forceUnitMeter();
 		void purgeAllNodes();
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
 		std::string getNameForId(const std::string& id);
+		float localScaleBeforeMassage;
 	};
 
 } // End namespace AssimpWorker
