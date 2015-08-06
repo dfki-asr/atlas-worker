@@ -44,6 +44,7 @@ namespace AssimpWorker {
 		try
 		{
 			readXML();
+			readUpAxis();
 			forceUnitMeter();
 			handleExternalReferences();
 			purgeAllNodes();
@@ -62,6 +63,18 @@ namespace AssimpWorker {
 		parser.setFeature(Poco::XML::XMLReader::FEATURE_NAMESPACES, false);
 		xmlDocument = parser.parse(&amlFileSource);
 		amlStream.close();
+	}
+
+	void ColladaMassager::readUpAxis(){
+		Poco::XML::NodeList* nodes = xmlDocument->getElementsByTagName("up_axis");
+		for (int i = 0; i < nodes->length(); i++) {
+			Poco::XML::Node* upAxisNode = nodes->item(i);
+			upAxis = upAxisNode->innerText();
+		}
+	}
+
+	const std::string ColladaMassager::getUpAxis(){
+		return upAxis;
 	}
 
 	void ColladaMassager::handleExternalReferences(){
