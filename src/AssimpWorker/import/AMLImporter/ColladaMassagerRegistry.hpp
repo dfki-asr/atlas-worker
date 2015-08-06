@@ -20,6 +20,7 @@ namespace AssimpWorker {
 		~ColladaMassagerRegistry();
 
 		ColladaMassager*  getMassager(const Poco::URI& colladaFileURI);
+
 	private:
 		std::map<std::string, ColladaMassager*> massagers;
 	};

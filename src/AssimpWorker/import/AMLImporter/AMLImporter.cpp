@@ -147,9 +147,23 @@ namespace AssimpWorker {
 	}
 
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
-		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry);
+		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry, -1.0);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
+		fixScales(root, colladaImporter);
 	}
 
+	void AMLImporter::fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer) {
+		float localScale = importer->getLocalScale();
+		ATLAS::Model::Blob* currentFolderTransform = root.getBlobByType("transform");
+		aiMatrix4x4 scaledMatrix;
+		if (currentFolderTransform) {
+			scaledMatrix = *(aiMatrix4x4*)currentFolderTransform->getData();
+		}
+		aiMatrix4x4 scaling;
+		aiVector3t<float> scalingVector(localScale);
+		aiMatrix4x4::Scaling(aiVector3t<float>(localScale), scaling);
+		scaledMatrix *= scaling;
+		setTransformFor(root, scaledMatrix);
+	}
 } // End namespace AssimpWorker

@@ -12,17 +12,19 @@
 #include "../Importer.hpp"
 #include <assimp/scene.h>
 #include <atlas/model/Folder.hpp>
+#include "../AiImporter/AiSceneImporter.hpp"
 
 namespace AssimpWorker {
 
 	class ColladaRecursiveImporter :public Importer
 	{
 	public:
-		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry);
+		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry, float parentScale);
 
 		~ColladaRecursiveImporter();
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
+		float getLocalScale();
 		
 	private:
 		AssimpImporter* importer;
@@ -30,6 +32,11 @@ namespace AssimpWorker {
 		Poco::URI pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
+
+		float localScale;
+		float parentScale;
+		int recursionDepth;
+		void removeColladaIDs(ATLAS::Model::Folder& folder);
 
 		std::string fixRelativeReference(std::string relativeURI);
 		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, std::string name);

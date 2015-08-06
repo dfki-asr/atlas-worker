@@ -44,6 +44,7 @@ namespace AssimpWorker {
 		try
 		{
 			readXML();
+			forceUnitMeter();
 			handleExternalReferences();
 			purgeAllNodes();
 			writePurgedXML();
@@ -92,6 +93,10 @@ namespace AssimpWorker {
 		}
 	}
 
+	float ColladaMassager::getCurrentUnit() {
+		return localScaleBeforeMassage;
+	}
+
 	std::vector<std::pair<std::string, std::string>>& ColladaMassager::getExternalReferences(){
 		return parentIDToExternalURL;
 	}
@@ -100,6 +105,17 @@ namespace AssimpWorker {
 		Poco::XML::NodeList* nodes = xmlDocument->getElementsByTagName("node");
 		for (int i = 0; i < nodes->length(); ++i) {
 			purgeNode(nodes->item(i));
+		}
+	}
+
+	void ColladaMassager::forceUnitMeter() {
+		Poco::XML::NodeList* unitNodes = xmlDocument->getElementsByTagName("unit");
+		for (int i = 0; i < unitNodes->length(); i++) {
+			Poco::XML::Node* meterNode = unitNodes->item(i)->attributes()->getNamedItem("meter");
+			Poco::XML::Node* nameNode = unitNodes->item(i)->attributes()->getNamedItem("name");
+			localScaleBeforeMassage = atof((meterNode->getNodeValue()).c_str());
+			meterNode->setNodeValue("1");
+			nameNode->setNodeValue("m");
 		}
 	}
 

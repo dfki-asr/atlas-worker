@@ -8,20 +8,22 @@
 #include <iostream>
 #include "ColladaRecursiveImporter.hpp"
 #include "../../internal/Exception.hpp"
-#include "../AiImporter/AiSceneImporter.hpp"
 
 namespace AssimpWorker {
 
 	using ATLAS::Model::DataDeletingBlob;
 	using ATLAS::Model::Folder;
 
-	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry) :
+	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry, float scale) :
 		Importer(colladaFileURI.toString(), log),
 		pathToWorkingDirectory(pathToWorkingDirectory),
 		colladaFileURI(colladaFileURI),
 		childImporter(),
 		importer(NULL),
-		massagerRegistry(registry)
+		massagerRegistry(registry),
+		localScale(0),
+		parentScale(scale),
+		recursionDepth(0)
 	{
 		return;
 	}
@@ -37,6 +39,10 @@ namespace AssimpWorker {
 		bool needToPurge = colladaFileURI.getFragment() != "";
 		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
 		massager->massage();
+		localScale = massager->getCurrentUnit();
+		if (parentScale != -1 && localScale != parentScale) {			
+			throw Exception("Inconsistent scales used in input files");
+		}
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
@@ -49,6 +55,7 @@ namespace AssimpWorker {
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.importSubtreeOfScene(root, startingPoint);
+		
 		} else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.addElementsTo(root);
@@ -62,10 +69,21 @@ namespace AssimpWorker {
 		auto externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
-			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry);
+			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, localScale);
 			childImporter.push_back(ci);
 			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
-			ci->addElementsTo( entryPoint );
+			ci->addElementsTo( entryPoint);
+		}
+	}
+
+	float ColladaRecursiveImporter::getLocalScale() {
+		return localScale;
+	}
+
+	void ColladaRecursiveImporter::removeColladaIDs(Folder& folder){
+		folder.removeAttribute("colladaID");
+		for (Folder& child : folder.getChildren()){
+			removeColladaIDs(child);
 		}
 	}
 
