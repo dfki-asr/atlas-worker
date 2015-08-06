@@ -40,6 +40,7 @@ namespace AssimpWorker {
 		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
 		massager->massage();
 		localScale = massager->getCurrentUnit();
+		colladaUpAxis = massager->getUpAxis();
 		if (parentScale != -1 && localScale != parentScale) {			
 			throw Exception("Inconsistent scales used in input files");
 		}
@@ -74,6 +75,10 @@ namespace AssimpWorker {
 			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
 			ci->addElementsTo( entryPoint);
 		}
+	}
+
+	const std::string ColladaRecursiveImporter::getColladaUpAxis(){
+		return colladaUpAxis;
 	}
 
 	float ColladaRecursiveImporter::getLocalScale() {
