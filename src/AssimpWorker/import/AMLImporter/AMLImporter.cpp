@@ -151,6 +151,7 @@ namespace AssimpWorker {
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
 		fixScales(root, colladaImporter);
+		fixRotation(root, colladaImporter);
 	}
 
 	void AMLImporter::fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer) {
@@ -166,4 +167,51 @@ namespace AssimpWorker {
 		scaledMatrix *= scaling;
 		setTransformFor(root, scaledMatrix);
 	}
+
+	void AMLImporter::fixRotation(Folder& root, ColladaRecursiveImporter* importer){
+		const std::string upVector = importer->getColladaUpAxis();
+		if (boost::iequals(upVector, "X_UP")){
+			convertYUpToXUp(root);
+			return;
+		}
+		else if (boost::iequals(upVector, "Y_UP")){
+			return;
+		}
+		else if (boost::iequals(upVector, "Z_UP")){
+			convertYUpToZUp(root);
+			return;
+		}
+		else {
+			std::cout << "Could determine UpVector of Collada file, assuming Z_UP." << std::endl;
+		}
+	}
+
+	void AMLImporter::convertYUpToZUp(Folder& folder){
+		aiMatrix4x4 transform = getTransformFor(folder);
+		const aiMatrix4x4 yUpToZUp(
+			1, 0, 0, 0,
+			0, 0, -1, 0,
+			0, 1, 0, 0,
+			0, 0, 0, 1);
+		transform *= yUpToZUp;
+				std::cout << "folder transform in convert shit after conversion: " << std::endl << "----------------" << std::endl;
+				std::cout << transform.a1 << " | " << transform.a2 << " | " << transform.a3 << " | " << transform.a4 << std::endl;
+				std::cout << transform.b1 << " | " << transform.b2 << " | " << transform.b3 << " | " << transform.b4 << std::endl;
+				std::cout << transform.c1 << " | " << transform.c2 << " | " << transform.c3 << " | " << transform.c4 << std::endl;
+				std::cout << transform.d1 << " | " << transform.d2 << " | " << transform.d3 << " | " << transform.d4 << std::endl;
+		setTransformFor(folder, transform);
+	}
+
+
+	void AMLImporter::convertYUpToXUp(Folder& folder){
+		aiMatrix4x4 transform = getTransformFor(folder);
+		const aiMatrix4x4 yUpToXUp(
+			0, -1, 0, 0,
+			1, 0, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1);
+		transform *= yUpToXUp;
+		setTransformFor(folder, transform);
+	}
+
 } // End namespace AssimpWorker
