@@ -61,15 +61,14 @@ namespace AssimpWorker{
 	}
 
 	ATLAS::Model::Folder& AMLFrameImporter::getFolderForNode(Poco::XML::Node* node, ATLAS::Model::Folder& parentFolder) {
-		Poco::XML::Node* frame = node->getNodeByPath("/Attribute[@Name='Frame']");
-		aiMatrix4x4 localTransform = createFrameTransformMatrix(frame);
-
 		auto visited = visitedNodes.find(node);
 		if (visited != visitedNodes.end()) {
 			return *visited->second; //Already created a folder for this node so just return that one
 		}
 		else {
 			ATLAS::Model::Folder& folderForNode = createFolderForNode(node, parentFolder);
+			Poco::XML::Node* frame = node->getNodeByPath("/Attribute[@Name='Frame']");
+			aiMatrix4x4 localTransform = createFrameTransformMatrix(frame);
 			addTransformBlobToFolder(localTransform, folderForNode, "transform");
 			return folderForNode;
 		}
