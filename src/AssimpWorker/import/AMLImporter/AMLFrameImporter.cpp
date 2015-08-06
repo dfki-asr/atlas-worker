@@ -100,7 +100,9 @@ namespace AssimpWorker{
 			double rx = ::atof(frame->getNodeByPath("/Attribute[@Name='rx']/Value")->innerText().c_str());
 			double ry = ::atof(frame->getNodeByPath("/Attribute[@Name='ry']/Value")->innerText().c_str());
 			double rz = ::atof(frame->getNodeByPath("/Attribute[@Name='rz']/Value")->innerText().c_str());
-			aiMatrix4x4 localTransform = buildRotationMatrix(rx, ry, rz);
+			aiMatrix4x4 localTransform;
+			const double toRad = M_PI / 180;
+			localTransform.FromEulerAnglesXYZ(aiVector3t<float>(-1*rx*toRad, -1*rz*toRad, -1*ry*toRad));
 			localTransform.a4 = (float)tx;
 			localTransform.b4 = (float)ty;
 			localTransform.c4 = (float)tz;
@@ -110,21 +112,4 @@ namespace AssimpWorker{
 			throw AMLException("Syntax error while parsing a Frame attribute. This transformation will be ignored.");
 		}
 	}
-
-	aiMatrix4x4 AMLFrameImporter::buildRotationMatrix(double attitude, double heading, double bank) {
-		//Algorithm taken from http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToMatrix/
-		aiMatrix4x4 rot;
-		const double toRad = M_PI / 180;
-		const double sa = sin(attitude * toRad);
-		const double ca = cos(attitude * toRad);
-		const double sb = sin(bank * toRad);
-		const double cb = cos(bank * toRad);
-		const double sh = sin(heading * toRad);
-		const double ch = cos(heading * toRad);
-		rot.a1 = (float)(ch*ca);	rot.b1 = (float)(-ch*sa*cb + sh*sb);	rot.c1 = (float)(ch*sa*sb + sh*cb);
-		rot.a2 = (float)(sa);		rot.b2 = (float)(ca*cb);				rot.c2 = (float)(-ca*sb);
-		rot.a3 = (float)(-sh*ca);	rot.b3 = (float)(sh*sa*cb + ch*sb);		rot.c3 = (float)(-sh*sa*sb + ch*cb);
-		return rot;
-	}
-
 }
