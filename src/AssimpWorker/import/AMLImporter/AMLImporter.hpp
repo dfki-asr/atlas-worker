@@ -8,7 +8,9 @@
 
 #include "../Importer.hpp"
 #include "../AssimpImporter.hpp"
+#include "AMLFrameImporter.hpp"
 #include "ColladaMassager.hpp"
+#include "ColladaMassagerRegistry.hpp"
 #include "ColladaRecursiveImporter.hpp"
 #include <atlas/model/Asset.hpp>
 #include <assimp/scene.h>
@@ -16,7 +18,6 @@
 #include <Poco/DOM/AutoPtr.h>
 #include <Poco/DOM/Document.h>
 #include <Poco/URI.h>
-#include "AMLFrameImporter.hpp"
 
 namespace AssimpWorker {
 
