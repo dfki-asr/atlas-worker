@@ -24,7 +24,7 @@ namespace AssimpWorker {
 		~ColladaRecursiveImporter();
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
-		float getLocalScale();
+		const float getLocalScale();
 		const std::string getColladaUpAxis();
 		
 	private:

@@ -81,7 +81,7 @@ namespace AssimpWorker {
 		return colladaUpAxis;
 	}
 
-	float ColladaRecursiveImporter::getLocalScale() {
+	const float ColladaRecursiveImporter::getLocalScale() {
 		return localScale;
 	}
 
