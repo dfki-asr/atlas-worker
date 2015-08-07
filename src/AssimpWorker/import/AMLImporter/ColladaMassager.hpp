@@ -30,7 +30,6 @@ namespace AssimpWorker {
 		std::vector<std::pair<std::string, std::string>>& getExternalReferences();
 		const float getCurrentUnit();
 		const std::string getUpAxis();
-		void forceUnitMeter();
 
 	private:
 		std::map<std::string, std::string> idToNameMap;
@@ -49,6 +48,7 @@ namespace AssimpWorker {
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
 		std::string getNameForId(const std::string& id);
+		void forceUnitMeter();
 	};
 
 } // End namespace AssimpWorker
