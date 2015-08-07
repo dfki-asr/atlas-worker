@@ -21,6 +21,7 @@ namespace AssimpWorker {
 		childImporter(),
 		importer(NULL),
 		massagerRegistry(registry),
+		massager(NULL),
 		localScale(0),
 		parentScale(scale),
 		recursionDepth(0)
@@ -35,45 +36,58 @@ namespace AssimpWorker {
 		}
 	}
 
-	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
-		bool needToPurge = colladaFileURI.getFragment() != "";
-		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
+	void ColladaRecursiveImporter::addElementsTo(Folder& root){
+		preprocessCollada();
+		const aiScene* scene = runAssimpImport();
+		convertToFolderStructure(scene, root);
+		importChildColladas(root);
+	}
+
+	void ColladaRecursiveImporter::preprocessCollada(){
+		massager = massagerRegistry.getMassager(colladaFileURI);
 		massager->massage();
 		localScale = massager->getCurrentUnit();
 		colladaUpAxis = massager->getUpAxis();
-		if (parentScale != -1 && localScale != parentScale) {			
-			throw Exception("Inconsistent scales used in input files");
+		if (parentScale != -1 && localScale != parentScale) {
+			throw Exception("Inconsistent scales used in input files.");
 		}
+	}
+
+	const aiScene* ColladaRecursiveImporter::runAssimpImport(){
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
-			return;
+			throw Exception("Error while running Assimp.");
 		}
-		if (needToPurge) {
-			aiNode* startingPoint = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
-			if (startingPoint == NULL){
+		return scene;
+	}
+
+	void ColladaRecursiveImporter::convertToFolderStructure(const aiScene* scene, Folder& root){
+		if (colladaFileURI.getFragment() != "") {
+			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
+			if (startingPointToImportFrom == NULL){
 				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
-			sceneImporter.importSubtreeOfScene(root, startingPoint);
-		
-		} else {
+			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
+			Folder& startingPointToRestoreNames = findFolderWithName(root, colladaFileURI.getFragment());
+			massager->restoreOriginalNames(startingPointToRestoreNames);
+		}
+		else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.addElementsTo(root);
-		}
-		if (needToPurge){
-			Folder& startingPoint = findFolderWithName(root, colladaFileURI.getFragment());
-			massager->restoreOriginalNames(startingPoint);
-		} else {
 			massager->restoreOriginalNames(root);
 		}
+	}
+
+	void ColladaRecursiveImporter::importChildColladas(Folder& root){
 		auto externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, localScale);
 			childImporter.push_back(ci);
 			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
-			ci->addElementsTo( entryPoint);
+			ci->addElementsTo(entryPoint);
 		}
 	}
 

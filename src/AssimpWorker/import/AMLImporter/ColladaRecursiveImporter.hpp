@@ -33,11 +33,16 @@ namespace AssimpWorker {
 		Poco::URI pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
-
+		ColladaMassager* massager;
 		float localScale;
 		float parentScale;
 		int recursionDepth;
 		std::string colladaUpAxis;
+
+		void preprocessCollada();
+		const aiScene* runAssimpImport();
+		void convertToFolderStructure(const aiScene* scene, ATLAS::Model::Folder& root);
+		void importChildColladas(ATLAS::Model::Folder& root);
 
 		std::string fixRelativeReference(std::string relativeURI);
 		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, std::string name);
