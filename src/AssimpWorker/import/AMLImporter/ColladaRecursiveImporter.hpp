@@ -38,7 +38,6 @@ namespace AssimpWorker {
 		float parentScale;
 		int recursionDepth;
 		std::string colladaUpAxis;
-		void removeColladaIDs(ATLAS::Model::Folder& folder);
 
 		std::string fixRelativeReference(std::string relativeURI);
 		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, std::string name);

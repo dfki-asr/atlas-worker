@@ -85,13 +85,6 @@ namespace AssimpWorker {
 		return localScale;
 	}
 
-	void ColladaRecursiveImporter::removeColladaIDs(Folder& folder){
-		folder.removeAttribute("colladaID");
-		for (Folder& child : folder.getChildren()){
-			removeColladaIDs(child);
-		}
-	}
-
 	std::string ColladaRecursiveImporter::fixRelativeReference(std::string relativeURIasString){
 		std::string pathOfParentfile = colladaFileURI.getPath();
 		auto lastSlashIndex = pathOfParentfile.find_last_of('/');
