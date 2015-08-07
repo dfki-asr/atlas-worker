@@ -47,13 +47,10 @@ namespace AssimpWorker {
 		void addGeometryToFolder(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI, ColladaMassager& purger);
 		void addFrameTransformToFolder(ATLAS::Model::Folder& folder, aiMatrix4x4* transform);
 		void importColladaReference(Poco::URI& refURI, Poco::XML::Node* node, ATLAS::Model::Folder& root);
-
 		void importGeometryReference(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI);
 
-		void ensureTransform(ATLAS::Model::Folder& folder);
 		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
 		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
-		
 		void fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer);
 	};
 

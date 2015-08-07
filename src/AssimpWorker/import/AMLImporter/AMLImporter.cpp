@@ -46,7 +46,6 @@ namespace AssimpWorker {
 		Poco::XML::AutoPtr<Poco::XML::Document> document = parseAMLFile();
 		Poco::XML::NodeList* externalInterfaces = document->getElementsByTagName("ExternalInterface");
 		findAndImportColladaReferences(externalInterfaces, root);
-		ensureTransform(root);
 		removeColladaIDs(root);
 	}
 
@@ -139,11 +138,6 @@ namespace AssimpWorker {
 	void AMLImporter::setTransformFor(Folder& folder, const aiMatrix4x4& newTransfrom) {
 		DataDeletingBlob<aiMatrix4x4> blob(new aiMatrix4x4(newTransfrom));
 		folder.addBlob("transform", blob);
-	}
-
-	void AMLImporter::ensureTransform(Folder& folder) {
-		aiMatrix4x4 transform = getTransformFor(folder);
-		setTransformFor(folder, transform);
 	}
 
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
