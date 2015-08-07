@@ -149,15 +149,10 @@ namespace AssimpWorker {
 
 	void AMLImporter::fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer) {
 		float localScale = importer->getLocalScale();
-		ATLAS::Model::Blob* currentFolderTransform = root.getBlobByType("transform");
-		aiMatrix4x4 scaledMatrix;
-		if (currentFolderTransform) {
-			scaledMatrix = *(aiMatrix4x4*)currentFolderTransform->getData();
-		}
+		aiMatrix4x4 transform = getTransformFor(root);
 		aiMatrix4x4 scaling;
-		aiVector3t<float> scalingVector(localScale);
 		aiMatrix4x4::Scaling(aiVector3t<float>(localScale), scaling);
-		scaledMatrix *= scaling;
-		setTransformFor(root, scaledMatrix);
+		transform *= scaling;
+		setTransformFor(root, transform);
 	}
 } // End namespace AssimpWorker
