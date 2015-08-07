@@ -40,14 +40,15 @@ namespace AssimpWorker {
 		std::vector<std::pair<std::string, std::string>> parentIDToExternalURL;
 		int idCounter;
 		bool alreadyMassagedMyFile;	
+		float localScaleBeforeMassage;
+		std::string upAxis;
+
 		void readUpAxis();
 		void handleExternalReferences();
 		void purgeAllNodes();
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
 		std::string getNameForId(const std::string& id);
-		float localScaleBeforeMassage;
-		std::string upAxis;
 	};
 
 } // End namespace AssimpWorker
