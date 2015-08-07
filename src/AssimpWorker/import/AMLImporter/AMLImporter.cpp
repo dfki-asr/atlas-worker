@@ -30,15 +30,14 @@ namespace AssimpWorker {
 		amlFilePath(amlFilePath),
 		pathToWorkingDirectory(amlFilePath.substr(0, amlFilePath.find_last_of('/') + 1)),
 		frameImporter(),
-		importers(),
-		massagerRegistry()
+		colladaImporters()
 	{
 		return;
 	}
 
 	AMLImporter::~AMLImporter(){
-		for (auto importerEntry : importers){
-			delete(importerEntry);
+		for (auto i : colladaImporters){
+			delete(i);
 		}
 	}
 
@@ -125,34 +124,10 @@ namespace AssimpWorker {
 		uri.setPath(newPath);
 	}
 
-	aiMatrix4x4 AMLImporter::getTransformFor(Folder& folder) {
-		ATLAS::Model::Blob* currentFolderTransform = folder.getBlobByType("transform");
-		if (currentFolderTransform) {
-			return *(aiMatrix4x4*)currentFolderTransform->getData();
-		} else {
-			aiMatrix4x4 idendity;
-			return idendity;
-		}
-	}
-
-	void AMLImporter::setTransformFor(Folder& folder, const aiMatrix4x4& newTransfrom) {
-		DataDeletingBlob<aiMatrix4x4> blob(new aiMatrix4x4(newTransfrom));
-		folder.addBlob("transform", blob);
-	}
-
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
-		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry, -1.0);
-		importers.push_back(colladaImporter);
-		colladaImporter->addElementsTo(root);
-		fixScales(root, colladaImporter);
+		ColladaImporter* i = new ColladaImporter(colladaFileURI, log, pathToWorkingDirectory);
+		colladaImporters.push_back(i);
+		i->addElementsTo(root);
 	}
 
-	void AMLImporter::fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer) {
-		float localScale = importer->getLocalScale();
-		aiMatrix4x4 transform = getTransformFor(root);
-		aiMatrix4x4 scaling;
-		aiMatrix4x4::Scaling(aiVector3t<float>(localScale), scaling);
-		transform *= scaling;
-		setTransformFor(root, transform);
-	}
 } // End namespace AssimpWorker

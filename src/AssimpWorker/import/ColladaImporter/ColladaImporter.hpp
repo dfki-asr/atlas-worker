@@ -6,12 +6,29 @@
 */
 #pragma once
 
+#include "../Importer.hpp"
+#include "../AMLImporter/ColladaRecursiveImporter.hpp"
+#include "../AMLImporter/ColladaMassager.hpp"
+#include "../AMLImporter/ColladaMassagerRegistry.hpp"
+#include <Poco/URI.h>
+
 namespace AssimpWorker {
 
-	class ColladaImporter{
+	class ColladaImporter : public Importer {
 	public:
-		ColladaImporter();
+		ColladaImporter(const Poco::URI& url, Log& log, const Poco::URI& pathToWorkingDirectory);
 		virtual ~ColladaImporter();
+		virtual void addElementsTo(ATLAS::Model::Folder& root);
+
+	private:
+		const Poco::URI pathToWorkingDirectory;
+		const Poco::URI colladaFileURI;
+		std::vector<ColladaRecursiveImporter*> importers;
+		ColladaMassagerRegistry massagerRegistry;
+
+		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
+		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
+		void fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer);
 	};
 
 } // End namespace AssimpWorker
