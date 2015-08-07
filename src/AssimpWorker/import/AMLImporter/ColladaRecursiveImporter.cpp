@@ -59,14 +59,15 @@ namespace AssimpWorker {
 	}
 
 	void ColladaRecursiveImporter::convertToFolderStructure(const aiScene* scene, Folder& root){
-		if (colladaFileURI.getFragment() != "") {
-			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
+		const std::string fragment = colladaFileURI.getFragment();
+		if (fragment != "") {
+			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, fragment);
 			if (startingPointToImportFrom == NULL){
-				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
+				throw AMLException("Could not find a Node with id '" + fragment + "'");
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
-			Folder& startingPointToRestoreNames = findFolderWithName(root, colladaFileURI.getFragment());
+			Folder& startingPointToRestoreNames = findFolderWithName(root, fragment);
 			massager->restoreOriginalNames(startingPointToRestoreNames);
 		}
 		else {
