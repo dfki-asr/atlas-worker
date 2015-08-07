@@ -35,7 +35,6 @@ namespace AssimpWorker {
 		ColladaMassagerRegistry& massagerRegistry;
 		ColladaMassager* massager;
 		float parentScale;
-		std::string colladaUpAxis;
 
 		void preprocessCollada();
 		const aiScene* runAssimpImport();
