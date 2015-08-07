@@ -45,7 +45,6 @@ namespace AssimpWorker {
 		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, std::string name);
 		aiNode* findaiNodeWithName(aiNode* node, const std::string& name);
 		ATLAS::Model::Folder& findFolderWithColladaID(ATLAS::Model::Folder& folder, std::string id);
-		void restoreOriginalNames(aiNode* node);
 	};
 
 } // End namespace AssimpWorker
