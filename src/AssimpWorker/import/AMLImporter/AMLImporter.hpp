@@ -8,7 +8,9 @@
 
 #include "../Importer.hpp"
 #include "../AssimpImporter.hpp"
+#include "AMLFrameImporter.hpp"
 #include "ColladaMassager.hpp"
+#include "ColladaMassagerRegistry.hpp"
 #include "ColladaRecursiveImporter.hpp"
 #include <atlas/model/Asset.hpp>
 #include <assimp/scene.h>
@@ -16,7 +18,6 @@
 #include <Poco/DOM/AutoPtr.h>
 #include <Poco/DOM/Document.h>
 #include <Poco/URI.h>
-#include "AMLFrameImporter.hpp"
 
 namespace AssimpWorker {
 
@@ -25,8 +26,7 @@ namespace AssimpWorker {
 		AMLImporter(const std::string& amlFilePath, Log& log);
 		~AMLImporter();
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
-		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
-		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
+
 	private:
 		Poco::URI amlFilePath;
 		Poco::URI pathToWorkingDirectory;
@@ -47,11 +47,10 @@ namespace AssimpWorker {
 		void addGeometryToFolder(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI, ColladaMassager& purger);
 		void addFrameTransformToFolder(ATLAS::Model::Folder& folder, aiMatrix4x4* transform);
 		void importColladaReference(Poco::URI& refURI, Poco::XML::Node* node, ATLAS::Model::Folder& root);
-
 		void importGeometryReference(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI);
 
-		void ensureTransform(ATLAS::Model::Folder& folder);
-		
+		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
+		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
 		void fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer);
 	};
 

@@ -24,7 +24,7 @@ namespace AssimpWorker {
 		~ColladaRecursiveImporter();
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
-		float getLocalScale();
+		const float getLocalScale();
 		const std::string getColladaUpAxis();
 		
 	private:
@@ -33,18 +33,18 @@ namespace AssimpWorker {
 		Poco::URI pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
+		ColladaMassager* massager;
+		const float parentScale;
 
-		float localScale;
-		float parentScale;
-		int recursionDepth;
-		std::string colladaUpAxis;
-		void removeColladaIDs(ATLAS::Model::Folder& folder);
+		void preprocessCollada();
+		const aiScene* runAssimpImport();
+		void convertToFolderStructure(const aiScene* scene, ATLAS::Model::Folder& root);
+		void importChildColladas(ATLAS::Model::Folder& root);
 
-		std::string fixRelativeReference(std::string relativeURI);
-		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, std::string name);
+		std::string fixRelativeReference(const std::string relativeURI);
+		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, const std::string name);
 		aiNode* findaiNodeWithName(aiNode* node, const std::string& name);
-		ATLAS::Model::Folder& findFolderWithColladaID(ATLAS::Model::Folder& folder, std::string id);
-		void restoreOriginalNames(aiNode* node);
+		ATLAS::Model::Folder& findFolderWithColladaID(ATLAS::Model::Folder& folder, const std::string id);
 	};
 
 } // End namespace AssimpWorker

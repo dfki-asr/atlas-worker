@@ -21,9 +21,8 @@ namespace AssimpWorker {
 		childImporter(),
 		importer(NULL),
 		massagerRegistry(registry),
-		localScale(0),
-		parentScale(scale),
-		recursionDepth(0)
+		massager(NULL),
+		parentScale(scale)
 	{
 		return;
 	}
@@ -35,64 +34,69 @@ namespace AssimpWorker {
 		}
 	}
 
-	void ColladaRecursiveImporter::addElementsTo(ATLAS::Model::Folder& root){
-		bool needToPurge = colladaFileURI.getFragment() != "";
-		ColladaMassager* massager = massagerRegistry.getMassager(colladaFileURI);
+	void ColladaRecursiveImporter::addElementsTo(Folder& root){
+		preprocessCollada();
+		const aiScene* scene = runAssimpImport();
+		convertToFolderStructure(scene, root);
+		importChildColladas(root);
+	}
+
+	void ColladaRecursiveImporter::preprocessCollada(){
+		massager = massagerRegistry.getMassager(colladaFileURI);
 		massager->massage();
-		localScale = massager->getCurrentUnit();
-		colladaUpAxis = massager->getUpAxis();
-		if (parentScale != -1 && localScale != parentScale) {			
-			throw Exception("Inconsistent scales used in input files");
+		if (parentScale != -1 && massager->getCurrentUnit() != parentScale) {
+			throw Exception("Inconsistent scales used in input files.");
 		}
+	}
+
+	const aiScene* ColladaRecursiveImporter::runAssimpImport(){
 		this->importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
-			return;
+			throw Exception("Error while running Assimp.");
 		}
-		if (needToPurge) {
-			aiNode* startingPoint = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
-			if (startingPoint == NULL){
-				throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
+		return scene;
+	}
+
+	void ColladaRecursiveImporter::convertToFolderStructure(const aiScene* scene, Folder& root){
+		const std::string fragment = colladaFileURI.getFragment();
+		if (fragment != "") {
+			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, fragment);
+			if (startingPointToImportFrom == NULL){
+				throw AMLException("Could not find a Node with id '" + fragment + "'");
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
-			sceneImporter.importSubtreeOfScene(root, startingPoint);
-		
-		} else {
+			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
+			Folder& startingPointToRestoreNames = findFolderWithName(root, fragment);
+			massager->restoreOriginalNames(startingPointToRestoreNames);
+		}
+		else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
 			sceneImporter.addElementsTo(root);
-		}
-		if (needToPurge){
-			Folder& startingPoint = findFolderWithName(root, colladaFileURI.getFragment());
-			massager->restoreOriginalNames(startingPoint);
-		} else {
 			massager->restoreOriginalNames(root);
 		}
+	}
+
+	void ColladaRecursiveImporter::importChildColladas(Folder& root){
 		auto externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
-			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, localScale);
+			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, massager->getCurrentUnit());
 			childImporter.push_back(ci);
 			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
-			ci->addElementsTo( entryPoint);
+			ci->addElementsTo(entryPoint);
 		}
 	}
 
 	const std::string ColladaRecursiveImporter::getColladaUpAxis(){
-		return colladaUpAxis;
+		return massager->getUpAxis();
 	}
 
-	float ColladaRecursiveImporter::getLocalScale() {
-		return localScale;
+	const float ColladaRecursiveImporter::getLocalScale() {
+		return massager->getCurrentUnit();
 	}
 
-	void ColladaRecursiveImporter::removeColladaIDs(Folder& folder){
-		folder.removeAttribute("colladaID");
-		for (Folder& child : folder.getChildren()){
-			removeColladaIDs(child);
-		}
-	}
-
-	std::string ColladaRecursiveImporter::fixRelativeReference(std::string relativeURIasString){
+	std::string ColladaRecursiveImporter::fixRelativeReference(const std::string relativeURIasString){
 		std::string pathOfParentfile = colladaFileURI.getPath();
 		auto lastSlashIndex = pathOfParentfile.find_last_of('/');
 		pathOfParentfile.erase(lastSlashIndex+1);
@@ -100,7 +104,7 @@ namespace AssimpWorker {
 		return pathOfParentfile;
 	}
 
-	Folder& ColladaRecursiveImporter::findFolderWithName(Folder& folder, std::string name){
+	Folder& ColladaRecursiveImporter::findFolderWithName(Folder& folder, const std::string name){
 		if (name == folder.getName()){
 			return folder;
 		}
@@ -115,7 +119,7 @@ namespace AssimpWorker {
 		return *found;
 	}
 
-	Folder& ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, std::string id){
+	Folder& ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, const std::string id){
 		if (id == (folder).getAttribute("colladaID")){
 			return folder;
 		}

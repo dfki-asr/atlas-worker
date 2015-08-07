@@ -28,9 +28,8 @@ namespace AssimpWorker {
 		void restoreOriginalNames(ATLAS::Model::Folder& folder);
 
 		std::vector<std::pair<std::string, std::string>>& getExternalReferences();
-		float getCurrentUnit();
+		const float getCurrentUnit();
 		const std::string getUpAxis();
-		void forceUnitMeter();
 
 	private:
 		std::map<std::string, std::string> idToNameMap;
@@ -40,14 +39,16 @@ namespace AssimpWorker {
 		std::vector<std::pair<std::string, std::string>> parentIDToExternalURL;
 		int idCounter;
 		bool alreadyMassagedMyFile;	
+		float localScaleBeforeMassage;
+		std::string upAxis;
+
 		void readUpAxis();
 		void handleExternalReferences();
 		void purgeAllNodes();
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
 		std::string getNameForId(const std::string& id);
-		float localScaleBeforeMassage;
-		std::string upAxis;
+		void forceUnitMeter();
 	};
 
 } // End namespace AssimpWorker
