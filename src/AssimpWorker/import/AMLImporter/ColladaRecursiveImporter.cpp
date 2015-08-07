@@ -24,7 +24,6 @@ namespace AssimpWorker {
 		massager(NULL),
 		localScale(0),
 		parentScale(scale),
-		recursionDepth(0)
 	{
 		return;
 	}

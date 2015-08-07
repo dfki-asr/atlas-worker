@@ -36,7 +36,6 @@ namespace AssimpWorker {
 		ColladaMassager* massager;
 		float localScale;
 		float parentScale;
-		int recursionDepth;
 		std::string colladaUpAxis;
 
 		void preprocessCollada();
