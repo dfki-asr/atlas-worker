@@ -22,7 +22,6 @@ namespace AssimpWorker {
 		importer(NULL),
 		massagerRegistry(registry),
 		massager(NULL),
-		localScale(0),
 		parentScale(scale),
 	{
 		return;
@@ -45,9 +44,8 @@ namespace AssimpWorker {
 	void ColladaRecursiveImporter::preprocessCollada(){
 		massager = massagerRegistry.getMassager(colladaFileURI);
 		massager->massage();
-		localScale = massager->getCurrentUnit();
 		colladaUpAxis = massager->getUpAxis();
-		if (parentScale != -1 && localScale != parentScale) {
+		if (parentScale != -1 && massager->getCurrentUnit() != parentScale) {
 			throw Exception("Inconsistent scales used in input files.");
 		}
 	}
@@ -83,7 +81,7 @@ namespace AssimpWorker {
 		auto externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
-			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, localScale);
+			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, massager->getCurrentUnit());
 			childImporter.push_back(ci);
 			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
 			ci->addElementsTo(entryPoint);
@@ -95,7 +93,7 @@ namespace AssimpWorker {
 	}
 
 	const float ColladaRecursiveImporter::getLocalScale() {
-		return localScale;
+		return massager->getCurrentUnit();
 	}
 
 	std::string ColladaRecursiveImporter::fixRelativeReference(std::string relativeURIasString){

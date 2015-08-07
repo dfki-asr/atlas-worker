@@ -34,7 +34,6 @@ namespace AssimpWorker {
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
 		ColladaMassager* massager;
-		float localScale;
 		float parentScale;
 		std::string colladaUpAxis;
 
