@@ -95,7 +95,7 @@ namespace AssimpWorker {
 		return massager->getCurrentUnit();
 	}
 
-	std::string ColladaRecursiveImporter::fixRelativeReference(std::string relativeURIasString){
+	std::string ColladaRecursiveImporter::fixRelativeReference(const std::string relativeURIasString){
 		std::string pathOfParentfile = colladaFileURI.getPath();
 		auto lastSlashIndex = pathOfParentfile.find_last_of('/');
 		pathOfParentfile.erase(lastSlashIndex+1);
@@ -103,7 +103,7 @@ namespace AssimpWorker {
 		return pathOfParentfile;
 	}
 
-	Folder& ColladaRecursiveImporter::findFolderWithName(Folder& folder, std::string name){
+	Folder& ColladaRecursiveImporter::findFolderWithName(Folder& folder, const std::string name){
 		if (name == folder.getName()){
 			return folder;
 		}
@@ -118,7 +118,7 @@ namespace AssimpWorker {
 		return *found;
 	}
 
-	Folder& ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, std::string id){
+	Folder& ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, const std::string id){
 		if (id == (folder).getAttribute("colladaID")){
 			return folder;
 		}
