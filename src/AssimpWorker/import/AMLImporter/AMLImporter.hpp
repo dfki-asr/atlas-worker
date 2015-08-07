@@ -25,8 +25,7 @@ namespace AssimpWorker {
 		AMLImporter(const std::string& amlFilePath, Log& log);
 		~AMLImporter();
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
-		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
-		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
+
 	private:
 		Poco::URI amlFilePath;
 		Poco::URI pathToWorkingDirectory;
@@ -51,6 +50,8 @@ namespace AssimpWorker {
 		void importGeometryReference(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI);
 
 		void ensureTransform(ATLAS::Model::Folder& folder);
+		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
+		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
 		
 		void fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer);
 	};
