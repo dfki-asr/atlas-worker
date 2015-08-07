@@ -101,9 +101,11 @@ namespace AssimpWorker{
 			double ry = ::atof(frame->getNodeByPath("/Attribute[@Name='ry']/Value")->innerText().c_str());
 			double rz = ::atof(frame->getNodeByPath("/Attribute[@Name='rz']/Value")->innerText().c_str());
 			const double toRad = M_PI / 180;
-			auto fixedRotations = aiVector3t<float>(rx*toRad, ry*toRad, rz*toRad);
+			aiMatrix4x4 rotation;
 			aiMatrix4x4 localTransform;
-			localTransform.FromEulerAnglesXYZ(fixedRotations);
+			localTransform *= aiMatrix4x4::RotationZ(rz*toRad, rotation);
+			localTransform *= aiMatrix4x4::RotationY(ry*toRad, rotation);
+			localTransform *= aiMatrix4x4::RotationX(rx*toRad, rotation);
 			localTransform.a4 = (float)tx;
 			localTransform.b4 = (float)ty;
 			localTransform.c4 = (float)tz;
