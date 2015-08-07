@@ -7,6 +7,7 @@
 
 add_subdirectory(AiImporter)
 add_subdirectory(AMLImporter)
+add_subdirectory(ColladaImporter)
 
 SET(IMPORT_HPP_FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/AssimpImporter.hpp
@@ -26,9 +27,11 @@ set(import_SRC_GRP ${IMPORT_HPP_FILES}
 		   ${IMPORT_SRC_FILES} PARENT_SCOPE)
 set(import_HPP_FILES ${IMPORT_HPP_FILES}
 		     ${import_AI_HPP_FILES}
-		     ${import_AML_HPP_FILES} PARENT_SCOPE)
+		     ${import_AML_HPP_FILES}
+			 ${import_COLLADA_HPP_FILES} PARENT_SCOPE)
 
 set(import_SRC_FILES ${IMPORT_SRC_FILES}
 		     ${import_AI_SRC_FILES}
-		     ${import_AML_SRC_FILES} PARENT_SCOPE)
+		     ${import_AML_SRC_FILES}
+			 ${import_COLLADA_SRC_FILES} PARENT_SCOPE)
 
