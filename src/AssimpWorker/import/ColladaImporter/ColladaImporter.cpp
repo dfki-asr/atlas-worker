@@ -10,7 +10,7 @@ namespace AssimpWorker {
 
 	using ATLAS::Model::Folder;
 
-	ColladaImporter::ColladaImporter(const Poco::URI& url, Log& log, const Poco::URI& pathToWorkingDirectory) :
+	ColladaImporter::ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory) :
 		Importer(url.toString(), log),
 		colladaFileURI(url),
 		pathToWorkingDirectory(pathToWorkingDirectory),

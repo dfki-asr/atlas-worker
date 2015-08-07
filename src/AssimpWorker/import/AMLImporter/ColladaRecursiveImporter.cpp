@@ -14,7 +14,7 @@ namespace AssimpWorker {
 	using ATLAS::Model::DataDeletingBlob;
 	using ATLAS::Model::Folder;
 
-	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry, float scale) :
+	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& registry, float scale) :
 		Importer(colladaFileURI.toString(), log),
 		pathToWorkingDirectory(pathToWorkingDirectory),
 		colladaFileURI(colladaFileURI),
@@ -65,13 +65,13 @@ namespace AssimpWorker {
 			if (startingPointToImportFrom == NULL){
 				throw AMLException("Could not find a Node with id '" + fragment + "'");
 			}
-			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
+			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
 			Folder& startingPointToRestoreNames = findFolderWithName(root, fragment);
 			massager->restoreOriginalNames(startingPointToRestoreNames);
 		}
 		else {
-			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
+			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
 			sceneImporter.addElementsTo(root);
 			massager->restoreOriginalNames(root);
 		}
