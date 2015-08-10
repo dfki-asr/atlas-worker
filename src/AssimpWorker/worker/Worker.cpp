@@ -105,16 +105,12 @@ namespace AssimpWorker {
 	}
 
 	std::string Worker::importColladaAndStore(const std::string& filesystemPathToColladaFile) {
-		AssimpWorker::AssimpImporter importer;
-		const aiScene* scene = importer.importSceneFromFile(filesystemPathToColladaFile, log);
-		if (!scene) {
-			return "";
-		}
-		std::cout << "AssImp import completed, converting..." << std::endl;
-		std::string pathToFolder = filesystemPathToColladaFile.substr(0, filesystemPathToColladaFile.find_last_of('/')+1);
-		AiSceneImporter sceneImporter(scene, pathToFolder, log);
+		std::cout << "importColladaAndStore, filesystemPathToColladaFile: " << filesystemPathToColladaFile << std::endl;
+		std::string pathToFolder = filesystemPathToColladaFile.substr(0, filesystemPathToColladaFile.find_last_of('/') + 1);
+		Poco::URI& uri = Poco::URI(filesystemPathToColladaFile);
+		AssimpWorker::ColladaImporter importer = AssimpWorker::ColladaImporter(uri, log, pathToFolder);
 		Asset asset;
-		sceneImporter.addElementsTo(asset);
+		importer.addElementsTo(asset);
 		return storeAsset(asset);
 	}
 
