@@ -57,12 +57,12 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::readXML(){
-		std::ifstream amlStream(uri.getPath());
-		Poco::XML::InputSource amlFileSource(amlStream);
+		std::ifstream colladaStream(uri.getPath());
+		Poco::XML::InputSource colladaFileSource(colladaStream);
 		Poco::XML::DOMParser parser;
 		parser.setFeature(Poco::XML::XMLReader::FEATURE_NAMESPACES, false);
-		xmlDocument = parser.parse(&amlFileSource);
-		amlStream.close();
+		xmlDocument = parser.parse(&colladaFileSource);
+		colladaStream.close();
 	}
 
 	void ColladaMassager::readUpAxis(){
