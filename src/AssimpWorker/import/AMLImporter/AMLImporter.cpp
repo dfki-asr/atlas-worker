@@ -38,7 +38,7 @@ namespace AssimpWorker {
 
 	AMLImporter::~AMLImporter(){
 		for (auto i : colladaImporters){
-			delete(i);
+			delete i;
 		}
 	}
 
