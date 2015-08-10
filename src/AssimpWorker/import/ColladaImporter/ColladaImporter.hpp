@@ -16,7 +16,6 @@ namespace AssimpWorker {
 
 	class ColladaImporter : public Importer {
 	public:
-		ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory);
 		ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& massagerRegistry);
 		virtual ~ColladaImporter();
 		virtual void addElementsTo(ATLAS::Model::Folder& root);
@@ -25,7 +24,7 @@ namespace AssimpWorker {
 		const std::string& pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 		std::vector<ColladaRecursiveImporter*> importers;
-		ColladaMassagerRegistry massagerRegistry;
+		ColladaMassagerRegistry& massagerRegistry;
 
 		aiMatrix4x4 getTransformFor(ATLAS::Model::Folder& folder);
 		void setTransformFor(ATLAS::Model::Folder& folder, const aiMatrix4x4& newTransfrom);
