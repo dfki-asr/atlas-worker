@@ -43,7 +43,9 @@ namespace AssimpWorker {
 		std::string upAxis;
 
 		void readUpAxis();
-		void handleExternalReferences();
+		void extractExternalReferences();
+		const std::string getURLOfReference(Poco::XML::Node* node);
+		const std::string getIDOfParentNode(Poco::XML::Node* node);
 		void purgeAllNodes();
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
