@@ -17,6 +17,7 @@ namespace AssimpWorker {
 	class ColladaImporter : public Importer {
 	public:
 		ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory);
+		ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& massagerRegistry);
 		virtual ~ColladaImporter();
 		virtual void addElementsTo(ATLAS::Model::Folder& root);
 

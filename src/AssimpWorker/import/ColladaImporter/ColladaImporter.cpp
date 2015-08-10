@@ -20,6 +20,16 @@ namespace AssimpWorker {
 		return;
 	}
 
+	ColladaImporter::ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& massagerRegistry) :
+		Importer(url.toString(), log),
+		colladaFileURI(url),
+		pathToWorkingDirectory(pathToWorkingDirectory),
+		importers(),
+		massagerRegistry(massagerRegistry)
+	{
+		return;
+	}
+
 	ColladaImporter::~ColladaImporter(){
 		return;
 	}
