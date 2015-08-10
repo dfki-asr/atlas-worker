@@ -21,7 +21,9 @@ namespace AssimpWorker {
 	}
 
 	ColladaImporter::~ColladaImporter(){
-		return;
+		for (auto i : importers){
+			delete i;
+		}
 	}
 
 	void ColladaImporter::addElementsTo(Folder& root){
