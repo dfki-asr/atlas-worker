@@ -73,7 +73,8 @@ namespace AssimpWorker {
 	void Worker::importSingleColladaFile() {
 		std::istream& response = storageService.retrieveFile(currentWorkUnit->sourcePath);
 		// Patches welcome...
-		Poco::TemporaryFile tmp;
+		std::string decompressionPath = Configuration::getInstance().get("decompression-path").as<std::string>();
+		Poco::TemporaryFile tmp(decompressionPath);
 		std::ofstream ostr;
 		ostr.open(tmp.path().c_str());
 		std::streamsize n;
@@ -105,16 +106,13 @@ namespace AssimpWorker {
 	}
 
 	std::string Worker::importColladaAndStore(const std::string& filesystemPathToColladaFile) {
-		AssimpWorker::AssimpImporter importer;
-		const aiScene* scene = importer.importSceneFromFile(filesystemPathToColladaFile, log);
-		if (!scene) {
-			return "";
-		}
-		std::cout << "AssImp import completed, converting..." << std::endl;
-		std::string pathToFolder = filesystemPathToColladaFile.substr(0, filesystemPathToColladaFile.find_last_of('/')+1);
-		AiSceneImporter sceneImporter(scene, pathToFolder, log);
+		std::cout << "importColladaAndStore, filesystemPathToColladaFile: " << filesystemPathToColladaFile << std::endl;
+		std::string pathToFolder = filesystemPathToColladaFile.substr(0, filesystemPathToColladaFile.find_last_of('/') + 1);
+		Poco::URI& uri = Poco::URI(filesystemPathToColladaFile);
+		ColladaMassagerRegistry& registry = ColladaMassagerRegistry();
+		AssimpWorker::ColladaImporter importer = AssimpWorker::ColladaImporter(uri, log, pathToFolder, registry);
 		Asset asset;
-		sceneImporter.addElementsTo(asset);
+		importer.addElementsTo(asset);
 		return storeAsset(asset);
 	}
 

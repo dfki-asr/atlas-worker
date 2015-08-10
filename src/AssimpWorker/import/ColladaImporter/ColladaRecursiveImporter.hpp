@@ -19,7 +19,7 @@ namespace AssimpWorker {
 	class ColladaRecursiveImporter :public Importer
 	{
 	public:
-		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, Poco::URI pathToWorkingDirectory, ColladaMassagerRegistry& registry, float parentScale);
+		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& registry, float parentScale);
 
 		~ColladaRecursiveImporter();
 
@@ -30,7 +30,7 @@ namespace AssimpWorker {
 	private:
 		AssimpImporter* importer;
 		std::vector<ColladaRecursiveImporter*> childImporter;
-		Poco::URI pathToWorkingDirectory;
+		const std::string& pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
 		ColladaMassager* massager;

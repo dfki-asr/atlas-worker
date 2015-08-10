@@ -46,23 +46,23 @@ namespace AssimpWorker {
 			readXML();
 			readUpAxis();
 			forceUnitMeter();
-			handleExternalReferences();
+			extractExternalReferences();
 			purgeAllNodes();
 			writePurgedXML();
 			alreadyMassagedMyFile = true;
 		}
 		catch (const std::exception& e) {
-			std::cout << "Exception while trying to purge names from Collada file: Error #" << e.what() << std::endl;
+			std::cout << "Exception while trying to purge names from Collada file: " << e.what() << std::endl;
 		}
 	}
 
 	void ColladaMassager::readXML(){
-		std::ifstream amlStream(uri.getPath());
-		Poco::XML::InputSource amlFileSource(amlStream);
+		std::ifstream colladaStream(uri.getPath());
+		Poco::XML::InputSource colladaFileSource(colladaStream);
 		Poco::XML::DOMParser parser;
 		parser.setFeature(Poco::XML::XMLReader::FEATURE_NAMESPACES, false);
-		xmlDocument = parser.parse(&amlFileSource);
-		amlStream.close();
+		xmlDocument = parser.parse(&colladaFileSource);
+		colladaStream.close();
 	}
 
 	void ColladaMassager::readUpAxis(){
@@ -77,33 +77,43 @@ namespace AssimpWorker {
 		return upAxis;
 	}
 
-	void ColladaMassager::handleExternalReferences(){
+	void ColladaMassager::extractExternalReferences(){
 		Poco::XML::NodeList* nodes = xmlDocument->getElementsByTagName("instance_node");
 		for (int i = 0; i < nodes->length(); ++i) {
 			Poco::XML::Node* node = nodes->item(i);
-			Poco::XML::Node* urlNode = node->attributes()->getNamedItem("url");
-			if (urlNode == NULL){
-				continue;
-			}
-			std::string url = urlNode->getNodeValue();
+			std::string url = getURLOfReference(node);
 			if (url.at(0) == '#'){
 				continue;
 			}
-			Poco::XML::Node* parent = node->parentNode();
-			Poco::XML::Node* parentIdNode = parent->attributes()->getNamedItem("id");
-			std::string id;
-			if (parentIdNode != NULL){
-				id = parentIdNode->getNodeValue();
-			} else {
-				id = "generated_" + idCounter;
-				idCounter++;
-				Poco::XML::Node* idNode = xmlDocument->createElement("id");
-				idNode->setNodeValue(id);
-				parent->attributes()->setNamedItem(idNode);
-			}
+			const std::string id = getIDOfParentNode(node);
 			parentIDToExternalURL.push_back(std::make_pair(id, url));
 			node->attributes()->removeNamedItem("url");
 		}
+	}
+
+	const std::string ColladaMassager::getURLOfReference(Poco::XML::Node* node){
+		Poco::XML::Node* urlNode = node->attributes()->getNamedItem("url");
+		if (urlNode == NULL){
+			return "#";
+		}
+		return urlNode->getNodeValue();
+	}
+
+	const std::string ColladaMassager::getIDOfParentNode(Poco::XML::Node* node){
+		Poco::XML::Node* parent = node->parentNode();
+		Poco::XML::Node* parentIdNode = parent->attributes()->getNamedItem("id");
+		std::string id;
+		if (parentIdNode != NULL){
+			id = parentIdNode->getNodeValue();
+		}
+		else {
+			id = "generated_" + idCounter;
+			idCounter++;
+			Poco::XML::Node* idNode = xmlDocument->createElement("id");
+			idNode->setNodeValue(id);
+			parent->attributes()->setNamedItem(idNode);
+		}
+		return id;
 	}
 
 	const float ColladaMassager::getCurrentUnit() {
