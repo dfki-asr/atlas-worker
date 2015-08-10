@@ -8,7 +8,7 @@
 
 #include "AMLImporter.hpp"
 #include "../../internal/Exception.hpp"
-#include "ColladaMassagerRegistry.hpp"
+#include "../ColladaImporter/ColladaMassagerRegistry.hpp"
 #include <fstream>
 #include <iostream>
 #include <math.h>

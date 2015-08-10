@@ -7,9 +7,9 @@
 #pragma once
 
 #include "../Importer.hpp"
-#include "../AMLImporter/ColladaRecursiveImporter.hpp"
-#include "../AMLImporter/ColladaMassager.hpp"
-#include "../AMLImporter/ColladaMassagerRegistry.hpp"
+#include "ColladaRecursiveImporter.hpp"
+#include "ColladaMassager.hpp"
+#include "ColladaMassagerRegistry.hpp"
 #include <Poco/URI.h>
 
 namespace AssimpWorker {
