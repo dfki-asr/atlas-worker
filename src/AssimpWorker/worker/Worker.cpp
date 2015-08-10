@@ -73,7 +73,8 @@ namespace AssimpWorker {
 	void Worker::importSingleColladaFile() {
 		std::istream& response = storageService.retrieveFile(currentWorkUnit->sourcePath);
 		// Patches welcome...
-		Poco::TemporaryFile tmp;
+		std::string decompressionPath = Configuration::getInstance().get("decompression-path").as<std::string>();
+		Poco::TemporaryFile tmp(decompressionPath);
 		std::ofstream ostr;
 		ostr.open(tmp.path().c_str());
 		std::streamsize n;
