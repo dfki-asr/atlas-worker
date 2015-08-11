@@ -36,7 +36,7 @@ namespace AssimpWorker {
 		std::string extractFilneNameFromURI(Poco::URI& refURI);
 		std::string extractRefTypeOfExternalInterface(Poco::XML::Node* externatlInterface);
 		Poco::URI extractRefURIOfExternalInterface(Poco::XML::Node* externatlInterface);
-		void findAndImportColladaReferences(Poco::XML::NodeList* externalInterfaces, ATLAS::Model::Folder& root);
+		void findAndImportColladaReferences(Poco::XML::AutoPtr<Poco::XML::NodeList> externalInterfaces, ATLAS::Model::Folder& root);
 		bool uriReferencesColladaFile(Poco::URI refURI);
 		void fixColladaURIPath(Poco::URI& uri);
 

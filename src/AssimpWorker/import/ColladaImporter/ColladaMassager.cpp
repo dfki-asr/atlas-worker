@@ -66,7 +66,7 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::readUpAxis(){
-		Poco::XML::NodeList* nodes = xmlDocument->getElementsByTagName("up_axis");
+		Poco::AutoPtr<Poco::XML::NodeList> nodes = xmlDocument->getElementsByTagName("up_axis");
 		for (int i = 0; i < nodes->length(); i++) {
 			Poco::XML::Node* upAxisNode = nodes->item(i);
 			upAxis = upAxisNode->innerText();
@@ -78,7 +78,7 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::extractExternalReferences(){
-		Poco::XML::NodeList* nodes = xmlDocument->getElementsByTagName("instance_node");
+		Poco::AutoPtr<Poco::XML::NodeList> nodes = xmlDocument->getElementsByTagName("instance_node");
 		for (int i = 0; i < nodes->length(); ++i) {
 			Poco::XML::Node* node = nodes->item(i);
 			std::string url = getURLOfReference(node);
@@ -125,14 +125,14 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::purgeAllNodes(){
-		Poco::XML::NodeList* nodes = xmlDocument->getElementsByTagName("node");
+		Poco::AutoPtr<Poco::XML::NodeList> nodes = xmlDocument->getElementsByTagName("node");
 		for (int i = 0; i < nodes->length(); ++i) {
 			purgeNode(nodes->item(i));
 		}
 	}
 
 	void ColladaMassager::forceUnitMeter() {
-		Poco::XML::NodeList* unitNodes = xmlDocument->getElementsByTagName("unit");
+		Poco::AutoPtr<Poco::XML::NodeList> unitNodes = xmlDocument->getElementsByTagName("unit");
 		for (int i = 0; i < unitNodes->length(); i++) {
 			Poco::XML::Node* meterNode = unitNodes->item(i)->attributes()->getNamedItem("meter");
 			Poco::XML::Node* nameNode = unitNodes->item(i)->attributes()->getNamedItem("name");

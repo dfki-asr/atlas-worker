@@ -44,7 +44,7 @@ namespace AssimpWorker {
 
 	void AMLImporter::addElementsTo(Folder& root) {
 		Poco::XML::AutoPtr<Poco::XML::Document> document = parseAMLFile();
-		Poco::XML::NodeList* externalInterfaces = document->getElementsByTagName("ExternalInterface");
+		Poco::XML::AutoPtr<Poco::XML::NodeList> externalInterfaces = document->getElementsByTagName("ExternalInterface");
 		findAndImportColladaReferences(externalInterfaces, root);
 		removeColladaIDs(root);
 	}
@@ -71,7 +71,7 @@ namespace AssimpWorker {
 		return doc;
 	}
 
-	void AMLImporter::findAndImportColladaReferences(Poco::XML::NodeList* externalInterfaces, Folder& root) {
+	void AMLImporter::findAndImportColladaReferences(Poco::XML::AutoPtr<Poco::XML::NodeList> externalInterfaces, Folder& root) {
 		for (int i = 0; i < externalInterfaces->length(); ++i) {
 			Poco::XML::Node* node = externalInterfaces->item(i);
 			Poco::URI refURI = extractRefURIOfExternalInterface(node);
