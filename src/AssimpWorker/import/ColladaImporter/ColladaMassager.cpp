@@ -87,12 +87,14 @@ namespace AssimpWorker {
 			}
 			const std::string id = getIDOfParentNode(node);
 			parentIDToExternalURL.push_back(std::make_pair(id, url));
-			node->attributes()->removeNamedItem("url");
+			Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = node->attributes();
+			attributesMap->removeNamedItem("url");
 		}
 	}
 
 	const std::string ColladaMassager::getURLOfReference(Poco::XML::Node* node){
-		Poco::XML::Node* urlNode = node->attributes()->getNamedItem("url");
+		Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = node->attributes();
+		Poco::XML::Node* urlNode = attributesMap->getNamedItem("url");
 		if (urlNode == NULL){
 			return "#";
 		}
@@ -101,7 +103,8 @@ namespace AssimpWorker {
 
 	const std::string ColladaMassager::getIDOfParentNode(Poco::XML::Node* node){
 		Poco::XML::Node* parent = node->parentNode();
-		Poco::XML::Node* parentIdNode = parent->attributes()->getNamedItem("id");
+		Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = parent->attributes();
+		Poco::XML::Node* parentIdNode = attributesMap->getNamedItem("id");
 		std::string id;
 		if (parentIdNode != NULL){
 			id = parentIdNode->getNodeValue();
@@ -111,7 +114,8 @@ namespace AssimpWorker {
 			idCounter++;
 			Poco::XML::Node* idNode = xmlDocument->createElement("id");
 			idNode->setNodeValue(id);
-			parent->attributes()->setNamedItem(idNode);
+			attributesMap->setNamedItem(idNode);
+			idNode->release();
 		}
 		return id;
 	}
@@ -134,8 +138,9 @@ namespace AssimpWorker {
 	void ColladaMassager::forceUnitMeter() {
 		Poco::AutoPtr<Poco::XML::NodeList> unitNodes = xmlDocument->getElementsByTagName("unit");
 		for (int i = 0; i < unitNodes->length(); i++) {
-			Poco::XML::Node* meterNode = unitNodes->item(i)->attributes()->getNamedItem("meter");
-			Poco::XML::Node* nameNode = unitNodes->item(i)->attributes()->getNamedItem("name");
+			Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = unitNodes->item(i)->attributes();
+			Poco::XML::Node* meterNode = attributesMap->getNamedItem("meter");
+			Poco::XML::Node* nameNode = attributesMap->getNamedItem("name");
 			localScaleBeforeMassage = atof((meterNode->getNodeValue()).c_str());
 			meterNode->setNodeValue("1");
 			nameNode->setNodeValue("m");
@@ -143,15 +148,16 @@ namespace AssimpWorker {
 	}
 
 	void ColladaMassager::purgeNode(Poco::XML::Node* node){
-		Poco::XML::Node* nameNode = node->attributes()->getNamedItem("name");
-		Poco::XML::Node* idNode = node->attributes()->getNamedItem("id");
+		Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = node->attributes();
+		Poco::XML::Node* nameNode = attributesMap->getNamedItem("name");
+		Poco::XML::Node* idNode = attributesMap->getNamedItem("id");
 		if (nameNode == NULL || idNode == NULL) {
 			return;
 		}
 		std::string name = nameNode->getNodeValue();
 		std::string id = idNode->getNodeValue();
 		idToNameMap.insert(std::make_pair(id, name));
-		node->attributes()->removeNamedItem("name");
+		attributesMap->removeNamedItem("name");
 	}
 
 	void ColladaMassager::writePurgedXML(){

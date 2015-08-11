@@ -9,6 +9,7 @@
 #include "AMLFrameImporter.hpp"
 #include "../../internal/Exception.hpp"
 #include <Poco/DOM/NamedNodeMap.h>
+#include <Poco/DOM/AutoPtr.h>
 
 namespace AssimpWorker{
 
@@ -48,7 +49,7 @@ namespace AssimpWorker{
 
 	std::string AMLFrameImporter::getNameAttributeForNode(Poco::XML::Node* node) {
 		std::string name = node->nodeName();
-		Poco::XML::NamedNodeMap* attributes = node->attributes();
+		Poco::XML::AutoPtr<Poco::XML::NamedNodeMap> attributes = node->attributes();
 		Poco::XML::Node* nameNode = attributes->getNamedItem("Name");
 		if (nameNode == NULL) {
 			nameNode = attributes->getNamedItem("name");
