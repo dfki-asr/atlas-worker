@@ -63,7 +63,7 @@ namespace AssimpWorker {
 		if (fragment != "") {
 			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, fragment);
 			if (startingPointToImportFrom == NULL){
-				throw AMLException("Could not find a Node with id '" + fragment + "'");
+				throw Exception("Could not find a Node with id '" + fragment + "'");
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
@@ -116,6 +116,9 @@ namespace AssimpWorker {
 				break;
 			}
 		}
+		if (found == NULL){
+			throw Exception("Could not find Node with id: " + name);
+		}
 		return *found;
 	}
 
@@ -130,6 +133,9 @@ namespace AssimpWorker {
 			if (found != NULL){
 				break;
 			}
+		}
+		if (found == NULL){
+			throw Exception("Could not find Node with id: " + id);
 		}
 		return *found;
 	}
