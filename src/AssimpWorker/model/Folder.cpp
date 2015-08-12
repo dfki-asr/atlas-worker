@@ -92,6 +92,8 @@ namespace Model {
 		std::string hash = blob.getHash();
 		if (!blobHolder.hasBlob(hash)){
 			blobHolder.addBlob(blob);
+		} else {
+			blob.cleanup();
 		}
 		blobs.erase(type); // Re-adding a blob should overwrite it
 		blobs.insert(std::pair<std::string, std::string>(type,hash));
