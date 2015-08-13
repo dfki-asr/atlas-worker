@@ -68,6 +68,9 @@ namespace AssimpWorker {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
 			Folder* startingPointToRestoreNames = findFolderWithName(root, fragment);
+			if (startingPointToRestoreNames == NULL){
+				throw Exception("Could not find Node with id " + fragment);
+			}
 			massager->restoreOriginalNames(*startingPointToRestoreNames);
 		}
 		else {
@@ -84,6 +87,9 @@ namespace AssimpWorker {
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, massager->getCurrentUnit());
 			childImporter.push_back(ci);
 			Folder* entryPoint = findFolderWithColladaID(root, exRef.first);
+			if (entryPoint == NULL){
+				throw Exception("Could not find Node with id " + exRef.first);
+			}
 			ci->addElementsTo(*entryPoint);
 		}
 	}
@@ -117,9 +123,6 @@ namespace AssimpWorker {
 			}
 		}
 		return found;
-		if (found == NULL){
-			throw Exception("Could not find Node with id: " + name);
-		}
 	}
 
 	Folder* ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, const std::string id){
@@ -133,9 +136,6 @@ namespace AssimpWorker {
 			if (found != NULL){
 				break;
 			}
-		}
-		if (found == NULL){
-			throw Exception("Could not find Node with id: " + id);
 		}
 		return found;
 	}
