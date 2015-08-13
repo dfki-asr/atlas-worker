@@ -67,8 +67,8 @@ namespace AssimpWorker {
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
-			Folder& startingPointToRestoreNames = findFolderWithName(root, fragment);
-			massager->restoreOriginalNames(startingPointToRestoreNames);
+			Folder* startingPointToRestoreNames = findFolderWithName(root, fragment);
+			massager->restoreOriginalNames(*startingPointToRestoreNames);
 		}
 		else {
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
@@ -83,8 +83,8 @@ namespace AssimpWorker {
 			Poco::URI uri(fixRelativeReference(exRef.second));
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, massager->getCurrentUnit());
 			childImporter.push_back(ci);
-			Folder& entryPoint = findFolderWithColladaID(root, exRef.first);
-			ci->addElementsTo(entryPoint);
+			Folder* entryPoint = findFolderWithColladaID(root, exRef.first);
+			ci->addElementsTo(*entryPoint);
 		}
 	}
 
@@ -104,32 +104,32 @@ namespace AssimpWorker {
 		return pathOfParentfile;
 	}
 
-	Folder& ColladaRecursiveImporter::findFolderWithName(Folder& folder, const std::string name){
+	Folder* ColladaRecursiveImporter::findFolderWithName(Folder& folder, const std::string name){
 		if (name == folder.getName()){
-			return folder;
+			return &folder;
 		}
 		std::vector<Folder>& children = folder.getChildren();
 		Folder* found = NULL;
 		for (Folder& child : children){
-			found = &(findFolderWithName(child, name));
+			found = findFolderWithName(child, name);
 			if (found != NULL){
 				break;
 			}
 		}
+		return found;
 		if (found == NULL){
 			throw Exception("Could not find Node with id: " + name);
 		}
-		return *found;
 	}
 
-	Folder& ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, const std::string id){
+	Folder* ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, const std::string id){
 		if (id == (folder).getAttribute("colladaID")){
-			return folder;
+			return &folder;
 		}
 		std::vector<Folder>& children = folder.getChildren();
 		Folder* found = NULL;
 		for (Folder& child : children){
-			found = &(findFolderWithColladaID(child, id));
+			found = findFolderWithColladaID(child, id);
 			if (found != NULL){
 				break;
 			}
@@ -137,7 +137,7 @@ namespace AssimpWorker {
 		if (found == NULL){
 			throw Exception("Could not find Node with id: " + id);
 		}
-		return *found;
+		return found;
 	}
 
 	aiNode* ColladaRecursiveImporter::findaiNodeWithName(aiNode* node, const std::string& name){

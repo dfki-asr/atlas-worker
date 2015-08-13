@@ -42,9 +42,9 @@ namespace AssimpWorker {
 		void importChildColladas(ATLAS::Model::Folder& root);
 
 		std::string fixRelativeReference(const std::string relativeURI);
-		ATLAS::Model::Folder& findFolderWithName(ATLAS::Model::Folder& root, const std::string name);
+		ATLAS::Model::Folder* findFolderWithName(ATLAS::Model::Folder& root, const std::string name);
 		aiNode* findaiNodeWithName(aiNode* node, const std::string& name);
-		ATLAS::Model::Folder& findFolderWithColladaID(ATLAS::Model::Folder& folder, const std::string id);
+		ATLAS::Model::Folder* findFolderWithColladaID(ATLAS::Model::Folder& folder, const std::string id);
 	};
 
 } // End namespace AssimpWorker
