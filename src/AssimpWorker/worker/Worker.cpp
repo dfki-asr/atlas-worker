@@ -108,8 +108,8 @@ namespace AssimpWorker {
 	std::string Worker::importColladaAndStore(const std::string& filesystemPathToColladaFile) {
 		std::cout << "importColladaAndStore, filesystemPathToColladaFile: " << filesystemPathToColladaFile << std::endl;
 		std::string pathToFolder = filesystemPathToColladaFile.substr(0, filesystemPathToColladaFile.find_last_of('/') + 1);
-		Poco::URI& uri = Poco::URI(filesystemPathToColladaFile);
-		ColladaMassagerRegistry& registry = ColladaMassagerRegistry();
+		Poco::URI uri(filesystemPathToColladaFile);
+		ColladaMassagerRegistry registry;
 		AssimpWorker::ColladaImporter importer = AssimpWorker::ColladaImporter(uri, log, pathToFolder, registry);
 		Asset asset;
 		importer.addElementsTo(asset);
