@@ -4,7 +4,6 @@
 * (Also avialable at http://www.apache.org/licenses/LICENSE-2.0.txt)
 * You may not use this file except in compliance with the License.
 */
-#pragma once
 
 #include "ColladaMassagerRegistry.hpp"
 
