@@ -7,6 +7,7 @@
 #include <iostream>
 #include <assimp/postprocess.h>
 #include <fstream>
+#include <sstream>
 #include <Poco/DOM/DOMParser.h>
 #include <Poco/DOM/NodeList.h>
 #include <Poco/DOM/Node.h>
@@ -110,8 +111,10 @@ namespace AssimpWorker {
 			id = parentIdNode->getNodeValue();
 		}
 		else {
-			id = "generated_" + idCounter;
+			std::ostringstream generatedIdString;
+			generatedIdString << "generated_" << idCounter;
 			idCounter++;
+			id = generatedIdString.str();
 			Poco::XML::Node* idNode = xmlDocument->createElement("id");
 			idNode->setNodeValue(id);
 			attributesMap->setNamedItem(idNode);
