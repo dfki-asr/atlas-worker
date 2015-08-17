@@ -22,7 +22,7 @@ namespace AssimpWorker {
 	class AMLImporter : public Importer {
 	public:
 		AMLImporter(const std::string& amlFilePath, Log& log);
-		~AMLImporter();
+		virtual ~AMLImporter();
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
 
 	private:
