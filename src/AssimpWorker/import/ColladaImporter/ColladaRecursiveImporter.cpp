@@ -19,9 +19,9 @@ namespace AssimpWorker {
 		pathToWorkingDirectory(pathToWorkingDirectory),
 		colladaFileURI(colladaFileURI),
 		childImporter(),
-		importer(NULL),
+		importer(nullptr),
 		massagerRegistry(registry),
-		massager(NULL),
+		massager(nullptr),
 		parentScale(scale)
 	{
 		return;
@@ -62,13 +62,13 @@ namespace AssimpWorker {
 		const std::string fragment = colladaFileURI.getFragment();
 		if (fragment != "") {
 			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, fragment);
-			if (startingPointToImportFrom == NULL){
+			if (startingPointToImportFrom == nullptr){
 				throw Exception("Could not find a Node with id '" + fragment + "'");
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
 			Folder* startingPointToRestoreNames = findFolderWithName(root, fragment);
-			if (startingPointToRestoreNames == NULL){
+			if (startingPointToRestoreNames == nullptr){
 				throw Exception("Could not find Node with id " + fragment);
 			}
 			massager->restoreOriginalNames(*startingPointToRestoreNames);
@@ -87,7 +87,7 @@ namespace AssimpWorker {
 			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, massager->getCurrentUnit());
 			childImporter.push_back(ci);
 			Folder* entryPoint = findFolderWithColladaID(root, exRef.first);
-			if (entryPoint == NULL){
+			if (entryPoint == nullptr){
 				throw Exception("Could not find Node with id " + exRef.first);
 			}
 			ci->addElementsTo(*entryPoint);
@@ -115,10 +115,10 @@ namespace AssimpWorker {
 			return &folder;
 		}
 		std::vector<Folder>& children = folder.getChildren();
-		Folder* found = NULL;
+		Folder* found = nullptr;
 		for (Folder& child : children){
 			found = findFolderWithName(child, name);
-			if (found != NULL){
+			if (found != nullptr){
 				break;
 			}
 		}
@@ -130,10 +130,10 @@ namespace AssimpWorker {
 			return &folder;
 		}
 		std::vector<Folder>& children = folder.getChildren();
-		Folder* found = NULL;
+		Folder* found = nullptr;
 		for (Folder& child : children){
 			found = findFolderWithColladaID(child, id);
-			if (found != NULL){
+			if (found != nullptr){
 				break;
 			}
 		}
@@ -144,10 +144,10 @@ namespace AssimpWorker {
 		if (name == node->mName.C_Str()){
 			return node;
 		}
-		aiNode* childNode = NULL;
+		aiNode* childNode = nullptr;
 		for (int i = 0; i < node->mNumChildren; i++){
 			childNode = findaiNodeWithName(node->mChildren[i], name);
-			if (childNode != NULL) {
+			if (childNode != nullptr) {
 				break;
 			}
 		}

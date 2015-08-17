@@ -51,10 +51,10 @@ namespace AssimpWorker{
 		std::string name = node->nodeName();
 		Poco::XML::AutoPtr<Poco::XML::NamedNodeMap> attributes = node->attributes();
 		Poco::XML::Node* nameNode = attributes->getNamedItem("Name");
-		if (nameNode == NULL) {
+		if (nameNode == nullptr) {
 			nameNode = attributes->getNamedItem("name");
 		}
-		if (nameNode != NULL) {
+		if (nameNode != nullptr) {
 			name = nameNode->getNodeValue();
 		}
 		attributes->release();
@@ -90,7 +90,7 @@ namespace AssimpWorker{
 	}
 
 	aiMatrix4x4 AMLFrameImporter::createFrameTransformMatrix(const Poco::XML::Node* frame) {
-		if (frame == NULL) {
+		if (frame == nullptr) {
 			aiMatrix4x4 identity;
 			return identity;
 		}

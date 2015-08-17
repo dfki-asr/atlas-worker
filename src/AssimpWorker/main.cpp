@@ -12,7 +12,7 @@
 #include "connection/QueueConsumer.hpp"
 #include "internal/AssimpVersion.hpp"
 
-boost::thread* g_QueueConsumerThread = NULL;
+boost::thread* g_QueueConsumerThread = nullptr;
 
 void showAtlasLogo() {
 	printf("\n"

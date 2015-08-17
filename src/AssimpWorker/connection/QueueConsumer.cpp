@@ -15,8 +15,8 @@ namespace AssimpWorker {
 	QueueConsumer::QueueConsumer() :
 		mutex(),
 		connection(),
-		consumer(NULL),
-		heartbeatProducer(NULL)
+		consumer(nullptr),
+		heartbeatProducer(nullptr)
 	{
 	}
 
@@ -99,9 +99,9 @@ namespace AssimpWorker {
 		// Destroy resources.
 		try {
 			delete consumer;
-			consumer = NULL;
+			consumer = nullptr;
 			delete heartbeatProducer;
-			heartbeatProducer = NULL;
+			heartbeatProducer = nullptr;
 		}
 		catch (cms::CMSException& e) {
 			e.printStackTrace();

@@ -96,7 +96,7 @@ namespace AssimpWorker {
 	const std::string ColladaMassager::getURLOfReference(Poco::XML::Node* node){
 		Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = node->attributes();
 		Poco::XML::Node* urlNode = attributesMap->getNamedItem("url");
-		if (urlNode == NULL){
+		if (urlNode == nullptr){
 			return "#";
 		}
 		return urlNode->getNodeValue();
@@ -107,7 +107,7 @@ namespace AssimpWorker {
 		Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = parent->attributes();
 		Poco::XML::Node* parentIdNode = attributesMap->getNamedItem("id");
 		std::string id;
-		if (parentIdNode != NULL){
+		if (parentIdNode != nullptr){
 			id = parentIdNode->getNodeValue();
 		}
 		else {
@@ -154,7 +154,7 @@ namespace AssimpWorker {
 		Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = node->attributes();
 		Poco::XML::Node* nameNode = attributesMap->getNamedItem("name");
 		Poco::XML::Node* idNode = attributesMap->getNamedItem("id");
-		if (nameNode == NULL || idNode == NULL) {
+		if (nameNode == nullptr || idNode == nullptr) {
 			return;
 		}
 		std::string name = nameNode->getNodeValue();

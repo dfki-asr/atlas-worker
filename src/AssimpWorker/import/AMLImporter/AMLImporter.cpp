@@ -95,7 +95,7 @@ namespace AssimpWorker {
 
 	std::string AMLImporter::extractRefTypeOfExternalInterface(Poco::XML::Node* externalInterface){
 		Poco::XML::Node* refTypeValue = externalInterface->getNodeByPath("/Attribute[@Name='refType']/Value");
-		if (refTypeValue == NULL) {
+		if (refTypeValue == nullptr) {
 			//refType is a mandatory attribute, if its missing the AML is not valid and we should ignore this object.
 			return "";
 		}
@@ -106,7 +106,7 @@ namespace AssimpWorker {
 
 	Poco::URI AMLImporter::extractRefURIOfExternalInterface(Poco::XML::Node* externatlInterface){
 		Poco::XML::Node* refNodeValue = externatlInterface->getNodeByPath("/Attribute[@Name='refURI']/Value");
-		if (refNodeValue == NULL) {
+		if (refNodeValue == nullptr) {
 			//This interface should be ignored, without a refURI it can't possibly be interesting for us
 			return Poco::URI();
 		}

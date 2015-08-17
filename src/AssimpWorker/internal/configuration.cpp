@@ -15,11 +15,11 @@ namespace bpo = boost::program_options;
 
 namespace AssimpWorker {
 
-Configuration* Configuration::singletonInstance = NULL;
+Configuration* Configuration::singletonInstance = nullptr;
 const char* Configuration::defaultConfigFilename = "assimpworker.conf";
 
 Configuration& Configuration::getInstance() {
-	if (singletonInstance == NULL) {
+	if (singletonInstance == nullptr) {
 		singletonInstance = new Configuration();
 	}
 	return *singletonInstance;
@@ -54,7 +54,7 @@ void Configuration::init(int argc, char **argv) {
 }
 
 void Configuration::parseConfigFile() {
-	const char* configFileName = NULL;
+	const char* configFileName = nullptr;
 	if (parsedVariables.count("config")) {
 		// config file specified
 		std::string configFile = parsedVariables["config"].as<std::string>();

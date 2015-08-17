@@ -85,7 +85,7 @@ namespace Model {
 				return &(blobHolder.getBlob(type_and_hash.second));
 			}
 		}
-		return NULL;
+		return nullptr;
 	}
 
 	void Folder::addBlob(const std::string& type, Blob& blob){

@@ -24,7 +24,7 @@ namespace AssimpWorker {
 
 	Worker::Worker() : 
 		storageService(),
-		currentWorkUnit(NULL)
+		currentWorkUnit(nullptr)
 	{
 		return;
 	}
