@@ -28,7 +28,11 @@ namespace AssimpWorker {
 		if (!scene) {
 			log.error("Scene not imported: "+fileName);
 		}
-		log.error(importer.GetErrorString());
+		const char* errorString = importer.GetErrorString();
+		if (strlen(errorString) != 0) {
+			// error string is not empty: an error occured.
+			log.error(fileName + ": " + errorString);
+		}
 		return scene;
 	}
 
