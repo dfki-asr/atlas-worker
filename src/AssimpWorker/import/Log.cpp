@@ -31,15 +31,27 @@ void Log::info(const std::string& message) {
 
 std::string Log::getAllErrors() {
 	std::stringstream out;
-	for (auto errorMessage : errors) {
-		out << errorMessage << std::endl;
+	if (errors.size() == 0) {
+		out << "No errors found during import." << std::endl;
+	} else {
+		out << errors.size() << " Error messages follow." << std::endl;
+		for (auto errorMessage : errors) {
+			if (errorMessage.empty()) {
+				continue;
+			}
+			out << errorMessage << std::endl;
+		}
 	}
 	return out.str();
 }
 
 std::string Log::getAllInfos() {
 	std::stringstream out;
+	out << infos.size() << " Informational messages follow.";
 	for (auto infoMessage : infos) {
+		if (infoMessage.empty()) {
+			continue;
+		}
 		out << infoMessage << std::endl;
 	}
 	return out.str();
