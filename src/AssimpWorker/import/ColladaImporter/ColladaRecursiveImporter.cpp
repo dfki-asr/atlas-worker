@@ -8,6 +8,7 @@
 #include <iostream>
 #include "ColladaRecursiveImporter.hpp"
 #include "../../internal/Exception.hpp"
+#include <boost/format.hpp>
 
 namespace AssimpWorker {
 
@@ -76,13 +77,13 @@ namespace AssimpWorker {
 		if (fragment != "") {
 			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, fragment);
 			if (startingPointToImportFrom == nullptr){
-				throw Exception("Could not find a Node with id '" + fragment + "'");
+				throw Exception(boost::str(boost::format("Imported COLLADA is missing ID '%1%'") % fragment));
 			}
 			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
 			Folder* startingPointToRestoreNames = findFolderWithName(root, fragment);
 			if (startingPointToRestoreNames == nullptr){
-				throw Exception("Could not find Node with id " + fragment);
+				throw Exception(boost::str(boost::format("No Folder to restore Names for COLLADA ID '%1%'") % fragment));
 			}
 			massager->restoreOriginalNames(*startingPointToRestoreNames);
 		}
@@ -101,7 +102,13 @@ namespace AssimpWorker {
 			childImporter.push_back(ci);
 			Folder* entryPoint = findFolderWithColladaID(root, exRef.first);
 			if (entryPoint == nullptr){
-				throw Exception("Could not find Node with id " + exRef.first);
+				throw Exception(
+				            boost::str(
+				                boost::format("No Folder '%1%' to import referenced document '%2%' into.")
+				                % exRef.first
+				                % exRef.second
+				            )
+				       );
 			}
 			ci->addElementsTo(*entryPoint);
 		}
