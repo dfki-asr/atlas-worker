@@ -28,7 +28,7 @@ namespace AssimpWorker {
 		void restoreOriginalNames(ATLAS::Model::Folder& folder);
 
 		std::vector<std::pair<std::string, std::string>>& getExternalReferences();
-		const float getCurrentUnit();
+		const float getCurrentUnit() const;
 		const std::string getUpAxis();
 
 	private:

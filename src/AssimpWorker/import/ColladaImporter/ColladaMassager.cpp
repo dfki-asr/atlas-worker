@@ -123,7 +123,7 @@ namespace AssimpWorker {
 		return id;
 	}
 
-	const float ColladaMassager::getCurrentUnit() {
+	const float ColladaMassager::getCurrentUnit() const {
 		return localScaleBeforeMassage;
 	}
 

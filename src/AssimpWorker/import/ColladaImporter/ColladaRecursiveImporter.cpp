@@ -98,7 +98,7 @@ namespace AssimpWorker {
 		return massager->getUpAxis();
 	}
 
-	const float ColladaRecursiveImporter::getLocalScale() {
+	const float ColladaRecursiveImporter::getLocalScale() const {
 		return massager->getCurrentUnit();
 	}
 
