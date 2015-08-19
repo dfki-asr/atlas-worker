@@ -110,7 +110,7 @@ namespace AssimpWorker {
 		return pathOfParentfile;
 	}
 
-	Folder* ColladaRecursiveImporter::findFolderWithName(Folder& folder, const std::string name){
+	Folder* ColladaRecursiveImporter::findFolderWithName(Folder& folder, const std::string& name){
 		if (name == folder.getName()){
 			return &folder;
 		}
