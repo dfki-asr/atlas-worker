@@ -75,7 +75,7 @@ namespace AssimpWorker {
 	void ColladaRecursiveImporter::convertToFolderStructure(const aiScene* scene, Folder& root){
 		const std::string fragment = colladaFileURI.getFragment();
 		if (fragment != "") {
-			aiNode* startingPointToImportFrom = findaiNodeWithName(scene->mRootNode, fragment);
+			aiNode* startingPointToImportFrom = scene->mRootNode->FindNode(fragment.c_str());
 			if (startingPointToImportFrom == nullptr){
 				throw Exception(boost::str(boost::format("Imported COLLADA is missing ID '%1%'") % fragment));
 			}
@@ -158,19 +158,5 @@ namespace AssimpWorker {
 			}
 		}
 		return found;
-	}
-
-	aiNode* ColladaRecursiveImporter::findaiNodeWithName(aiNode* node, const std::string& name){
-		if (name == node->mName.C_Str()){
-			return node;
-		}
-		aiNode* childNode = nullptr;
-		for (int i = 0; i < node->mNumChildren; i++){
-			childNode = findaiNodeWithName(node->mChildren[i], name);
-			if (childNode != nullptr) {
-				break;
-			}
-		}
-		return childNode;
 	}
 }
