@@ -125,7 +125,7 @@ namespace AssimpWorker {
 		return found;
 	}
 
-	Folder* ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, const std::string id){
+	Folder* ColladaRecursiveImporter::findFolderWithColladaID(Folder& folder, const std::string& id){
 		if (id == (folder).getAttribute("colladaID")){
 			return &folder;
 		}
