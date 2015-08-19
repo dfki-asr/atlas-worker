@@ -20,7 +20,7 @@ namespace AssimpWorker {
 	{
 	public:
 		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& registry, float parentScale);
-
+		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const ColladaRecursiveImporter& parent);
 		~ColladaRecursiveImporter();
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);

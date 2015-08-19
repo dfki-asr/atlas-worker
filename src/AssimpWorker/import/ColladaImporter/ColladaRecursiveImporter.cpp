@@ -27,6 +27,19 @@ namespace AssimpWorker {
 		return;
 	}
 
+	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const ColladaRecursiveImporter& parent) :
+		Importer(colladaFileURI.toString(), log),
+		pathToWorkingDirectory(parent.pathToWorkingDirectory),
+		colladaFileURI(colladaFileURI),
+		childImporter(),
+		importer(nullptr),
+		massagerRegistry(parent.massagerRegistry),
+		massager(nullptr),
+		parentScale(parent.getLocalScale())
+	{
+		return;
+	}
+
 	ColladaRecursiveImporter::~ColladaRecursiveImporter(){
 		delete importer;
 		for (auto ci : childImporter){
@@ -84,7 +97,7 @@ namespace AssimpWorker {
 		auto externalRefMap = massager->getExternalReferences();
 		for (auto exRef : externalRefMap){
 			Poco::URI uri(fixRelativeReference(exRef.second));
-			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, pathToWorkingDirectory, massagerRegistry, massager->getCurrentUnit());
+			ColladaRecursiveImporter* ci = new ColladaRecursiveImporter(uri, log, *this);
 			childImporter.push_back(ci);
 			Folder* entryPoint = findFolderWithColladaID(root, exRef.first);
 			if (entryPoint == nullptr){
