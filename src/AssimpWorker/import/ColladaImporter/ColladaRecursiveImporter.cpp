@@ -50,7 +50,7 @@ namespace AssimpWorker {
 	}
 
 	const aiScene* ColladaRecursiveImporter::runAssimpImport(){
-		this->importer = new AssimpWorker::AssimpImporter();
+		importer = new AssimpWorker::AssimpImporter();
 		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
 		if (!scene) {
 			throw Exception("Error while running Assimp.");
