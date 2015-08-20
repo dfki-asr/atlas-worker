@@ -104,8 +104,8 @@ namespace AssimpWorker {
 		return refType;
 	}
 
-	Poco::URI AMLImporter::extractRefURIOfExternalInterface(Poco::XML::Node* externatlInterface){
-		Poco::XML::Node* refNodeValue = externatlInterface->getNodeByPath("/Attribute[@Name='refURI']/Value");
+	Poco::URI AMLImporter::extractRefURIOfExternalInterface(Poco::XML::Node* externalInterface){
+		Poco::XML::Node* refNodeValue = externalInterface->getNodeByPath("/Attribute[@Name='refURI']/Value");
 		if (refNodeValue == nullptr) {
 			//This interface should be ignored, without a refURI it can't possibly be interesting for us
 			return Poco::URI();
