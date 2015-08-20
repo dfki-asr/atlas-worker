@@ -56,7 +56,7 @@ namespace AssimpWorker {
 		}
 	}
 
-	std::string AMLImporter::extractFilneNameFromURI(Poco::URI& refURI){
+	std::string AMLImporter::extractFileNameFromURI(Poco::URI& refURI){
 		std::vector<std::string> pathSegments;
 		refURI.getPathSegments(pathSegments);
 		return pathSegments.back();
@@ -89,7 +89,7 @@ namespace AssimpWorker {
 		fixColladaURIPath(refURI);
 		//we need to add additional nodes in case of multiple references within the aml file and to handle the frame attributes
 		Folder& colladaFolder = frameImporter.createParentHierarchy(node, root);
-		colladaFolder.setName(extractFilneNameFromURI(refURI));
+		colladaFolder.setName(extractFileNameFromURI(refURI));
 		importGeometryReference(colladaFolder, refURI);
 	}
 

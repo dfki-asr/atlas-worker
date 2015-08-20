@@ -33,7 +33,7 @@ namespace AssimpWorker {
 		ColladaMassagerRegistry massagerRegistry;
 
 		Poco::XML::AutoPtr<Poco::XML::Document> parseAMLFile();
-		std::string extractFilneNameFromURI(Poco::URI& refURI);
+		std::string extractFileNameFromURI(Poco::URI& refURI);
 		std::string extractRefTypeOfExternalInterface(Poco::XML::Node* externatlInterface);
 		Poco::URI extractRefURIOfExternalInterface(Poco::XML::Node* externatlInterface);
 		void findAndImportColladaReferences(Poco::XML::AutoPtr<Poco::XML::NodeList> externalInterfaces, ATLAS::Model::Folder& root);
