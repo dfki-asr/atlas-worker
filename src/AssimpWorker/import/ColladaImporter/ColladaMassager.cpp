@@ -23,6 +23,8 @@
 
 namespace AssimpWorker {
 
+	static std::string FAKE_INTERNAL_REFERENCE = "#";
+
 	ColladaMassager::ColladaMassager(const Poco::URI& uri) :
 		idToNameMap(),
 		parentIDToExternalURL(),
@@ -83,7 +85,7 @@ namespace AssimpWorker {
 		for (int i = 0; i < nodes->length(); ++i) {
 			Poco::XML::Node* node = nodes->item(i);
 			std::string url = getURLOfReference(node);
-			if (url.at(0) == '#'){
+			if (isInternalReference(url)){
 				continue;
 			}
 			const std::string id = getIDOfParentNode(node);
@@ -93,11 +95,15 @@ namespace AssimpWorker {
 		}
 	}
 
-	const std::string ColladaMassager::getURLOfReference(Poco::XML::Node* node){
+	bool ColladaMassager::isInternalReference(const std::string& url) {
+		return url.at(0) == '#';
+	}
+
+	const std::string& ColladaMassager::getURLOfReference(Poco::XML::Node* node) {
 		Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = node->attributes();
 		Poco::XML::Node* urlNode = attributesMap->getNamedItem("url");
 		if (urlNode == nullptr){
-			return "#";
+			return FAKE_INTERNAL_REFERENCE;
 		}
 		return urlNode->getNodeValue();
 	}
