@@ -38,23 +38,9 @@ namespace AssimpWorker {
 
 	void AiSceneImporter::importSubtreeOfScene(Folder& root, aiNode* startingPoint){
 		AiNodeImporter nodeImporter(scene, pathToFolder, startingPoint, log);
-		Folder& visualScene = insertVisualSceneNode(root);
-		nodeImporter.addElementsTo(visualScene);
+		nodeImporter.addElementsTo(root);
 		addLightsTo(root);
 		addCamerasTo(root);
-	}
-
-	Folder& AiSceneImporter::insertVisualSceneNode(Folder& root) {
-		Folder& visualSceneFolder = root.appendChild("node");
-		visualSceneFolder.setName(scene->mRootNode->mName.C_Str());
-		addTransformsToVisualSceneNode(visualSceneFolder, root);
-		return visualSceneFolder;
-	}
-
-	void AiSceneImporter::addTransformsToVisualSceneNode(Folder& visualSceneFolder, Folder& root) {
-		aiMatrix4x4* visualSceneTransform = new aiMatrix4x4(scene->mRootNode->mTransformation);
-		DataDeletingBlob<aiMatrix4x4> localTransformBlob(visualSceneTransform);
-		visualSceneFolder.addBlob("transform", localTransformBlob);
 	}
 
 	void AiSceneImporter::addLightsTo(Folder& folder) {

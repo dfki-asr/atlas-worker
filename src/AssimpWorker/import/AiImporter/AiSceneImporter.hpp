@@ -23,8 +23,6 @@ namespace AssimpWorker {
 
 		void addLightsTo(ATLAS::Model::Folder& folder);
 		void addCamerasTo(ATLAS::Model::Folder& folder);
-		ATLAS::Model::Folder& insertVisualSceneNode(ATLAS::Model::Folder& root);
-		void addTransformsToVisualSceneNode(ATLAS::Model::Folder& visualScene, ATLAS::Model::Folder& root);
 	};
 
 } // End namespace AssimpWorker
