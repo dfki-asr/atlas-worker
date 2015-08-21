@@ -51,7 +51,7 @@ namespace AssimpWorker {
 		void purgeNode(Poco::XML::Node* node);
 		void writePurgedXML();
 		std::string getNameForId(const std::string& id);
-		void forceUnitMeter();
+		void readUnit();
 	};
 
 } // End namespace AssimpWorker
