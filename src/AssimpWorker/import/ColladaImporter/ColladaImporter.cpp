@@ -30,32 +30,6 @@ namespace AssimpWorker {
 		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry, -1.0);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
-		fixScales(root, colladaImporter);
-	}
-
-	void ColladaImporter::fixScales(ATLAS::Model::Folder& root, ColladaRecursiveImporter* importer) {
-		float localScale = importer->getLocalScale();
-		aiMatrix4x4 transform = getTransformFor(root);
-		aiMatrix4x4 scaling;
-		aiMatrix4x4::Scaling(aiVector3t<float>(localScale), scaling);
-		transform *= scaling;
-		setTransformFor(root, transform);
-	}
-
-	aiMatrix4x4 ColladaImporter::getTransformFor(Folder& folder) {
-		ATLAS::Model::Blob* currentFolderTransform = folder.getBlobByType("transform");
-		if (currentFolderTransform) {
-			return *(aiMatrix4x4*)currentFolderTransform->getData();
-		}
-		else {
-			aiMatrix4x4 idendity;
-			return idendity;
-		}
-	}
-
-	void ColladaImporter::setTransformFor(Folder& folder, const aiMatrix4x4& newTransfrom) {
-		ATLAS::Model::DataDeletingBlob<aiMatrix4x4> blob(new aiMatrix4x4(newTransfrom));
-		folder.addBlob("transform", blob);
 	}
 
 } // End namespace AssimpWorker

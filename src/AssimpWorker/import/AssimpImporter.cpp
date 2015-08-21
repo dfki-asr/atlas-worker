@@ -25,7 +25,6 @@ namespace AssimpWorker {
 		importer.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); //remove degenerate polys
 		importer.SetPropertyBool(AI_CONFIG_IMPORT_NO_SKELETON_MESHES, true); //do not import skeletons
 		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT); //Drop all primitives that aren't triangles
-		importer.SetPropertyBool(AI_CONFIG_IMPORT_COLLADA_IGNORE_UP_DIRECTION, true);
 		const aiScene* scene = importer.ReadFile(fileName, aiProcessPreset_TargetRealtime_Quality);
 		if (!scene) {
 			log.error("Scene not imported: "+fileName);

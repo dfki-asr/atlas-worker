@@ -48,7 +48,7 @@ namespace AssimpWorker {
 		{
 			readXML();
 			readUpAxis();
-			forceUnitMeter();
+			readUnit();
 			extractExternalReferences();
 			purgeAllNodes();
 			writePurgedXML();
@@ -144,15 +144,12 @@ namespace AssimpWorker {
 		}
 	}
 
-	void ColladaMassager::forceUnitMeter() {
+	void ColladaMassager::readUnit() {
 		Poco::AutoPtr<Poco::XML::NodeList> unitNodes = xmlDocument->getElementsByTagName("unit");
 		for (int i = 0; i < unitNodes->length(); i++) {
 			Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = unitNodes->item(i)->attributes();
 			Poco::XML::Node* meterNode = attributesMap->getNamedItem("meter");
-			Poco::XML::Node* nameNode = attributesMap->getNamedItem("name");
 			localScaleBeforeMassage = atof((meterNode->getNodeValue()).c_str());
-			meterNode->setNodeValue("1");
-			nameNode->setNodeValue("m");
 		}
 	}
 
