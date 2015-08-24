@@ -29,7 +29,7 @@ namespace AssimpWorker {
 
 		std::vector<std::pair<std::string, std::string>>& getExternalReferences();
 		const float getCurrentUnit() const;
-		const std::string getUpAxis();
+		const std::string& getUpAxis() const;
 
 	private:
 		std::map<std::string, std::string> idToNameMap;

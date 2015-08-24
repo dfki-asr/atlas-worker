@@ -25,7 +25,7 @@ namespace AssimpWorker {
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
 		const float getLocalScale() const;
-		const std::string getColladaUpAxis();
+		const std::string& getColladaUpAxis() const;
 		
 	private:
 		/** Internal constructor for Child documents. */

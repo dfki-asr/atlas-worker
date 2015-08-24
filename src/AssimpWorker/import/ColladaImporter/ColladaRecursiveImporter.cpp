@@ -119,7 +119,7 @@ namespace AssimpWorker {
 		return path.substr(0, path.find_last_of('/') + 1);
 	}
 
-	const std::string ColladaRecursiveImporter::getColladaUpAxis(){
+	const std::string& ColladaRecursiveImporter::getColladaUpAxis() const {
 		return massager->getUpAxis();
 	}
 

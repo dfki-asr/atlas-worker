@@ -76,7 +76,7 @@ namespace AssimpWorker {
 		}
 	}
 
-	const std::string ColladaMassager::getUpAxis(){
+	const std::string& ColladaMassager::getUpAxis() const {
 		return upAxis;
 	}
 
