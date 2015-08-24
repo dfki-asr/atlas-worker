@@ -102,14 +102,14 @@ namespace AssimpWorker{
 			double ry = ::atof(frame->getNodeByPath("/Attribute[@Name='ry']/Value")->innerText().c_str());
 			double rz = ::atof(frame->getNodeByPath("/Attribute[@Name='rz']/Value")->innerText().c_str());
 			const double toRad = M_PI / 180;
-			aiMatrix4x4 rotation;
+			aiMatrix4x4 temp;
 			aiMatrix4x4 localTransform;
-			localTransform *= aiMatrix4x4::RotationZ(rz*toRad, rotation);
-			localTransform *= aiMatrix4x4::RotationY(ry*toRad, rotation);
-			localTransform *= aiMatrix4x4::RotationX(rx*toRad, rotation);
-			localTransform.a4 = (float)tx;
-			localTransform.b4 = (float)ty;
-			localTransform.c4 = (float)tz;
+			// re-assemble Frame transform (which is in right-hand z-up) into a right-hand y-up transform
+			// hence the shuffling of parameters and negative factors. mind the order of transforms!
+			localTransform *= aiMatrix4x4::Translation(aiVector3D(tx,tz,-ty),temp);
+			localTransform *= aiMatrix4x4::RotationX(rx*toRad, temp);
+			localTransform *= aiMatrix4x4::RotationY(rz*toRad, temp);
+			localTransform *= aiMatrix4x4::RotationZ(-ry*toRad, temp);
 			return localTransform;
 		}
 		catch (const Exception& e) {
