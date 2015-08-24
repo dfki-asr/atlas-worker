@@ -19,6 +19,7 @@ namespace AssimpWorker {
 		AMLFrameImporter();
 
 		ATLAS::Model::Folder& createParentHierarchy(Poco::XML::Node* node, ATLAS::Model::Folder& root);
+		static void addTransformBlobToFolder(const aiMatrix4x4& transform, ATLAS::Model::Folder& folder, const std::string& transformType);
 
 	private:
 		std::map<Poco::XML::Node*, ATLAS::Model::Folder*> visitedNodes;
@@ -28,7 +29,6 @@ namespace AssimpWorker {
 		ATLAS::Model::Folder& getFolderForNode(Poco::XML::Node* node, ATLAS::Model::Folder& folder);
 		ATLAS::Model::Folder& createFolderForNode(Poco::XML::Node* node, ATLAS::Model::Folder& folder);
 		aiMatrix4x4 createFrameTransformMatrix(const Poco::XML::Node* frame);
-		void addTransformBlobToFolder(const aiMatrix4x4& transform, ATLAS::Model::Folder& folder, const std::string& transformType);
 		std::string getNameAttributeForNode(Poco::XML::Node* node);
 	};
 
