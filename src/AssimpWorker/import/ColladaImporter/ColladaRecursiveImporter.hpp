@@ -36,7 +36,6 @@ namespace AssimpWorker {
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
 		ColladaMassager* massager;
-		const float parentScale;
 
 		void preprocessCollada();
 		const aiScene* runAssimpImport();

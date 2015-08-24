@@ -21,8 +21,7 @@ namespace AssimpWorker {
 		childImporter(),
 		importer(nullptr),
 		massagerRegistry(registry),
-		massager(nullptr),
-		parentScale(-1.0)
+		massager(nullptr)
 	{
 		return;
 	}
@@ -33,8 +32,7 @@ namespace AssimpWorker {
 		childImporter(),
 		importer(nullptr),
 		massagerRegistry(parent.massagerRegistry),
-		massager(nullptr),
-		parentScale(parent.getLocalScale())
+		massager(nullptr)
 	{
 		return;
 	}
@@ -56,9 +54,6 @@ namespace AssimpWorker {
 	void ColladaRecursiveImporter::preprocessCollada(){
 		massager = massagerRegistry.getMassager(colladaFileURI);
 		massager->massage();
-		if (parentScale != -1 && massager->getCurrentUnit() != parentScale) {
-			throw Exception("Inconsistent scales used in input files.");
-		}
 	}
 
 	const aiScene* ColladaRecursiveImporter::runAssimpImport(){
