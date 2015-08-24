@@ -17,7 +17,6 @@ namespace AssimpWorker {
 
 	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& registry, float scale) :
 		Importer(colladaFileURI.toString(), log),
-		pathToWorkingDirectory(pathToWorkingDirectory),
 		colladaFileURI(colladaFileURI),
 		childImporter(),
 		importer(nullptr),
@@ -30,7 +29,6 @@ namespace AssimpWorker {
 
 	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const ColladaRecursiveImporter& parent) :
 		Importer(colladaFileURI.toString(), log),
-		pathToWorkingDirectory(parent.pathToWorkingDirectory),
 		colladaFileURI(colladaFileURI),
 		childImporter(),
 		importer(nullptr),
@@ -74,12 +72,13 @@ namespace AssimpWorker {
 
 	void ColladaRecursiveImporter::convertToFolderStructure(const aiScene* scene, Folder& root){
 		const std::string fragment = colladaFileURI.getFragment();
+		std::string colladaFileDirectory = extractDirectory(colladaFileURI);
 		if (fragment != "") {
 			aiNode* startingPointToImportFrom = scene->mRootNode->FindNode(fragment.c_str());
 			if (startingPointToImportFrom == nullptr){
 				throw Exception(boost::str(boost::format("Imported COLLADA is missing ID '%1%'") % fragment));
 			}
-			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
+			AiSceneImporter sceneImporter(scene, colladaFileDirectory, log);
 			sceneImporter.importSubtreeOfScene(root, startingPointToImportFrom);
 			Folder* startingPointToRestoreNames = findFolderWithName(root, fragment);
 			if (startingPointToRestoreNames == nullptr){
@@ -88,7 +87,7 @@ namespace AssimpWorker {
 			massager->restoreOriginalNames(*startingPointToRestoreNames);
 		}
 		else {
-			AiSceneImporter sceneImporter(scene, pathToWorkingDirectory, log);
+			AiSceneImporter sceneImporter(scene, colladaFileDirectory, log);
 			sceneImporter.addElementsTo(root);
 			massager->restoreOriginalNames(root);
 		}
@@ -112,6 +111,12 @@ namespace AssimpWorker {
 			}
 			ci->addElementsTo(*entryPoint);
 		}
+	}
+
+	std::string ColladaRecursiveImporter::extractDirectory(const Poco::URI& fileURI)
+	{
+		const std::string& path = fileURI.getPath();
+		return path.substr(0, path.find_last_of('/') + 1);
 	}
 
 	const std::string ColladaRecursiveImporter::getColladaUpAxis(){

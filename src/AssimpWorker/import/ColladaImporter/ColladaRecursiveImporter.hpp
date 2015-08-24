@@ -30,7 +30,6 @@ namespace AssimpWorker {
 	private:
 		AssimpImporter* importer;
 		std::vector<ColladaRecursiveImporter*> childImporter;
-		const std::string& pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 		ColladaMassagerRegistry& massagerRegistry;
 		ColladaMassager* massager;
@@ -41,6 +40,7 @@ namespace AssimpWorker {
 		void convertToFolderStructure(const aiScene* scene, ATLAS::Model::Folder& root);
 		void importChildColladas(ATLAS::Model::Folder& root);
 
+		std::string extractDirectory(const Poco::URI& fileURI);
 		std::string fixRelativeReference(const std::string relativeURI);
 		ATLAS::Model::Folder* findFolderWithName(ATLAS::Model::Folder& root, const std::string& name);
 		ATLAS::Model::Folder* findFolderWithColladaID(ATLAS::Model::Folder& folder, const std::string& id);
