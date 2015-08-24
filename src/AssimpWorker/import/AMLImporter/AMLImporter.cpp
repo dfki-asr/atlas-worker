@@ -87,7 +87,6 @@ namespace AssimpWorker {
 
 	void AMLImporter::importColladaReference(Poco::URI& refURI, Poco::XML::Node* node, Folder& root) {
 		prependAMLPath(refURI);
-		//we need to add additional nodes in case of multiple references within the aml file and to handle the frame attributes
 		Folder& colladaFolder = frameImporter.createParentHierarchy(node, root);
 		colladaFolder.setName(extractFileNameFromURI(refURI));
 		importGeometryReference(colladaFolder, refURI);
@@ -126,9 +125,48 @@ namespace AssimpWorker {
 	}
 
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
-		ColladaRecursiveImporter* i = new ColladaRecursiveImporter(colladaFileURI, log, massagerRegistry);
-		colladaImporters.push_back(i);
-		i->addElementsTo(root);
+		ColladaRecursiveImporter* importer = new ColladaRecursiveImporter(colladaFileURI, log, massagerRegistry);
+		colladaImporters.push_back(importer);
+		if (colladaFileURI.getFragment() != "") {
+			// a fragment reference is imported ignoring up-vector and scale of the collada.
+			// Thus, an additional intermediate node is needed to store the transform to
+			// y-up, 1 unit = 1 meter
+			Folder& upAndScale = root.appendChild("node");
+			upAndScale.setName("normalizeCoordinates");
+			importer->addElementsTo(upAndScale);
+			// but we can only compute the normalization once the import is done:
+			aiMatrix4x4 normalize = createNormalizationTransform(*importer);
+			AMLFrameImporter::addTransformBlobToFolder(normalize, upAndScale, "transform");
+		} else {
+			// whole-file references have their transform to y-up and meters taken care of
+			// by the ColladaRecursiveImporter.
+			importer->addElementsTo(root);
+		}
+	}
+
+	aiMatrix4x4 AMLImporter::createNormalizationTransform(const ColladaRecursiveImporter& importer)
+	{
+		aiMatrix4x4 transform;
+		float scale = importer.getLocalScale();
+		transform *= aiMatrix4x4(scale, 0, 0, 0,
+		                         0, scale, 0, 0,
+		                         0, 0, scale, 0,
+		                         0, 0, 0, 1);
+		if (importer.getColladaUpAxis() == "Z_UP") {
+			transform *= aiMatrix4x4(
+			                    1,  0,  0,  0,
+			                    0,  0,  1,  0,
+			                    0, -1,  0,  0,
+			                    0,  0,  0,  1);
+		} else if (importer.getColladaUpAxis() == "X_UP") {
+			transform *= aiMatrix4x4(
+			                    0, -1,  0,  0,
+			                    1,  0,  0,  0,
+			                    0,  0,  1,  0,
+			                    0,  0,  0,  1);
+		}
+		// (nothing to do for Y_UP)
+		return transform;
 	}
 
 } // End namespace AssimpWorker

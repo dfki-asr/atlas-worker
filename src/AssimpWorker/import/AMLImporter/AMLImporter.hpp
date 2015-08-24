@@ -46,6 +46,7 @@ namespace AssimpWorker {
 		void addFrameTransformToFolder(ATLAS::Model::Folder& folder, aiMatrix4x4* transform);
 		void importColladaReference(Poco::URI& refURI, Poco::XML::Node* node, ATLAS::Model::Folder& root);
 		void importGeometryReference(ATLAS::Model::Folder& asset, const Poco::URI& colladaFileURI);
+		aiMatrix4x4 createNormalizationTransform(const ColladaRecursiveImporter& importer);
 	};
 
 } // End namespace AssimpWorker
