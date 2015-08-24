@@ -19,8 +19,8 @@ namespace AssimpWorker {
 	class ColladaRecursiveImporter :public Importer
 	{
 	public:
-		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& registry, float parentScale);
-		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const ColladaRecursiveImporter& parent);
+		/** Constructor for "Root" Collada File to recursively import. */
+		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, ColladaMassagerRegistry& registry);
 		~ColladaRecursiveImporter();
 
 		virtual void addElementsTo(ATLAS::Model::Folder& asset);
@@ -28,6 +28,9 @@ namespace AssimpWorker {
 		const std::string getColladaUpAxis();
 		
 	private:
+		/** Internal constructor for Child documents. */
+		ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const ColladaRecursiveImporter& parent);
+
 		AssimpImporter* importer;
 		std::vector<ColladaRecursiveImporter*> childImporter;
 		const Poco::URI& colladaFileURI;

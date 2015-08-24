@@ -12,6 +12,7 @@
 #include "../import/AssimpImporter.hpp"
 #include "../import/AiImporter/AiSceneImporter.hpp"
 #include "../import/AMLImporter/AMLImporter.hpp"
+#include "../import/ColladaImporter/ColladaImporter.hpp"
 #include <atlas/model/Asset.hpp>
 #include "../internal/configuration.hpp" 
 #include "../connection/FeedbackProducer.hpp"
@@ -107,10 +108,8 @@ namespace AssimpWorker {
 
 	std::string Worker::importColladaAndStore(const std::string& filesystemPathToColladaFile) {
 		std::cout << "importColladaAndStore, filesystemPathToColladaFile: " << filesystemPathToColladaFile << std::endl;
-		std::string pathToFolder = filesystemPathToColladaFile.substr(0, filesystemPathToColladaFile.find_last_of('/') + 1);
 		Poco::URI uri(filesystemPathToColladaFile);
-		ColladaMassagerRegistry registry;
-		AssimpWorker::ColladaImporter importer = AssimpWorker::ColladaImporter(uri, log, pathToFolder, registry);
+		AssimpWorker::ColladaImporter importer = AssimpWorker::ColladaImporter(uri, log);
 		Asset asset;
 		importer.addElementsTo(asset);
 		return storeAsset(asset);

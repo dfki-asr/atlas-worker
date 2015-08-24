@@ -10,12 +10,11 @@ namespace AssimpWorker {
 
 	using ATLAS::Model::Folder;
 
-	ColladaImporter::ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& massagerRegistry) :
+	ColladaImporter::ColladaImporter(const Poco::URI& url, Log& log) :
 		Importer(url.toString(), log),
 		colladaFileURI(url),
-		pathToWorkingDirectory(pathToWorkingDirectory),
 		importers(),
-		massagerRegistry(massagerRegistry)
+		massagerRegistry()
 	{
 		return;
 	}
@@ -27,7 +26,7 @@ namespace AssimpWorker {
 	}
 
 	void ColladaImporter::addElementsTo(Folder& root){
-		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, pathToWorkingDirectory, massagerRegistry, -1.0);
+		ColladaRecursiveImporter* colladaImporter = new ColladaRecursiveImporter(colladaFileURI, log, massagerRegistry);
 		importers.push_back(colladaImporter);
 		colladaImporter->addElementsTo(root);
 	}

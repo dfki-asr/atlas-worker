@@ -15,14 +15,14 @@ namespace AssimpWorker {
 	using ATLAS::Model::DataDeletingBlob;
 	using ATLAS::Model::Folder;
 
-	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& registry, float scale) :
+	ColladaRecursiveImporter::ColladaRecursiveImporter(const Poco::URI& colladaFileURI, Log& log, ColladaMassagerRegistry& registry) :
 		Importer(colladaFileURI.toString(), log),
 		colladaFileURI(colladaFileURI),
 		childImporter(),
 		importer(nullptr),
 		massagerRegistry(registry),
 		massager(nullptr),
-		parentScale(scale)
+		parentScale(-1.0)
 	{
 		return;
 	}

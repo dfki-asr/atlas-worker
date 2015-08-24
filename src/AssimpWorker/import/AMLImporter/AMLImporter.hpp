@@ -9,7 +9,7 @@
 #include "../Importer.hpp"
 #include "../AssimpImporter.hpp"
 #include "AMLFrameImporter.hpp"
-#include "../ColladaImporter/ColladaImporter.hpp"
+#include "../ColladaImporter/ColladaRecursiveImporter.hpp"
 #include <atlas/model/Asset.hpp>
 #include <assimp/scene.h>
 #include <Poco/DOM/NodeList.h>
@@ -28,7 +28,7 @@ namespace AssimpWorker {
 	private:
 		Poco::URI amlFilePath;
 		Poco::URI pathToWorkingDirectory;
-		std::vector<ColladaImporter*> colladaImporters;
+		std::vector<ColladaRecursiveImporter*> colladaImporters;
 		AMLFrameImporter frameImporter;
 		ColladaMassagerRegistry massagerRegistry;
 

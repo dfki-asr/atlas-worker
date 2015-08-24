@@ -16,15 +16,14 @@ namespace AssimpWorker {
 
 	class ColladaImporter : public Importer {
 	public:
-		ColladaImporter(const Poco::URI& url, Log& log, const std::string& pathToWorkingDirectory, ColladaMassagerRegistry& massagerRegistry);
+		ColladaImporter(const Poco::URI& url, Log& log);
 		virtual ~ColladaImporter();
 		virtual void addElementsTo(ATLAS::Model::Folder& root);
 
 	private:
-		const std::string& pathToWorkingDirectory;
 		const Poco::URI& colladaFileURI;
 		std::vector<ColladaRecursiveImporter*> importers;
-		ColladaMassagerRegistry& massagerRegistry;
+		ColladaMassagerRegistry massagerRegistry;
 	};
 
 } // End namespace AssimpWorker
