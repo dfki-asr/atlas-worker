@@ -86,7 +86,7 @@ namespace AssimpWorker {
 	}
 
 	void AMLImporter::importColladaReference(Poco::URI& refURI, Poco::XML::Node* node, Folder& root) {
-		fixColladaURIPath(refURI);
+		prependAMLPath(refURI);
 		//we need to add additional nodes in case of multiple references within the aml file and to handle the frame attributes
 		Folder& colladaFolder = frameImporter.createParentHierarchy(node, root);
 		colladaFolder.setName(extractFileNameFromURI(refURI));
@@ -119,7 +119,7 @@ namespace AssimpWorker {
 		return index > 0;
 	}
 
-	void AMLImporter::fixColladaURIPath(Poco::URI& uri){
+	void AMLImporter::prependAMLPath(Poco::URI& uri){
 		std::string newPath = pathToWorkingDirectory.getPath();
 		newPath.append(uri.getPath());
 		uri.setPath(newPath);
