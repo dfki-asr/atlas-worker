@@ -104,12 +104,22 @@ namespace AssimpWorker{
 			const double toRad = M_PI / 180;
 			aiMatrix4x4 temp;
 			aiMatrix4x4 localTransform;
-			// re-assemble Frame transform (which is in right-hand z-up) into a right-hand y-up transform
-			// hence the shuffling of parameters and negative factors. mind the order of transforms!
-			localTransform *= aiMatrix4x4::Translation(aiVector3D(tx,tz,-ty),temp);
+			// Due to the associativity of matrix muliplication, read the following bottom-up,
+			// i.e. start in y-up, go to z-up, rotate x, then y, then z, translate, back to y-up
+			localTransform *= aiMatrix4x4(
+			                      1,  0,  0,  0,
+			                      0,  0,  1,  0,
+			                      0, -1,  0,  0,
+			                      0,  0,  0,  1); // z-up to y-up
+			localTransform *= aiMatrix4x4::Translation(aiVector3D(tx,ty,tz),temp);
+			localTransform *= aiMatrix4x4::RotationZ(rz*toRad, temp);
+			localTransform *= aiMatrix4x4::RotationY(ry*toRad, temp);
 			localTransform *= aiMatrix4x4::RotationX(rx*toRad, temp);
-			localTransform *= aiMatrix4x4::RotationY(rz*toRad, temp);
-			localTransform *= aiMatrix4x4::RotationZ(-ry*toRad, temp);
+			localTransform *= aiMatrix4x4(
+			                      1,  0,  0,  0,
+			                      0,  0, -1,  0,
+			                      0,  1,  0,  0,
+			                      0,  0,  0,  1); // y-up to z-up
 			return localTransform;
 		}
 		catch (const Exception& e) {
