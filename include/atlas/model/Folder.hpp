@@ -44,6 +44,8 @@ namespace Model {
 		std::string getAttribute(const std::string& key);
 		std::map<std::string, std::string>& getAttributes();
 		const std::map<std::string, std::string>& getAttributes() const;
+		void removeAttribute(std::string key);
+		std::vector<Folder>& getChildren();
 
 	protected:
 		BlobHolder& blobHolder;

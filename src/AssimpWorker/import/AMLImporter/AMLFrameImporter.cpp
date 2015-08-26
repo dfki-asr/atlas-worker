@@ -9,6 +9,7 @@
 #include "AMLFrameImporter.hpp"
 #include "../../internal/Exception.hpp"
 #include <Poco/DOM/NamedNodeMap.h>
+#include <Poco/DOM/AutoPtr.h>
 
 namespace AssimpWorker{
 
@@ -48,12 +49,12 @@ namespace AssimpWorker{
 
 	std::string AMLFrameImporter::getNameAttributeForNode(Poco::XML::Node* node) {
 		std::string name = node->nodeName();
-		Poco::XML::NamedNodeMap* attributes = node->attributes();
+		Poco::XML::AutoPtr<Poco::XML::NamedNodeMap> attributes = node->attributes();
 		Poco::XML::Node* nameNode = attributes->getNamedItem("Name");
-		if (nameNode == NULL) {
+		if (nameNode == nullptr) {
 			nameNode = attributes->getNamedItem("name");
 		}
-		if (nameNode != NULL) {
+		if (nameNode != nullptr) {
 			name = nameNode->getNodeValue();
 		}
 		attributes->release();
@@ -61,15 +62,14 @@ namespace AssimpWorker{
 	}
 
 	ATLAS::Model::Folder& AMLFrameImporter::getFolderForNode(Poco::XML::Node* node, ATLAS::Model::Folder& parentFolder) {
-		Poco::XML::Node* frame = node->getNodeByPath("/Attribute[@Name='Frame']");
-		aiMatrix4x4 localTransform = createFrameTransformMatrix(frame);
-
 		auto visited = visitedNodes.find(node);
 		if (visited != visitedNodes.end()) {
 			return *visited->second; //Already created a folder for this node so just return that one
 		}
 		else {
 			ATLAS::Model::Folder& folderForNode = createFolderForNode(node, parentFolder);
+			Poco::XML::Node* frame = node->getNodeByPath("/Attribute[@Name='Frame']");
+			aiMatrix4x4 localTransform = createFrameTransformMatrix(frame);
 			addTransformBlobToFolder(localTransform, folderForNode, "transform");
 			return folderForNode;
 		}
@@ -90,7 +90,7 @@ namespace AssimpWorker{
 	}
 
 	aiMatrix4x4 AMLFrameImporter::createFrameTransformMatrix(const Poco::XML::Node* frame) {
-		if (frame == NULL) {
+		if (frame == nullptr) {
 			aiMatrix4x4 identity;
 			return identity;
 		}
@@ -101,31 +101,29 @@ namespace AssimpWorker{
 			double rx = ::atof(frame->getNodeByPath("/Attribute[@Name='rx']/Value")->innerText().c_str());
 			double ry = ::atof(frame->getNodeByPath("/Attribute[@Name='ry']/Value")->innerText().c_str());
 			double rz = ::atof(frame->getNodeByPath("/Attribute[@Name='rz']/Value")->innerText().c_str());
-			aiMatrix4x4 localTransform = buildRotationMatrix(rx, ry, rz);
-			localTransform.a4 = (float)tx;
-			localTransform.b4 = (float)ty;
-			localTransform.c4 = (float)tz;
-			return  localTransform;
+			const double toRad = M_PI / 180;
+			aiMatrix4x4 temp;
+			aiMatrix4x4 localTransform;
+			// Due to the associativity of matrix muliplication, read the following bottom-up,
+			// i.e. start in y-up, go to z-up, rotate x, then y, then z, translate, back to y-up
+			localTransform *= aiMatrix4x4(
+			                      1,  0,  0,  0,
+			                      0,  0,  1,  0,
+			                      0, -1,  0,  0,
+			                      0,  0,  0,  1); // z-up to y-up
+			localTransform *= aiMatrix4x4::Translation(aiVector3D(tx,ty,tz),temp);
+			localTransform *= aiMatrix4x4::RotationZ(rz*toRad, temp);
+			localTransform *= aiMatrix4x4::RotationY(ry*toRad, temp);
+			localTransform *= aiMatrix4x4::RotationX(rx*toRad, temp);
+			localTransform *= aiMatrix4x4(
+			                      1,  0,  0,  0,
+			                      0,  0, -1,  0,
+			                      0,  1,  0,  0,
+			                      0,  0,  0,  1); // y-up to z-up
+			return localTransform;
 		}
 		catch (const Exception& e) {
 			throw AMLException("Syntax error while parsing a Frame attribute. This transformation will be ignored.");
 		}
 	}
-
-	aiMatrix4x4 AMLFrameImporter::buildRotationMatrix(double attitude, double heading, double bank) {
-		//Algorithm taken from http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToMatrix/
-		aiMatrix4x4 rot;
-		const double toRad = M_PI / 180;
-		const double sa = sin(attitude * toRad);
-		const double ca = cos(attitude * toRad);
-		const double sb = sin(bank * toRad);
-		const double cb = cos(bank * toRad);
-		const double sh = sin(heading * toRad);
-		const double ch = cos(heading * toRad);
-		rot.a1 = (float)(ch*ca);	rot.b1 = (float)(-ch*sa*cb + sh*sb);	rot.c1 = (float)(ch*sa*sb + sh*cb);
-		rot.a2 = (float)(sa);		rot.b2 = (float)(ca*cb);				rot.c2 = (float)(-ca*sb);
-		rot.a3 = (float)(-sh*ca);	rot.b3 = (float)(sh*sa*cb + ch*sb);		rot.c3 = (float)(-sh*sa*sb + ch*cb);
-		return rot;
-	}
-
 }

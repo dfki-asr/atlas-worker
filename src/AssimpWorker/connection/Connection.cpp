@@ -11,8 +11,8 @@
 namespace AssimpWorker {
 
 	Connection::Connection() :
-		connection(NULL),
-		session(NULL)
+		connection(nullptr),
+		session(nullptr)
 	{
 	}
 
@@ -23,13 +23,13 @@ namespace AssimpWorker {
 	}
 
 	Connection::~Connection() {
-		if (connection != NULL) {
+		if (connection != nullptr) {
 			try {
 				connection->close();
 				delete connection;
-				connection = NULL;
+				connection = nullptr;
 				delete session;
-				session = NULL;
+				session = nullptr;
 			}
 			catch (cms::CMSException& ex) {
 				ex.printStackTrace();

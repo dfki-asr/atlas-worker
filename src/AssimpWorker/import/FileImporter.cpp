@@ -56,7 +56,7 @@ namespace AssimpWorker {
 			file.open(this->url, std::ios::in | std::ios::binary | std::ios::ate);
 #pragma warning (disable : 4244) //warning C4244: '=' : conversion from 'std::streamoff' to 'uint32_t', possible loss of data
 			*size = file.tellg();
-			*destination = (char*)malloc(*size * sizeof(uint8_t));
+			*destination = (char*)malloc(*size * sizeof(char));
 			file.seekg(0, std::ios::beg);
 			file.read(*destination, *size);
 			return true;
