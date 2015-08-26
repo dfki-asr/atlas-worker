@@ -9,6 +9,7 @@
 #include "ColladaRecursiveImporter.hpp"
 #include "../../internal/Exception.hpp"
 #include <boost/format.hpp>
+#include <Poco/File.h>
 
 namespace AssimpWorker {
 
@@ -45,10 +46,18 @@ namespace AssimpWorker {
 	}
 
 	void ColladaRecursiveImporter::addElementsTo(Folder& root){
+		if (!fileExists()) {
+			return;
+		}
 		preprocessCollada();
 		const aiScene* scene = runAssimpImport();
 		convertToFolderStructure(scene, root);
 		importChildColladas(root);
+	}
+
+	bool ColladaRecursiveImporter::fileExists() const {
+		Poco::File colladaFile(colladaFileURI.getPath());
+		return colladaFile.exists() && colladaFile.canRead();
 	}
 
 	void ColladaRecursiveImporter::preprocessCollada(){

@@ -41,6 +41,7 @@ namespace AssimpWorker {
 		const aiScene* runAssimpImport();
 		void convertToFolderStructure(const aiScene* scene, ATLAS::Model::Folder& root);
 		void importChildColladas(ATLAS::Model::Folder& root);
+		bool fileExists() const;
 
 		std::string extractDirectory(const Poco::URI& fileURI);
 		std::string fixRelativeReference(const std::string relativeURI);
