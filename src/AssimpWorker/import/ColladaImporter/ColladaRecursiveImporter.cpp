@@ -47,6 +47,10 @@ namespace AssimpWorker {
 
 	void ColladaRecursiveImporter::addElementsTo(Folder& root){
 		if (!fileExists()) {
+			log.error(boost::str(
+			              boost::format("Tried to import non-existent file '%1%'. Skipped.")
+			              % colladaFileURI.getPath()
+		              ));
 			return;
 		}
 		preprocessCollada();
