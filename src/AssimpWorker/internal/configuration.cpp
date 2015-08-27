@@ -33,19 +33,19 @@ Configuration::Configuration()
 
 void Configuration::init(int argc, char **argv) {
 	try {
-	bpo::command_line_parser parser(argc, argv);
-	parser.options(description);
-	bpo::store(parser.run(),parsedVariables);
-	// in case the default file didn't exist
-	// and we now know a non-default name:
-	parseConfigFile();
-	if (parsedVariables.count("help") || parsedVariables.count("version")) {
-		// if these are defined, skip checks, should exit from main anyway.
-		return;
-	}
-	// now that we have parsed commandline
-	// as well as default and possibly other configfile
-	// check for missing stuff:
+		bpo::command_line_parser parser(argc, argv);
+		parser.options(description);
+		bpo::store(parser.run(),parsedVariables);
+		// in case the default file didn't exist
+		// and we now know a non-default name:
+		parseConfigFile();
+		if (parsedVariables.count("help") || parsedVariables.count("version")) {
+			// if these are defined, skip checks, should exit from main anyway.
+			return;
+		}
+		// now that we have parsed commandline
+		// as well as default and possibly other configfile
+		// check for missing stuff:
 		bpo::notify(parsedVariables);
 	} catch (std::exception const& e) {
 		std::cerr << "Parsing options: " << e.what() << std::endl;
