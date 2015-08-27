@@ -8,6 +8,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "AssimpImporter.hpp"
+#include "../internal/configuration.hpp"
 
 namespace AssimpWorker {
 
@@ -22,15 +23,24 @@ namespace AssimpWorker {
 	}
 
 	const aiScene* AssimpImporter::importSceneFromFile(std::string fileName, Log& log){
-		importer.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); //remove degenerate polys
-		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT); //Drop all primitives that aren't triangles
-		importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 65535); // Split meshes at uint16 WebGL limit
+		setOptions();
 		const aiScene* scene = importer.ReadFile(fileName, aiProcessPreset_TargetRealtime_MaxQuality);
 		if (!scene) {
 			log.error("Scene not imported: "+fileName);
 		}
 		log.error(importer.GetErrorString());
 		return scene;
+	}
+
+	void AssimpImporter::setOptions()
+	{
+		Configuration& config = Configuration::getInstance();
+		importer.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); //remove degenerate polys
+		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT); //Drop all primitives that aren't triangles
+		if (config.enabled("mesh-split")) {
+			int threshold = config.get("mesh-split-threshold").as<int>();
+			importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, threshold);
+		}
 	}
 
 }
