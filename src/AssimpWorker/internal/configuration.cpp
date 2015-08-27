@@ -32,23 +32,23 @@ Configuration::Configuration()
 }
 
 void Configuration::init(int argc, char **argv) {
-	bpo::command_line_parser parser(argc, argv);
-	parser.options(description);
-	bpo::store(parser.run(),parsedVariables);
-	// in case the default file didn't exist
-	// and we now know a non-default name:
-	parseConfigFile();
-	if (parsedVariables.count("help")) {
-		std::cout << description << std::endl;
-		exit(1);
-	}
-	// now that we have parsed commandline
-	// as well as default and possibly other configfile
-	// check for missing stuff:
 	try {
+		bpo::command_line_parser parser(argc, argv);
+		parser.options(description);
+		bpo::store(parser.run(),parsedVariables);
+		// in case the default file didn't exist
+		// and we now know a non-default name:
+		parseConfigFile();
+		if (parsedVariables.count("help") || parsedVariables.count("version")) {
+			// if these are defined, skip checks, should exit from main anyway.
+			return;
+		}
+		// now that we have parsed commandline
+		// as well as default and possibly other configfile
+		// check for missing stuff:
 		bpo::notify(parsedVariables);
 	} catch (std::exception const& e) {
-		std::cerr << "Parsing options:" << e.what() << std::endl;
+		std::cerr << "Parsing options: " << e.what() << std::endl;
 		exit(1);
 	}
 }
@@ -126,6 +126,11 @@ const bpo::variable_value& Configuration::get(const std::string &entry) const {
 const bool Configuration::enabled(const std::string& entry) const
 {
 	return parsedVariables.count(entry);
+}
+
+void Configuration::printDescription() const
+{
+	std::cout << description << std::endl;
 }
 
 }

@@ -168,4 +168,5 @@ Our source distribution includes the following third party items with respective
     FindCXX11.cmake       - CC-BY-SA 3.0 (by martiert, from http://stackoverflow.com/a/13571695)
     FindJansson.cmake     - New BSD License
     FindPoco.cmake        - Boost license (from Poco "contrib/camke/PocoConfig.cmake" @6b36a1)
+    GetGitRevisionDescription.cmake - Boost License
 
