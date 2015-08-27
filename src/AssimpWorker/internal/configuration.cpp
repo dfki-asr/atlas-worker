@@ -85,6 +85,11 @@ void Configuration::setupOptions() {
 		("config,c", bpo::value<std::string>(), "read configuration from file, overrides options given on command line")
 		("decompression-path", bpo::value<std::string>()->default_value("./tmp"), "Path to temporary space for decompressed zip contents")
 	;
+	bpo::options_description import("Import options");
+	import.add_options()
+		("mesh-split", "Split meshes larger than a certain number of vertices.")
+		("mesh-split-threshold", bpo::value<int>()->default_value(65535), "Number of vertices at which to split.")
+	;
 	bpo::options_description stomp("Stomp options");
 	stomp.add_options()
 		("stomp-heartbeat-interval-ms", bpo::value<int>()->default_value(10000), "Heartbeat interval in ms")
@@ -109,12 +114,18 @@ void Configuration::setupOptions() {
 	;
 
 	description.add(basic);
+	description.add(import);
 	description.add(stomp);
 	description.add(jcr);
 }
 
 const bpo::variable_value& Configuration::get(const std::string &entry) const {
 	return parsedVariables[entry];
+}
+
+const bool Configuration::enabled(const std::string& entry) const
+{
+	return parsedVariables.count(entry);
 }
 
 }

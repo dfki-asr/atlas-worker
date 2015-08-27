@@ -24,6 +24,7 @@ namespace AssimpWorker {
 
 	private:
 		Assimp::Importer importer;
+		void setOptions();
 	};
 
 } // End namespace AssimpWorker
