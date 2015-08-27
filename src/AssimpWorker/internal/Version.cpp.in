@@ -1,0 +1,7 @@
+#include "Version.h"
+
+namespace AssimpWorker {
+
+const std::string GIT_VERSION = "@VERSION@";
+
+}
