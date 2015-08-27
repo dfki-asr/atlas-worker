@@ -117,5 +117,10 @@ const bpo::variable_value& Configuration::get(const std::string &entry) const {
 	return parsedVariables[entry];
 }
 
+const bool Configuration::enabled(const std::string& entry) const
+{
+	return parsedVariables.count(entry);
+}
+
 }
 
