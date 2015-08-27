@@ -32,6 +32,7 @@ Configuration::Configuration()
 }
 
 void Configuration::init(int argc, char **argv) {
+	try {
 	bpo::command_line_parser parser(argc, argv);
 	parser.options(description);
 	bpo::store(parser.run(),parsedVariables);
@@ -45,7 +46,6 @@ void Configuration::init(int argc, char **argv) {
 	// now that we have parsed commandline
 	// as well as default and possibly other configfile
 	// check for missing stuff:
-	try {
 		bpo::notify(parsedVariables);
 	} catch (std::exception const& e) {
 		std::cerr << "Parsing options: " << e.what() << std::endl;
