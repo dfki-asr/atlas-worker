@@ -48,7 +48,7 @@ void Configuration::init(int argc, char **argv) {
 	try {
 		bpo::notify(parsedVariables);
 	} catch (std::exception const& e) {
-		std::cerr << "Parsing options:" << e.what() << std::endl;
+		std::cerr << "Parsing options: " << e.what() << std::endl;
 		exit(1);
 	}
 }
