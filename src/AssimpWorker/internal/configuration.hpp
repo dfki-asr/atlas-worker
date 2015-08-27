@@ -20,6 +20,7 @@ class Configuration
 		// get() is very read-only, you should be able to call it safely from anywhere.
 		const boost::program_options::variable_value& get(const std::string& entry) const;
 		const bool enabled(const std::string& entry) const;
+		void printDescription() const;
 	private:
 		Configuration();
 		void setupOptions();
