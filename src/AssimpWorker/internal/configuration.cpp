@@ -111,6 +111,9 @@ void Configuration::setupOptions() {
 		("jcr-pass",
 		 bpo::value<std::string>()->default_value("admin"),
 		 "Password")
+	    ("disk-storage",
+	     bpo::value<std::string>()->default_value("./atlas_repository"),
+	     "Location of on-disk repository")
 	;
 
 	description.add(basic);
