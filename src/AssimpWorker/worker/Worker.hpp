@@ -6,7 +6,7 @@
 */
 #pragma once
 
-#include "../storage/JCRStorageService.hpp"
+#include "../storage/DiskStorageService.hpp"
 #include "WorkUnit.hpp"
 #include "../worker/zipFileDecompressor.hpp"
 #include "../import/Log.hpp"
@@ -22,7 +22,7 @@ namespace AssimpWorker {
 		void import(WorkUnit& workUnit);
 
 	private:
-		JCRStorageService storageService;
+		DiskStorageService storageService;
 		Log log;
 		WorkUnit* currentWorkUnit;
 
