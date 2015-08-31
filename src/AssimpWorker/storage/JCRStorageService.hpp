@@ -31,19 +31,21 @@ namespace AssimpWorker {
 		Poco::Net::HTTPClientSession session;
 		Poco::Net::HTTPBasicCredentials credentials;
 		std::string basePath;
-		JsonSerializer jsonSerializer;
 
 		json_t* createEmptyJsonJCRForBlob();
 
 		void openConnection();
 		void ensureAssetFoldersExist();
 		bool itemAlreadyExists(Poco::URI& uri);
-		std::string calculateHashForAsset(char* jsonData);
 
 		void postBlobItem(ATLAS::Model::Blob& blob);
 		void postBlobBinary(ATLAS::Model::Blob& blob);
 		void postAssetJSON(const char* jsonData, Poco::URI& uri);
 		void postEmptyFolderUnderAsset(const std::string& folderName);
+
+	protected:
+		JsonSerializer jsonSerializer;
+		std::string calculateHashForAsset(char* jsonData);
 		void postBlobsForAsset(ATLAS::Model::Asset& asset);
 
 	};
