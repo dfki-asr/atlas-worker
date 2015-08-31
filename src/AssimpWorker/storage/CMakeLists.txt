@@ -7,12 +7,14 @@
 SET(STORAGE_HPP_FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/StorageService.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/JCRStorageService.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/DiskStorageService.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/JsonSerializer.hpp
 )
 
 SET(STORAGE_SRC_FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/StorageService.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/JCRStorageService.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/DiskStorageService.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/JsonSerializer.cpp
 )
 
