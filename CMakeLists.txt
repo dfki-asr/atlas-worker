@@ -18,10 +18,6 @@ add_definitions(-DBOOST_ALL_DYN_LINK)
 else()
   # other platforms are recommended to install dependencies through their
   # native package management systems
-  if (NOT APPLE)
-    # homebrew seems to have everything for now...
-    find_package(Contrib REQUIRED activemq-cpp)
-  endif(NOT APPLE)
 endif(WIN32)
 
 message( STATUS "Prefix path: ${CMAKE_PREFIX_PATH}")
@@ -35,21 +31,21 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 find_package(CXX11)
 
-find_package(Poco COMPONENTS Zip Net Crypto XML)
+find_package(Poco REQUIRED COMPONENTS Zip Net Crypto XML)
 if(Poco_FOUND) 
    include_directories(BEFORE ${Poco_INCLUDE_DIR})
    link_directories(${Poco_LIBRARY_DIR})
    message(STATUS "Found Poco includes at ${Poco_INCLUDE_DIR}")
 endif(Poco_FOUND)
 
-find_package(Boost COMPONENTS system thread filesystem program_options)
+find_package(Boost REQUIRED COMPONENTS system thread filesystem program_options)
 if(Boost_FOUND)
    include_directories(BEFORE ${Boost_INCLUDE_DIR})
    link_directories(${Boost_LIBRARY_DIR})
    message(STATUS "Found Boost includes at ${Boost_INCLUDE_DIR}")
 endif(Boost_FOUND)
 
-find_package(ASSIMP)
+find_package(ASSIMP REQUIRED)
 if(ASSIMP_FOUND)
 	include_directories(BEFORE ${ASSIMP_INCLUDE_DIR})
 	message(STATUS "Found ASSIMP includes at ${ASSIMP_INCLUDE_DIR}")
@@ -84,7 +80,7 @@ if(WIN32)
 					)
 endif(WIN32)
 
-LIST(APPEND CMAKE_CXX_FLAGS ${CXX11_FLAGS})
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_FLAGS}")
 
 # /src
 add_subdirectory(src)

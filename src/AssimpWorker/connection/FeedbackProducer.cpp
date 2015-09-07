@@ -12,7 +12,7 @@ namespace AssimpWorker {
 
 	FeedbackProducer::FeedbackProducer() :
 		connection(),
-		producer(NULL)
+		producer(nullptr)
 	{
 	}
 
@@ -21,7 +21,7 @@ namespace AssimpWorker {
 	}
 
 	void FeedbackProducer::sendWorkFeedbackMessage(WorkUnit& workUnit, const std::string& status) {
-		if (producer == NULL) {
+		if (producer == nullptr) {
 			connection.connect();
 			producer = connection.getProducerForQueue("feedback-queue");
 		}
@@ -48,7 +48,7 @@ namespace AssimpWorker {
 		// Destroy resources.
 		try {
 			delete producer;
-			producer = NULL;
+			producer = nullptr;
 		}
 		catch (cms::CMSException& e) {
 			e.printStackTrace();

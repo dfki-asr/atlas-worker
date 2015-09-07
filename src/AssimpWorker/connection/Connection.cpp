@@ -6,12 +6,13 @@
 */
 #include "Connection.hpp"
 #include "../internal/configuration.hpp"
+#include <sstream>
 
 namespace AssimpWorker {
 
 	Connection::Connection() :
-		connection(NULL),
-		session(NULL)
+		connection(nullptr),
+		session(nullptr)
 	{
 	}
 
@@ -22,13 +23,13 @@ namespace AssimpWorker {
 	}
 
 	Connection::~Connection() {
-		if (connection != NULL) {
+		if (connection != nullptr) {
 			try {
 				connection->close();
 				delete connection;
-				connection = NULL;
+				connection = nullptr;
 				delete session;
-				session = NULL;
+				session = nullptr;
 			}
 			catch (cms::CMSException& ex) {
 				ex.printStackTrace();
@@ -44,10 +45,23 @@ namespace AssimpWorker {
 		return connection;
 	}
 
+	std::string Connection::getBrokerUrl() {
+		Configuration& config = Configuration::getInstance();
+		std::stringstream url;
+		url << "tcp://" 
+		    << config.get("stomp-host").as<std::string>()
+		    << ":"
+		    << config.get("stomp-port").as<int>()
+		    << "?wireFormat=stomp"
+		    << "&wireFormat.queuePrefix=jms.queue."
+		    << "&connection.watchTopicAdvisories=false";
+		return url.str();
+	}
+
 	void Connection::connect() {
 		Configuration& config = Configuration::getInstance();
 		std::auto_ptr<cms::ConnectionFactory> connectionFactory(
-			cms::ConnectionFactory::createCMSConnectionFactory(config.get("jms-broker").as<std::string>())
+			cms::ConnectionFactory::createCMSConnectionFactory(getBrokerUrl())
 		);
 		connection = connectionFactory->createConnection(
 			config.get("stomp-user").as<std::string>(),

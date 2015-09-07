@@ -6,23 +6,24 @@
 */
 #pragma once
 
-#include "assimp/scene.h"
 #include "../Importer.hpp"
+#include "ColladaRecursiveImporter.hpp"
+#include "ColladaMassager.hpp"
+#include "ColladaMassagerRegistry.hpp"
+#include <Poco/URI.h>
 
 namespace AssimpWorker {
 
-	class AiSceneImporter : public Importer {
+	class ColladaImporter : public Importer {
 	public:
-		AiSceneImporter(const aiScene* scene, const std::string& pathToFolder, Log& log);
-		virtual ~AiSceneImporter();
+		ColladaImporter(const Poco::URI& url, Log& log);
+		virtual ~ColladaImporter();
 		virtual void addElementsTo(ATLAS::Model::Folder& root);
-		void importSubtreeOfScene(ATLAS::Model::Folder& root, aiNode* startingPoint);
-	private:
-		const aiScene* scene;
-		const std::string pathToFolder;
 
-		void addLightsTo(ATLAS::Model::Folder& folder);
-		void addCamerasTo(ATLAS::Model::Folder& folder);
+	private:
+		const Poco::URI& colladaFileURI;
+		std::vector<ColladaRecursiveImporter*> importers;
+		ColladaMassagerRegistry massagerRegistry;
 	};
 
 } // End namespace AssimpWorker

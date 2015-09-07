@@ -19,13 +19,15 @@ class Configuration
 		void init(int argc, char** argv);
 		// get() is very read-only, you should be able to call it safely from anywhere.
 		const boost::program_options::variable_value& get(const std::string& entry) const;
+		const bool enabled(const std::string& entry) const;
+		void printDescription() const;
 	private:
 		Configuration();
 		void setupOptions();
 		void parseConfigFile();
 		bool defaultConfigExists();
 
-		const char* defaultConfigFilename = "assimpworker.conf";
+		static const char* defaultConfigFilename;
 		static Configuration* singletonInstance;
 		boost::program_options::variables_map parsedVariables;
 		boost::program_options::options_description description;

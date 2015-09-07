@@ -12,6 +12,7 @@
 #include "../import/AssimpImporter.hpp"
 #include "../import/AiImporter/AiSceneImporter.hpp"
 #include "../import/AMLImporter/AMLImporter.hpp"
+#include "../import/ColladaImporter/ColladaImporter.hpp"
 #include <atlas/model/Asset.hpp>
 #include "../internal/configuration.hpp" 
 #include "../connection/FeedbackProducer.hpp"
@@ -24,7 +25,7 @@ namespace AssimpWorker {
 
 	Worker::Worker() : 
 		storageService(),
-		currentWorkUnit(NULL)
+		currentWorkUnit(nullptr)
 	{
 		return;
 	}
@@ -73,7 +74,8 @@ namespace AssimpWorker {
 	void Worker::importSingleColladaFile() {
 		std::istream& response = storageService.retrieveFile(currentWorkUnit->sourcePath);
 		// Patches welcome...
-		Poco::TemporaryFile tmp;
+		std::string decompressionPath = Configuration::getInstance().get("decompression-path").as<std::string>();
+		Poco::TemporaryFile tmp(decompressionPath);
 		std::ofstream ostr;
 		ostr.open(tmp.path().c_str());
 		std::streamsize n;
@@ -105,16 +107,11 @@ namespace AssimpWorker {
 	}
 
 	std::string Worker::importColladaAndStore(const std::string& filesystemPathToColladaFile) {
-		AssimpWorker::AssimpImporter importer;
-		const aiScene* scene = importer.importSceneFromFile(filesystemPathToColladaFile, log);
-		if (!scene) {
-			return "";
-		}
-		std::cout << "AssImp import completed, converting..." << std::endl;
-		std::string pathToFolder = filesystemPathToColladaFile.substr(0, filesystemPathToColladaFile.find_last_of('/')+1);
-		AiSceneImporter sceneImporter(scene, pathToFolder, log);
+		std::cout << "importColladaAndStore, filesystemPathToColladaFile: " << filesystemPathToColladaFile << std::endl;
+		Poco::URI uri(filesystemPathToColladaFile);
+		AssimpWorker::ColladaImporter importer = AssimpWorker::ColladaImporter(uri, log);
 		Asset asset;
-		sceneImporter.addElementsTo(asset);
+		importer.addElementsTo(asset);
 		return storeAsset(asset);
 	}
 
@@ -159,7 +156,7 @@ namespace AssimpWorker {
 		if (daePath != "") {
 			return importColladaAndStore(daePath);
 		}
-		log.error("Could not find a supported file type to convert. Make sure the format you are trying to import is supported by ATLAS.");
+		log.error("Could not find a supported file type to convert. Make sure the format you are trying to import is supported by ATLAS. Also, remember: Folders are not supported by ATLAS, make sure the file to be imported is within the toplevel of the zip-file.");
 		return "";
 	}
 

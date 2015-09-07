@@ -11,8 +11,9 @@
 #include <boost/thread.hpp>
 #include "connection/QueueConsumer.hpp"
 #include "internal/AssimpVersion.hpp"
+#include "internal/Version.h"
 
-boost::thread* g_QueueConsumerThread = NULL;
+boost::thread* g_QueueConsumerThread = nullptr;
 
 void showAtlasLogo() {
 	printf("\n"
@@ -41,7 +42,14 @@ int main(int argc, char** argv)
 	config.init(argc, argv);
 
 	showAtlasLogo();
-	std::cout << "Running on " << AssimpWorker::AssimpVersion::getAssimpVersion() << std::endl;
+	if (config.enabled("version") || config.enabled("help")) {
+		std::cout << "ATLAS AssimpWorker version " << AssimpWorker::GIT_VERSION << std::endl;
+		std::cout << "Running on " << AssimpWorker::AssimpVersion::getAssimpVersion() << std::endl;
+		if (config.enabled("help")) {
+			config.printDescription();
+		}
+		return 0;
+	}
 
 	activemq::library::ActiveMQCPP::initializeLibrary();
 	AssimpWorker::QueueConsumer consumer;

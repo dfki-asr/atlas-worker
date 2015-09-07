@@ -15,10 +15,11 @@ namespace bpo = boost::program_options;
 
 namespace AssimpWorker {
 
-Configuration* Configuration::singletonInstance = NULL;
+Configuration* Configuration::singletonInstance = nullptr;
+const char* Configuration::defaultConfigFilename = "assimpworker.conf";
 
 Configuration& Configuration::getInstance() {
-	if (singletonInstance == NULL) {
+	if (singletonInstance == nullptr) {
 		singletonInstance = new Configuration();
 	}
 	return *singletonInstance;
@@ -31,29 +32,29 @@ Configuration::Configuration()
 }
 
 void Configuration::init(int argc, char **argv) {
-	bpo::command_line_parser parser(argc, argv);
-	parser.options(description);
-	bpo::store(parser.run(),parsedVariables);
-	// in case the default file didn't exist
-	// and we now know a non-default name:
-	parseConfigFile();
-	if (parsedVariables.count("help")) {
-		std::cout << description << std::endl;
-		exit(1);
-	}
-	// now that we have parsed commandline
-	// as well as default and possibly other configfile
-	// check for missing stuff:
 	try {
+		bpo::command_line_parser parser(argc, argv);
+		parser.options(description);
+		bpo::store(parser.run(),parsedVariables);
+		// in case the default file didn't exist
+		// and we now know a non-default name:
+		parseConfigFile();
+		if (parsedVariables.count("help") || parsedVariables.count("version")) {
+			// if these are defined, skip checks, should exit from main anyway.
+			return;
+		}
+		// now that we have parsed commandline
+		// as well as default and possibly other configfile
+		// check for missing stuff:
 		bpo::notify(parsedVariables);
 	} catch (std::exception const& e) {
-		std::cerr << "Parsing options:" << e.what() << std::endl;
+		std::cerr << "Parsing options: " << e.what() << std::endl;
 		exit(1);
 	}
 }
 
 void Configuration::parseConfigFile() {
-	const char* configFileName = NULL;
+	const char* configFileName = nullptr;
 	if (parsedVariables.count("config")) {
 		// config file specified
 		std::string configFile = parsedVariables["config"].as<std::string>();
@@ -84,6 +85,11 @@ void Configuration::setupOptions() {
 		("config,c", bpo::value<std::string>(), "read configuration from file, overrides options given on command line")
 		("decompression-path", bpo::value<std::string>()->default_value("./tmp"), "Path to temporary space for decompressed zip contents")
 	;
+	bpo::options_description import("Import options");
+	import.add_options()
+		("mesh-split", "Split meshes larger than a certain number of vertices.")
+		("mesh-split-threshold", bpo::value<int>()->default_value(65535), "Number of vertices at which to split.")
+	;
 	bpo::options_description stomp("Stomp options");
 	stomp.add_options()
 		("stomp-heartbeat-interval-ms", bpo::value<int>()->default_value(10000), "Heartbeat interval in ms")
@@ -93,9 +99,6 @@ void Configuration::setupOptions() {
 		("stomp-pass", bpo::value<std::string>()->required(),                        "Password")
 		("work-queue",bpo::value<std::string>()->default_value("atlas.work.import"),"Work queue name")
 		("feedback-queue",bpo::value<std::string>()->default_value("atlas.work.feedback"),"Feedback queue name")
-		("jms-broker",
-		bpo::value<std::string>()->default_value("tcp://localhost:61613?wireFormat=stomp&wireFormat.queuePrefix=jms.queue.&connection.watchTopicAdvisories=false"),
-		"JMS Broker URI")
 	;
 	bpo::options_description jcr("Repository options");
 	jcr.add_options()
@@ -111,12 +114,23 @@ void Configuration::setupOptions() {
 	;
 
 	description.add(basic);
+	description.add(import);
 	description.add(stomp);
 	description.add(jcr);
 }
 
 const bpo::variable_value& Configuration::get(const std::string &entry) const {
 	return parsedVariables[entry];
+}
+
+const bool Configuration::enabled(const std::string& entry) const
+{
+	return parsedVariables.count(entry);
+}
+
+void Configuration::printDescription() const
+{
+	std::cout << description << std::endl;
 }
 
 }

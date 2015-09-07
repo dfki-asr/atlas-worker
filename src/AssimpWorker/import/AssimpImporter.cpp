@@ -8,6 +8,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "AssimpImporter.hpp"
+#include "../internal/configuration.hpp"
 
 namespace AssimpWorker {
 
@@ -22,14 +23,29 @@ namespace AssimpWorker {
 	}
 
 	const aiScene* AssimpImporter::importSceneFromFile(std::string fileName, Log& log){
-		importer.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); //remove degenerate polys
-		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT); //Drop all primitives that aren't triangles
+		setOptions();
 		const aiScene* scene = importer.ReadFile(fileName, aiProcessPreset_TargetRealtime_Quality);
 		if (!scene) {
 			log.error("Scene not imported: "+fileName);
 		}
-		log.error(importer.GetErrorString());
+		const char* errorString = importer.GetErrorString();
+		if (strlen(errorString) != 0) {
+			// error string is not empty: an error occured.
+			log.error(fileName + ": " + errorString);
+		}
 		return scene;
+	}
+
+	void AssimpImporter::setOptions()
+	{
+		Configuration& config = Configuration::getInstance();
+		importer.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); //remove degenerate polys
+		importer.SetPropertyInteger(AI_CONFIG_IMPORT_NO_SKELETON_MESHES, true); //do not import skeletons
+		importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT); //Drop all primitives that aren't triangles
+		if (config.enabled("mesh-split")) {
+			int threshold = config.get("mesh-split-threshold").as<int>();
+			importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, threshold);
+		}
 	}
 
 }

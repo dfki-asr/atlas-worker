@@ -7,8 +7,8 @@
 #define _USE_MATH_DEFINES
 
 #include "AMLImporter.hpp"
-#include "../AiImporter/AiSceneImporter.hpp"
 #include "../../internal/Exception.hpp"
+#include "../ColladaImporter/ColladaMassagerRegistry.hpp"
 #include <fstream>
 #include <iostream>
 #include <math.h>
@@ -29,30 +29,34 @@ namespace AssimpWorker {
 		Importer(amlFilePath, log),
 		amlFilePath(amlFilePath),
 		pathToWorkingDirectory(amlFilePath.substr(0, amlFilePath.find_last_of('/') + 1)),
-		massagers(),
-		frameImporter()
+		frameImporter(),
+		colladaImporters(),
+		massagerRegistry()
 	{
 		return;
 	}
 
 	AMLImporter::~AMLImporter(){
-		for (auto massagerEntries : massagers){
-			delete(massagerEntries.second);
-		}
-		for (auto importerEntry : importers){
-			delete(importerEntry);
+		for (auto i : colladaImporters){
+			delete i;
 		}
 	}
 
 	void AMLImporter::addElementsTo(Folder& root) {
 		Poco::XML::AutoPtr<Poco::XML::Document> document = parseAMLFile();
-		Poco::XML::NodeList* externalInterfaces = document->getElementsByTagName("ExternalInterface");
+		Poco::XML::AutoPtr<Poco::XML::NodeList> externalInterfaces = document->getElementsByTagName("ExternalInterface");
 		findAndImportColladaReferences(externalInterfaces, root);
-		convertZUpToYUp(root);
-		std::cout << "AML / trans " << root.getBlobByType("transform")->getHash() << std::endl;
+		removeColladaIDs(root);
 	}
 
-	std::string AMLImporter::extractFilneNameFromURI(Poco::URI& refURI){
+	void AMLImporter::removeColladaIDs(Folder& folder){
+		folder.removeAttribute("colladaID");
+		for (Folder& child : folder.getChildren()){
+			removeColladaIDs(child);
+		}
+	}
+
+	std::string AMLImporter::extractFileNameFromURI(Poco::URI& refURI){
 		std::vector<std::string> pathSegments;
 		refURI.getPathSegments(pathSegments);
 		return pathSegments.back();
@@ -67,7 +71,7 @@ namespace AssimpWorker {
 		return doc;
 	}
 
-	void AMLImporter::findAndImportColladaReferences(Poco::XML::NodeList* externalInterfaces, Folder& root) {
+	void AMLImporter::findAndImportColladaReferences(Poco::XML::AutoPtr<Poco::XML::NodeList> externalInterfaces, Folder& root) {
 		for (int i = 0; i < externalInterfaces->length(); ++i) {
 			Poco::XML::Node* node = externalInterfaces->item(i);
 			Poco::URI refURI = extractRefURIOfExternalInterface(node);
@@ -82,16 +86,15 @@ namespace AssimpWorker {
 	}
 
 	void AMLImporter::importColladaReference(Poco::URI& refURI, Poco::XML::Node* node, Folder& root) {
-		fixColladaURIPath(refURI);
-		//we need to add additional nodes in case of multiple references within the aml file and to handle the frame attributes
+		prependAMLPath(refURI);
 		Folder& colladaFolder = frameImporter.createParentHierarchy(node, root);
-		colladaFolder.setName(extractFilneNameFromURI(refURI));
+		colladaFolder.setName(extractFileNameFromURI(refURI));
 		importGeometryReference(colladaFolder, refURI);
 	}
 
 	std::string AMLImporter::extractRefTypeOfExternalInterface(Poco::XML::Node* externalInterface){
 		Poco::XML::Node* refTypeValue = externalInterface->getNodeByPath("/Attribute[@Name='refType']/Value");
-		if (refTypeValue == NULL) {
+		if (refTypeValue == nullptr) {
 			//refType is a mandatory attribute, if its missing the AML is not valid and we should ignore this object.
 			return "";
 		}
@@ -100,9 +103,9 @@ namespace AssimpWorker {
 		return refType;
 	}
 
-	Poco::URI AMLImporter::extractRefURIOfExternalInterface(Poco::XML::Node* externatlInterface){
-		Poco::XML::Node* refNodeValue = externatlInterface->getNodeByPath("/Attribute[@Name='refURI']/Value");
-		if (refNodeValue == NULL) {
+	Poco::URI AMLImporter::extractRefURIOfExternalInterface(Poco::XML::Node* externalInterface){
+		Poco::XML::Node* refNodeValue = externalInterface->getNodeByPath("/Attribute[@Name='refURI']/Value");
+		if (refNodeValue == nullptr) {
 			//This interface should be ignored, without a refURI it can't possibly be interesting for us
 			return Poco::URI();
 		}
@@ -115,119 +118,55 @@ namespace AssimpWorker {
 		return index > 0;
 	}
 
-	void AMLImporter::fixColladaURIPath(Poco::URI& uri){
+	void AMLImporter::prependAMLPath(Poco::URI& uri){
 		std::string newPath = pathToWorkingDirectory.getPath();
 		newPath.append(uri.getPath());
 		uri.setPath(newPath);
 	}
 
-	aiMatrix4x4 AMLImporter::getTransformFor(Folder& folder) {
-		ATLAS::Model::Blob* currentFolderTransform = folder.getBlobByType("transform");
-		if (currentFolderTransform) {
-			return *(aiMatrix4x4*)currentFolderTransform->getData();
-		} else {
-			aiMatrix4x4 idendity;
-			return idendity;
-		}
-	}
-
-	void AMLImporter::setTransformFor(Folder& folder, const aiMatrix4x4& newTransfrom) {
-		DataDeletingBlob<aiMatrix4x4> blob(new aiMatrix4x4(newTransfrom));
-		folder.addBlob("transform", blob);
-	}
-
-	void AMLImporter::convertZUpToYUp(Folder& folder) {
-		aiMatrix4x4 transform = getTransformFor(folder);
-		const aiMatrix4x4 zUpToYUp(
-				1,  0,  0,  0,
-				0,  0,  1,  0,
-				0, -1,  0,  0,
-				0,  0,  0,  1
-		);
-		transform *= zUpToYUp;
-		setTransformFor(folder, transform);
-	}
-
-	void AMLImporter::convertYUpToZUp(Folder& folder) {
-		aiMatrix4x4 transform = getTransformFor(folder);
-		const aiMatrix4x4 yUpToZUp(
-				1,  0,  0,  0,
-				0,  0, -1,  0,
-				0,  1,  0,  0,
-				0,  0,  0,  1
-		);
-		transform *= yUpToZUp;
-		setTransformFor(folder, transform);
-	}
-
 	void AMLImporter::importGeometryReference(Folder& root, const Poco::URI& colladaFileURI) {
-		if (colladaFileURI.getFragment() == "") {
-			importCompleteColladaScene(root, colladaFileURI);
-		}
-		else {
-			importSubtreeOfColladaScene(root, colladaFileURI);
-		}
-		convertYUpToZUp(root);
-	}
-
-	void AMLImporter::importCompleteColladaScene(Folder& root, const Poco::URI& colladaFileURI){
-		AssimpWorker::AssimpImporter* importer = new AssimpWorker::AssimpImporter();
-		importers.push_back(importer);
-		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
-		if (!scene) {
-			return;
-		}
-		AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
-		sceneImporter.addElementsTo(root);
-	}
-
-	void AMLImporter::importSubtreeOfColladaScene(Folder& root, const Poco::URI& colladaFileURI){
-		ColladaMassager* massager = getMassagerForURI(colladaFileURI);
-		AssimpWorker::AssimpImporter* importer = new AssimpWorker::AssimpImporter();
-		importers.push_back(importer);
-		const aiScene* scene = importer->importSceneFromFile(colladaFileURI.getPath(), log);
-		if (!scene) {
-			return;
-		}
-		aiNode* startingPoint = findaiNodeWithName(scene->mRootNode, colladaFileURI.getFragment());
-		if (startingPoint == NULL){
-			throw AMLException("Could not find a Node with id '" + colladaFileURI.getFragment() + "'");
-		}
-		restoreOriginalNames(startingPoint, massager);
-		AiSceneImporter sceneImporter(scene, pathToWorkingDirectory.getPath(), log);
-		sceneImporter.importSubtreeOfScene(root, startingPoint);
-	}
-
-	ColladaMassager* AMLImporter::getMassagerForURI(const Poco::URI& colladaFileURI) {
-		std::map<std::string, ColladaMassager*>::iterator iter = massagers.find(colladaFileURI.getPath());
-		if (iter != massagers.end()){
-			return iter->second;
-		}
-		ColladaMassager* massager = new ColladaMassager(colladaFileURI);
-		massagers.insert(std::make_pair(colladaFileURI.getPath(), massager));
-		massager->purgeNames(); // Must be done here to avoid purging names twice for the same file
-		return massager;
-	}
-
-	void AMLImporter::restoreOriginalNames(aiNode* node, ColladaMassager* massager) {
-		node->mName = massager->getNameForId(node->mName.C_Str());
-		for (int i = 0; i < node->mNumChildren; i++){
-			restoreOriginalNames(node->mChildren[i], massager);
+		ColladaRecursiveImporter* importer = new ColladaRecursiveImporter(colladaFileURI, log, massagerRegistry);
+		colladaImporters.push_back(importer);
+		if (colladaFileURI.getFragment() != "") {
+			// a fragment reference is imported ignoring up-vector and scale of the collada.
+			// Thus, an additional intermediate node is needed to store the transform to
+			// y-up, 1 unit = 1 meter
+			Folder& upAndScale = root.appendChild("node");
+			upAndScale.setName("normalizeCoordinates");
+			importer->addElementsTo(upAndScale);
+			// but we can only compute the normalization once the import is done:
+			aiMatrix4x4 normalize = createNormalizationTransform(*importer);
+			AMLFrameImporter::addTransformBlobToFolder(normalize, upAndScale, "transform");
+		} else {
+			// whole-file references have their transform to y-up and meters taken care of
+			// by the ColladaRecursiveImporter.
+			importer->addElementsTo(root);
 		}
 	}
 
-	aiNode* AMLImporter::findaiNodeWithName(aiNode* node, const std::string& name){
-		if (name == node->mName.C_Str()){
-			return node;
+	aiMatrix4x4 AMLImporter::createNormalizationTransform(const ColladaRecursiveImporter& importer)
+	{
+		aiMatrix4x4 transform;
+		float scale = importer.getLocalScale();
+		transform *= aiMatrix4x4(scale, 0, 0, 0,
+		                         0, scale, 0, 0,
+		                         0, 0, scale, 0,
+		                         0, 0, 0, 1);
+		if (importer.getColladaUpAxis() == "Z_UP") {
+			transform *= aiMatrix4x4(
+			                    1,  0,  0,  0,
+			                    0,  0,  1,  0,
+			                    0, -1,  0,  0,
+			                    0,  0,  0,  1);
+		} else if (importer.getColladaUpAxis() == "X_UP") {
+			transform *= aiMatrix4x4(
+			                    0, -1,  0,  0,
+			                    1,  0,  0,  0,
+			                    0,  0,  1,  0,
+			                    0,  0,  0,  1);
 		}
-		aiNode* childNode = NULL;
-		for (int i = 0; i < node->mNumChildren; i++){
-			childNode = findaiNodeWithName(node->mChildren[i], name);
-			if (childNode != NULL) {
-				break;
-			}
-		}
-		return childNode;
+		// (nothing to do for Y_UP)
+		return transform;
 	}
 
 } // End namespace AssimpWorker

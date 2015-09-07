@@ -13,6 +13,7 @@
 #include <cms/TextMessage.h>
 #include <cms/MessageConsumer.h>
 #include <cms/MessageProducer.h>
+#include <string>
 #pragma warning (pop)
 
 namespace AssimpWorker {
@@ -36,6 +37,7 @@ namespace AssimpWorker {
 		cms::Session* session;
 
 		cms::Destination* createDestination(const std::string& queue);
+		std::string getBrokerUrl();
 	};
 
 }

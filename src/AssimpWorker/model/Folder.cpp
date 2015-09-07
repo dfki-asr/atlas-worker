@@ -32,6 +32,19 @@ namespace Model {
 
 	}
 
+	Folder& Folder::operator=(Folder&& other) {
+		if (type != other.type) {
+			// must not assign different types of folders.
+			throw std::exception();
+		}
+		blobHolder = other.blobHolder;
+		name = std::move(other.name);
+		blobs = std::move(other.blobs);
+		attributes = std::move(other.attributes);
+		childFolders = std::move(other.childFolders);
+		return *this;
+	}
+
 	Folder::~Folder(){
 		return;
 	}
@@ -58,19 +71,29 @@ namespace Model {
 		return childFolders;
 	}
 
+	void Folder::removeAttribute(std::string key){
+		attributes.erase(key);
+	}
+
+	std::vector<Folder>& Folder::getChildren(){
+		return childFolders;
+	}
+
 	Blob* Folder::getBlobByType(const std::string& type){
 		for (auto type_and_hash : blobs){
 			if (type_and_hash.first == type) {
 				return &(blobHolder.getBlob(type_and_hash.second));
 			}
 		}
-		return NULL;
+		return nullptr;
 	}
 
 	void Folder::addBlob(const std::string& type, Blob& blob){
 		std::string hash = blob.getHash();
 		if (!blobHolder.hasBlob(hash)){
 			blobHolder.addBlob(blob);
+		} else {
+			blob.cleanup();
 		}
 		blobs.erase(type); // Re-adding a blob should overwrite it
 		blobs.insert(std::pair<std::string, std::string>(type,hash));

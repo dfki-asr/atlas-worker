@@ -14,17 +14,17 @@ Architecture
 
 Here is a brief overview diagram of ATLAS' architecture: 
 
-		  +--------+    +-------------+     +---------+
-		  |        |    |             |     |         |
-	------> Upload +---->             +----->  Export +----->
-		  |        |    |             |     |         |
-		  +--------+    |             |     +----^----+
-						|   Storage   |          |
-		  +--------+    |             |     +- - + - -+
-		  |        |    |             |     |         |      
-		  | Import <---->             +-----> Filter
-		  |        |    |             |     |         |
-		  +--------+    +-------------+     +- - - - -+
+          +--------+    +-------------+     +---------+
+          |        |    |             |     |         |
+    ------> Upload +---->             +----->  Export +----->
+          |        |    |             |     |         |
+          +--------+    |             |     +----^----+
+                        |   Storage   |          |
+          +--------+    |             |     +- - + - -+
+          |        |    |             |     |         |
+          | Import <---->             +-----> Filter
+          |        |    |             |     |         |
+          +--------+    +-------------+     +- - - - -+
 
 The Upload and Export steps are handled by a Java Enterprise web application. The rationale behind
 this is that web services and serialization are very easy to handle in Java through well-standardized
@@ -69,28 +69,31 @@ Building
 
 The worker uses CMake as a build system. Hopefully the hardest part about building will therfore be organizing all the dependency libraries that are used to build the import worker.
 
-### Dependencies
+### Required dependencies
 
-* Boost >= 1.55
+* Boost >= 1.49 (1.55 if you want to build with clang)
 * POCO  >= 1.4.6
 * ActiveMQ-CPP >= 3.6.0
 * Assimp >= 3.1.1
-* Jansson
+* Jansson >= 2.2.1
 
 If you want to import AutomationML, we recommend building Assimp yourself. We've contributed code to assimp that enables it to properly load trifans and tristrips, which AutomationML COLLADA files seem to make heavy use of.
 
-### OS-Provided dependencies
+#### OS-Provided dependencies
 
-If you're lucky and there is a package management system for your operating system, then you should be able to get all of the dependencies from there. We've made good experiences with Homebrew on MacOS and APT on Linux. Here's the packages you need:
+If you're lucky and there is a package management system for your operating system, then you should be able to get most, if not all, of the dependencies from there. We've made good experiences with Homebrew on MacOS and APT on Linux. Here's the packages you need:
 
 * Homebrew: `brew install jansson activemq-cpp assimp boost poco`
-** if you want the trifan code mentioned above, you can `brew install --HEAD assimp`
-** `activemq-cpp` (up to version 3.8.5) writes a wrong `pkg-config` file, which may result in CMake not finding it.
-* APT: `apt-get install libassimp-dev libboost-dev libjansson-dev`
-** ActiveMQ-CPP is not currently in Debian's APT, you will need to build it yourself. Therefore you need the `libapr1-dev` package.
-** Poco from Debian's APT is too old, you will also need to build it yourself. (Or install the package from the `experimental` repo.)
+ * if you want the trifan code mentioned above, you can `brew install --HEAD assimp`
+ * `activemq-cpp` writes a wrong `pkg-config` file (reported and fixed upstream in version 3.8.5).
+    * For a fix, edit `/usr/local/lib/pkgconfig/activemq-cpp.pc` to say `Requires.private: apr-1`
 
-### On Windows platforms (Win 8, Visual Studio 2013)
+* APT: `apt-get install libassimp-dev libboost-dev libjansson-dev`
+ * ActiveMQ-CPP is not currently in Debian's APT, you will need to build it yourself. Therefore you need the `libapr1-dev` package.
+ * Poco from Debian's APT is too old, you will also need to build it yourself. (Or install the package from the `experimental` repo.)
+ * For both of the above dependencies, you can use the scripts we use to install them on the Travis CI infrastructure. See the `.travis` directory.
+
+#### On Windows platforms (Win 8, Visual Studio 2013)
 
 The following is for MSVC 12 (aka Visual Studio 13) on Windows 8 64bit. On any other Compiler or Windows, you are alone, sorry.
 
@@ -115,7 +118,27 @@ Place the binaries in a folder resembling this structure:
 			poco
 				...
 
-Alternatively specify all the paths while generating CMake. Run CMake and generate the Visual Studio solution. Open the solution and run.
+### Performing the build
+
+It is recommended to perform the build in a separate directory, e.g. a `build` folder.
+CMake recommends to keep this folder beside the source tree (as to avoid accidental commits of binaries); but it should also work to have it as a subfolder to this repository, in which case you need to be careful when committing changes.
+
+#### On UNIX systems (Linux, OSX)
+
+    mkdir ../atlas-worker-build
+    cd ../atlas-worker-build
+    cmake ../atlas-worker
+    make
+
+#### On Windows
+
+* Open CMake GUI
+* Select the repository (`atlas-worker`) as source directory.
+* Select an output folder. (Again, we recommend one next to the source repository.)
+* Click configure. Select your compile environement.
+* Optional: Specify dependency paths, if you did not use the `contrib` layout above.
+* Click generate.
+* Open the generated solution and run.
 
 
 Running
@@ -145,4 +168,5 @@ Our source distribution includes the following third party items with respective
     FindCXX11.cmake       - CC-BY-SA 3.0 (by martiert, from http://stackoverflow.com/a/13571695)
     FindJansson.cmake     - New BSD License
     FindPoco.cmake        - Boost license (from Poco "contrib/camke/PocoConfig.cmake" @6b36a1)
+    GetGitRevisionDescription.cmake - Boost License
 

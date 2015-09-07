@@ -12,7 +12,7 @@ namespace AssimpWorker {
 EasyRequest::EasyRequest(Poco::Net::HTTPClientSession& session) :
 	session(session),
 	request(new Poco::Net::HTTPRequest()),
-	response(NULL) {
+	response(nullptr) {
 	request->setVersion(Poco::Net::HTTPRequest::HTTP_1_1);
 }
 
@@ -102,7 +102,7 @@ void EasyRequest::abortIfAlreadySent() {
 }
 
 void EasyRequest::ensureRequestSent() {
-	if (response == NULL) {
+	if (response == nullptr) {
 		response = new Poco::Net::HTTPResponse();
 		session.sendRequest(*request);
 	}
