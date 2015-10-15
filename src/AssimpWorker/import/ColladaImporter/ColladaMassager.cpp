@@ -149,7 +149,11 @@ namespace AssimpWorker {
 		for (int i = 0; i < unitNodes->length(); i++) {
 			Poco::AutoPtr<Poco::XML::NamedNodeMap> attributesMap = unitNodes->item(i)->attributes();
 			Poco::XML::Node* meterNode = attributesMap->getNamedItem("meter");
-			localScaleBeforeMassage = atof((meterNode->getNodeValue()).c_str());
+			if (!meterNode) {
+				localScaleBeforeMassage = 1.0f; // as per spec (p.5-18)
+			} else {
+				localScaleBeforeMassage = atof((meterNode->getNodeValue()).c_str());
+			}
 		}
 	}
 
