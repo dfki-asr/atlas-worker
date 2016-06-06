@@ -103,7 +103,7 @@ The worker uses CMake as a build system. Hopefully the hardest part about buildi
 * Assimp >= 3.1.1
 * Jansson >= 2.2.1
 
-If you want to import AutomationML, we recommend building Assimp yourself. We've contributed code to assimp that enables it to properly load trifans and tristrips, which AutomationML COLLADA files seem to make heavy use of.
+If you want to import AutomationML, we recommend using Assimp version 3.2 or later. We've contributed code to assimp that enables it to properly load trifans and tristrips, which AutomationML COLLADA files seem to make heavy use of.
 
 #### OS-Provided dependencies
 
