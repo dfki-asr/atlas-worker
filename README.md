@@ -47,6 +47,32 @@ Upon receipt of a message from the queue (a request to import an asset), it down
 When the asset's 3D model data have been imported, the worker reads assimp's internal representation, converts it to ATLAS' internal format, and uploads it to ATLAS' storage.
 After that, completion of the import operation (or eventual failures) are reported to another STOMP queue, on whose other end the web application listens for these status reports.
 
+Features
+--------
+
+This import worker supports the following formats:
+
+### Collada
+
+In addition to the extent of Collada supported by the underlying Assimp library (which may very, depending on what version assimp-worker is linked against),
+we have added support for Collada references. Meaning that it is possible to import Collada files that reference other Collada files.
+However, only relative references (inside the archive retrieved from atlas-server) will be taken into account. No loading of references over the network will take place.
+
+From the imported Collada documents, only transformation hierarchy, geometry, and materials (including textures) will be transferred to the ATLAS asset.
+Other Collada features (animations, joints, etc.) are ignored.
+
+### AutomationML
+
+Since ATLAS concerns itself with 3D geometry, the import worker pays no heed to the non-geometry aspects of AutomationML.
+Of the various ways to specify geometry references in AutomationML only a subset is implemented. These are:
+"Reference using URI without a fragment, target and ID" (Whitepaper July 2013, Part 3, Annex A, Section A1.6) and
+"Reference using URI and fragments without target and ID" (ibidem, Section A.1.2).
+Furthermore, Frame attributes (ibidem, Chapter 4) are used to create a transformation hierarchy in the ATLAS asset.
+Other features (kinematics, implicit referencing, attachments, etc.) specified by the AutomationML whitepaper, are ignored.
+
+Once a Collada reference has been encountered, it is imported as per the previous paragraph on Collada files.
+AutomationML (and their referenced Collada) hierarchies are converted from AutomationML's Z-Up coordinate system to ATLAS' Y-Up.
+
 
 Repository structure
 --------------------
