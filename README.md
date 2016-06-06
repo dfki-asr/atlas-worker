@@ -54,8 +54,8 @@ This import worker supports the following formats:
 
 ### Collada
 
-In addition to the extent of Collada supported by the underlying Assimp library (which may very, depending on what version assimp-worker is linked against),
-we have added support for Collada references. Meaning that it is possible to import Collada files that reference other Collada files.
+In addition to the extent of Collada supported by the underlying Assimp library (which may vary, depending on what version atlas-worker is linked against),
+we have added support for Collada references. This means that it is possible to import Collada files that reference other Collada files.
 However, only relative references (inside the archive retrieved from atlas-server) will be taken into account. No loading of references over the network will take place.
 
 From the imported Collada documents, only transformation hierarchy, geometry, and materials (including textures) will be transferred to the ATLAS asset.
