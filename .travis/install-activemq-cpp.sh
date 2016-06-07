@@ -1,6 +1,6 @@
 #!/bin/sh
 set -ex
-wget -q http://www.eu.apache.org/dist/activemq/activemq-cpp/3.8.4/activemq-cpp-library-3.8.4-src.tar.gz
+wget -q https://archive.apache.org/dist/activemq/activemq-cpp/3.8.4/activemq-cpp-library-3.8.4-src.tar.gz 
 tar -zxf activemq-cpp-library-3.8.4-src.tar.gz
 (
 	cd activemq-cpp-library-3.8.4
